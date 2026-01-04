@@ -8,12 +8,13 @@
         "start": "node server.js",
         "dev": "nodemon"
     },
-    "author": "Kardos Krisztián",
+    "author": "Nagy-Huszár Virág és Huszár Imre László",
     "license": "ISC",
     "devDependencies": {
         "nodemon": "^3.1.10"
     },
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^5.1.0",
         "express-session": "^1.18.2",
         "multer": "^2.0.2",
