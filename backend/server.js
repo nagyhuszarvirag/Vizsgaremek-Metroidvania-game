@@ -2,6 +2,7 @@
 const express = require('express'); //?npm install express
 const session = require('express-session'); //?npm install express-session
 const path = require('path');
+const cors = require('cors');
 
 //!Beállítások
 const app = express();
@@ -11,7 +12,10 @@ const ip = '127.0.0.1';
 const port = 3000;
 
 app.use(express.json()); //?Middleware JSON
+app.use(cors()); //?Middleware CORS engedélyezése
 app.set('trust proxy', 1); //?Middleware Proxy
+
+app.use('/backend/img', express.static(path.join(__dirname, 'img')));
 
 //!Session beállítása:
 app.use(
