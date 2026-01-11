@@ -6,5 +6,11 @@
     "Extrák",
     "Kreditek",
     "Kilépés"
-  ]
+  ],
+  "music":
+  [
+    "Zene bekapcsolása",
+    "Zene kikapcsolása"
+  ],
+  "login": "Bejelentkezés/Regisztráció"
 }

@@ -1,15 +1,11 @@
 body {
-  height: 100vh;
-  width: 100vw;
   background-image: url('../../backend/img/starting_screen/Wallpaper.jpg');
   font-family: Impact;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #menu {
   text-align: center;
+  margin-top: 250px;
 }
 
 #menu-cim {
@@ -21,7 +17,8 @@ body {
 
 .gombok {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 10px;
   background: none;
   border: none;
@@ -35,4 +32,10 @@ body {
 
 .gombok:hover {
   transform: scale(1.1);
+}
+
+#zenegomb {
+  margin-top: 20px;
+  margin-left: 20px;
+  float: left;
 }

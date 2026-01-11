@@ -10,3 +10,10 @@ export function fecthData(url) {
             console.error('A fetchel van a hiba:', error);
         });
     }
+
+export function masikJSMeghivasa(src)
+{
+  const script = document.createElement('script');
+  script.src = src;
+  document.head.prepend(script);
+}

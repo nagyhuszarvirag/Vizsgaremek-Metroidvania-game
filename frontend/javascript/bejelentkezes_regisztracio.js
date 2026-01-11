@@ -1,0 +1,1 @@
+console.log("Bejelnentkezes_regisztracio.js betöltve");
