@@ -15,12 +15,13 @@ async function createMainMenu() {
     title.textContent = data.data.title;
 
     const gombTarolo = document.createElement("div");
-    gombTarolo.class = "gombok";
+    const centerbe = document.createElement("center");
 
     data.data.buttons.forEach((gombText, index) => {
 
     const gomb = document.createElement("button");
-    gomb.className = "menu-gomb";
+    gomb.classList.add("menu-gomb");
+    gomb.classList.add("gombok");
     gomb.textContent = data.data.buttons[index];
 
     gomb.addEventListener("click", () => {
@@ -28,8 +29,9 @@ async function createMainMenu() {
       //Itt hozzáadni a gombok funkcióit
     });
 
-    gombTarolo.appendChild(gomb);
+    centerbe.appendChild(gomb);
     });
+    gombTarolo.appendChild(centerbe);
 
   
     menu.appendChild(title);
