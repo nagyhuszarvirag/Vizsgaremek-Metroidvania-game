@@ -1,6 +1,8 @@
 body {
   background-image: url('../../backend/img/starting_screen/Wallpaper.jpg');
   font-family: Impact;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #menu {

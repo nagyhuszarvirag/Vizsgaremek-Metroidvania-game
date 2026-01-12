@@ -1,0 +1,20 @@
+{
+  "name": "vizsgaremek-metroidvania-game",
+  "version": "1.0.0",
+  "description": "metroidvania game",
+  "homepage": "https://github.com/nagyhuszarvirag/Vizsgaremek-Metroidvania-game#readme",
+  "bugs": {
+    "url": "https://github.com/nagyhuszarvirag/Vizsgaremek-Metroidvania-game/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nagyhuszarvirag/Vizsgaremek-Metroidvania-game.git"
+  },
+  "license": "ISC",
+  "author": "Nagy-Huszar Virag Huszar Imre Laszlo",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
