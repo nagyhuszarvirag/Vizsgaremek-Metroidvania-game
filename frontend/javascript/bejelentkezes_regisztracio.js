@@ -2,7 +2,7 @@ import { fecthData, masikJSMeghivasa } from "./index.js";
 
 let nyelv = "hungarian"; //alapértelmezett nyelv
 
-export function createAuthModal() {
+export function modalLetrehoz() {
     const modal = document.createElement("div");
     modal.id = "authModal";
     modal.style.cssText = `
@@ -41,7 +41,7 @@ export function createAuthModal() {
     //bejelentkezés
     const loginDiv = document.createElement("div");
 
-    const loginTitle = document.createElement("h2");
+    const loginCim = document.createElement("h2");
     loginTitle.textContent = "Bejelentkezés";
 
     const loginUser = document.createElement("input");
@@ -57,27 +57,57 @@ export function createAuthModal() {
     loginPass.style.marginBottom = "10px";
     loginPass.style.padding = "5px";
 
-    const loginBtn = document.createElement("button");
-    loginBtn.textContent = "Belépés";
-    loginBtn.style.width = "100%";
-    loginBtn.style.marginBottom = "10px";
-    loginBtn.onclick = () => {
-        alert(`Bejelentkezés: ${loginUser.value}`);
-        modal.style.display = "none";
+    const loginGomb = document.createElement("button");
+    loginGomb.textContent = "Belépés";
+    loginGomb.style.width = "100%";
+    loginGomb.style.marginBottom = "10px";
+    loginGomb.onclick = async () => {
+        /*alert(`Bejelentkezés: ${loginUser.value}`);
+        modal.style.display = "none";*/
+
+        const usernev = loginUser.value.trim();
+        const jelszo =  loginPass.value.trim();
+
+        if(!usernev || !jelszo){
+            alert("Minden mező kötelező");
+            return;
+        }
+
+        const res = await fetch('http://127.0.0.1:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({usernev, jelszo})
+        });
+
+        const data = await res.json();
+
+        if(data.success){
+            alert("Sikeres bejelentkezés");
+            modal.style.display = "none";
+
+            //felhasználó adatainak mentése localstorage-ba
+            localStorage.setItem('user', JSON.stringify({
+                id: data.userId,
+                usernev: data.usernev,
+                jog: data.userJogId
+            }));
+        }else{
+            alert(data.message);
+        }
     };
 
     const toRegister = document.createElement("p");
     toRegister.innerHTML = `Nincs fiókod? <span style="color:#4ea3ff;cursor:pointer">Regisztráció</span>`;
     toRegister.style.cursor = "pointer";
 
-    loginDiv.append(loginTitle, loginUser, loginPass, loginBtn, toRegister);
+    loginDiv.append(loginCim, loginUser, loginPass, loginGomb, toRegister);
 
     //regisztráció
     const registerDiv = document.createElement("div");
     registerDiv.style.display = "none";
 
-    const regTitle = document.createElement("h2");
-    regTitle.textContent = "Regisztráció";
+    const regCim = document.createElement("h2");
+    regCim.textContent = "Regisztráció";
 
     const regEmail = document.createElement("input");
     regEmail.type = "email";
@@ -99,20 +129,44 @@ export function createAuthModal() {
     regPass.style.marginBottom = "10px";
     regPass.style.padding = "5px";
 
-    const regBtn = document.createElement("button");
-    regBtn.textContent = "Regisztráció";
-    regBtn.style.width = "100%";
-    regBtn.style.marginBottom = "10px";
-    regBtn.onclick = () => {
-        alert(`Regisztráció: ${regUser.value}`);
-        modal.style.display = "none";
+    const regGomb = document.createElement("button");
+    regGomb.textContent = "Regisztráció";
+    regGomb.style.width = "100%";
+    regGomb.style.marginBottom = "10px";
+    regGomb.onclick = async () => {
+        /*alert(`Regisztráció: ${regUser.value}`);
+        modal.style.display = "none";*/
+
+        const email = regEmail.value.trim();
+        const usernev = regUser.value.trim();
+        const jelszo = regPass.value.trim();
+
+        if(!email || !usernev || !jelszo){
+            alert('Minden mező kötelező');
+            return;
+        }
+
+        const res = await fetch("http://127.0.0.1:3000/api/register", {
+           method: 'POST',
+           headers: {"Content-Type": "application/json"},
+           body: JSON.stringify({usernev, jelszo, email})
+        });
+
+        const data = await res.json();
+
+        if(data.success){
+            alert("Sikeres regisztráció");
+            modal.style.display = "none";
+        }else{
+            alert(data.message);
+        }
     };
 
     const toLogin = document.createElement("p");
     toLogin.innerHTML = `Van már fiókod? <span style="color:#4ea3ff;cursor:pointer">Bejelentkezés</span>`;
     toLogin.style.cursor = "pointer";
 
-    registerDiv.append(regTitle, regEmail ,regUser, regPass, regBtn, toLogin);
+    registerDiv.append(regCim, regEmail ,regUser, regPass, regGomb, toLogin);
 
     content.append(close, loginDiv, registerDiv);
     modal.appendChild(content);

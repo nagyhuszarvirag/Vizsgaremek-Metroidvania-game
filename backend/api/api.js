@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('../sql/database.js');
 const fs = require('fs/promises');
@@ -74,6 +75,82 @@ router.get("/JSONolvas/:nyelv/:fajl", async (request, response) => {
       message: "A JSON fájl nem létezik!"
     });
   }
+});
+
+router.post('/register', async (req, res) =>{
+    try{
+        const {usernev, jelszo, email} = req.body;
+
+        //ellenőrzés hogy a felhasználó szabad
+        const letezik = await database.usernevKereses(usernev);
+        if(letezik){
+            return res.status(409).json({
+                success: false,
+                message: 'Felhasználónév foglalt'
+            });
+        }
+
+        //jelszó hash-elése 2^10 (1024) lépésben
+        const hash = await bcrypt.hash(jelszo, 10);
+
+        //adminok emailje
+        const adminEmailek =  ["nagyhuszarvirag@gmail.com", "imre.huszar6@gmail.com"];
+
+        //jog megkülönböztetése
+        const userJogId = adminEmailek.includes(email.toLowerCase()) ? 1 : 2;
+
+        const userId = await database.userHozzaAd(usernev, hash, email, userJogId);
+
+        res.status(200).json({
+            success: true,
+            userId
+        });
+    }catch(error){
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Adatbázis hiba!'
+        });
+    }
+});
+
+router.post('/login', async (req, res) =>{
+    try{
+        const {usernev, jelszo} = req.body;
+
+        const user = await database.usernevKereses(usernev);
+
+        //felhasználónév ellenőrzése
+        if(!user){
+            return res.status(401).json({
+                success: false,
+                message: "Felhasználónév nem létezik"
+            });
+        }
+
+        //jelszó ellenőrzés hash összehasonlítással
+        const egyezik = await bcrypt.compare(jelszo, user.user_password);
+
+        if(!egyezik){
+            return res.status(401).json({
+                success: false,
+                message: "Hibás jelszó"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            userId: user.user_id,
+            usernev: user.username,
+            userJogId: user.user_jog_id
+        });
+    }catch(error){
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Adatbázis hiba"
+        });
+    }
 });
 
 module.exports = router;

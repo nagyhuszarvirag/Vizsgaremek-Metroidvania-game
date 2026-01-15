@@ -1,5 +1,5 @@
 import { fecthData, masikJSMeghivasa } from "./index.js";
-import { createAuthModal } from "./bejelentkezes_regisztracio.js";
+import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 
 let nyelv = "hungarian"; //alapértelmezett nyelv
 
@@ -40,7 +40,7 @@ async function createMainMenu() {
   bejelentkezesGomb.textContent = data.data.login;
   bejelentkezesGomb.classList.add("gombok");
   bejelentkezesGomb.addEventListener("click", () => {
-    const modal = createAuthModal();
+    const modal = modalLetrehoz();
     modal.style.display = "flex";
   });
 
