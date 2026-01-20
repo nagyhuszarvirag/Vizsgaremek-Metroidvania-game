@@ -1,6 +1,4 @@
-import { fecthData, masikJSMeghivasa } from "./index.js";
-
-let nyelv = "hungarian"; //alapértelmezett nyelv
+import { fecthData, masikJSMeghivasa , nyelv} from "./index.js";
 
 export function modalLetrehoz() {
     const modal = document.createElement("div");
