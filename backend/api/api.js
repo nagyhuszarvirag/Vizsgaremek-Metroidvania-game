@@ -44,8 +44,8 @@ router.get('/testsql', async (request, response) => {
     }
 });
 
-//? GET /api/JSONolvas
-router.get("/JSONolvas/:nyelv/:fajl", async (request, response) => {
+//? GET /api/nyelv_alapjan_JSON_olvasas
+router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response) => {
   try {
     const { nyelv, fajl } = request.params;
 

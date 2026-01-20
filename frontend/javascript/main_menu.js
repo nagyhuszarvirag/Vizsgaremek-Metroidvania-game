@@ -1,12 +1,10 @@
-import { fecthData, masikJSMeghivasa } from "./index.js";
+import { fecthData, masikJSMeghivasa, nyelv } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 
-let nyelv = "hungarian"; //alapértelmezett nyelv
-
 async function createMainMenu() {
-  const data = await fecthData("http://127.0.0.1:3000/api/JSONolvas/" + nyelv + "/main_menu.json");
+  const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
 
-  console.log(data.data);
+  //console.log(data.data);
 
   const zene = document.createElement("audio");
 

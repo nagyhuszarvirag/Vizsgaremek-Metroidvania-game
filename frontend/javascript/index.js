@@ -17,3 +17,7 @@ export function masikJSMeghivasa(src)
   script.src = src;
   document.head.prepend(script);
 }
+
+
+let nyelv = "hungarian"; //alapértelmezett nyelv
+export {nyelv}; 
