@@ -40,7 +40,7 @@ export function modalLetrehoz() {
     const loginDiv = document.createElement("div");
 
     const loginCim = document.createElement("h2");
-    loginTitle.textContent = "Bejelentkezés";
+    loginCim.textContent = "Bejelentkezés";
 
     const loginUser = document.createElement("input");
     loginUser.placeholder = "Felhasználónév";
