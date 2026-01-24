@@ -4,8 +4,6 @@ import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 async function createMainMenu() {
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
 
-  //console.log(data.data);
-
   const zene = document.createElement("audio");
 
   zene.src = "../audio/the_humbling_river.mp3";
@@ -55,8 +53,7 @@ async function createMainMenu() {
   data.data.buttons.forEach((gombText, index) => {
 
     const gomb = document.createElement("button");
-    gomb.classList.add("menu-gomb");
-    gomb.classList.add("gombok");
+    gomb.classList.add("menu-gomb", "gombok");
     gomb.textContent = data.data.buttons[index];
 
     gomb.addEventListener("click", () => {
