@@ -1,0 +1,36 @@
+{
+    "loginInput": [
+        "Bejelentkezés",
+        "Felhasználónév",
+        "Jelszó",
+        "Belépés"
+    ],
+
+    "loginAlert":[
+        "Minden mező kötelező",
+        "Sikeres bejelentkezés"
+    ],
+
+    "logToReg":[
+        "Nincs fiókod?",
+        "Regisztráció"
+    ],
+
+    "regInput": [
+        "Regisztráció",
+        "E-mail",
+        "Felhasználónév",
+        "Jelszó",
+        "Regisztráció"
+    ],
+
+    "regAlert":[
+        "Minden mező kötelező",
+        "Sikeres regisztráció"
+    ],
+
+    "regToLog":[
+        "Van már fiókod?",
+        "Bejelentkezés"
+    ]
+}

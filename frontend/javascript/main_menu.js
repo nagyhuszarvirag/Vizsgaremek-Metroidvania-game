@@ -1,5 +1,6 @@
 import { fecthData, masikJSMeghivasa, nyelv } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
+import { sutiModalKeszit } from "./suti_modal.js";
 
 async function createMainMenu() {
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
@@ -35,9 +36,12 @@ async function createMainMenu() {
   const bejelentkezesGomb = document.createElement("button");
   bejelentkezesGomb.textContent = data.data.login;
   bejelentkezesGomb.classList.add("gombok");
-  bejelentkezesGomb.addEventListener("click", () => {
-    const modal = modalLetrehoz();
-    modal.style.display = "flex";
+  let authModal = null;
+  bejelentkezesGomb.addEventListener("click", async () => {
+    if (!authModal) {
+      authModal = await modalLetrehoz();
+    }
+    authModal.style.display = "flex";
   });
 
   const menu = document.createElement("div");
@@ -99,6 +103,9 @@ async function createMainMenu() {
   menu.appendChild(zeneGomb);
   menu.appendChild(bejelentkezesGomb);
   document.body.appendChild(menu);
+
+  //süti modal
+  await sutiModalKeszit();
 }
 
 

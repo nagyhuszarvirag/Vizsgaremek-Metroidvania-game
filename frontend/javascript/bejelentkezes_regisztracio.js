@@ -1,6 +1,8 @@
 import { fecthData, masikJSMeghivasa , nyelv} from "./index.js";
 
-export function modalLetrehoz() {
+export async function modalLetrehoz() {
+    const dataNyelv = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/bejelentkezes_regisztracio.json");
+
     const modal = document.createElement("div");
     modal.id = "authModal";
     modal.style.cssText = `
@@ -40,23 +42,23 @@ export function modalLetrehoz() {
     const loginDiv = document.createElement("div");
 
     const loginCim = document.createElement("h2");
-    loginCim.textContent = "Bejelentkezés";
+    loginCim.textContent = dataNyelv.data.loginInput[0];
 
     const loginUser = document.createElement("input");
-    loginUser.placeholder = "Felhasználónév";
+    loginUser.placeholder = dataNyelv.data.loginInput[1];
     loginUser.style.width = "100%";
     loginUser.style.marginBottom = "10px";
     loginUser.style.padding = "5px";
 
     const loginPass = document.createElement("input");
     loginPass.type = "password";
-    loginPass.placeholder = "Jelszó";
+    loginPass.placeholder = dataNyelv.data.loginInput[2];
     loginPass.style.width = "100%";
     loginPass.style.marginBottom = "10px";
     loginPass.style.padding = "5px";
 
     const loginGomb = document.createElement("button");
-    loginGomb.textContent = "Belépés";
+    loginGomb.textContent = dataNyelv.data.loginInput[3];
     loginGomb.style.width = "100%";
     loginGomb.style.marginBottom = "10px";
     loginGomb.onclick = async () => {
@@ -67,7 +69,7 @@ export function modalLetrehoz() {
         const jelszo =  loginPass.value.trim();
 
         if(!usernev || !jelszo){
-            alert("Minden mező kötelező");
+            alert(dataNyelv.data.loginAlert[0]);
             return;
         }
 
@@ -80,7 +82,7 @@ export function modalLetrehoz() {
         const data = await res.json();
 
         if(data.success){
-            alert("Sikeres bejelentkezés");
+            alert(dataNyelv.data-loginAlert[1]);
             modal.style.display = "none";
 
             //felhasználó adatainak mentése localstorage-ba
@@ -95,7 +97,7 @@ export function modalLetrehoz() {
     };
 
     const toRegister = document.createElement("p");
-    toRegister.innerHTML = `Nincs fiókod? <span style="color:#4ea3ff;cursor:pointer">Regisztráció</span>`;
+    toRegister.innerHTML = `${dataNyelv.data.logToReg[0]} <span style="color:#4ea3ff;cursor:pointer">${dataNyelv.data.logToReg[1]}</span>`;
     toRegister.style.cursor = "pointer";
 
     loginDiv.append(loginCim, loginUser, loginPass, loginGomb, toRegister);
@@ -105,30 +107,30 @@ export function modalLetrehoz() {
     registerDiv.style.display = "none";
 
     const regCim = document.createElement("h2");
-    regCim.textContent = "Regisztráció";
+    regCim.textContent = dataNyelv.data.regInput[0];
 
     const regEmail = document.createElement("input");
     regEmail.type = "email";
-    regEmail.placeholder = "E-mail";
+    regEmail.placeholder = dataNyelv.data.regInput[1];
     regEmail.style.width = "100%";
     regEmail.style.marginBottom = "10px";
     regEmail.style.padding = "5px";
 
     const regUser = document.createElement("input");
-    regUser.placeholder = "Felhasználónév";
+    regUser.placeholder = dataNyelv.data.regInput[2];
     regUser.style.width = "100%";
     regUser.style.marginBottom = "10px";
     regUser.style.padding = "5px";
 
     const regPass = document.createElement("input");
     regPass.type = "password";
-    regPass.placeholder = "Jelszó";
+    regPass.placeholder = dataNyelv.data.regInput[3];
     regPass.style.width = "100%";
     regPass.style.marginBottom = "10px";
     regPass.style.padding = "5px";
 
     const regGomb = document.createElement("button");
-    regGomb.textContent = "Regisztráció";
+    regGomb.textContent = dataNyelv.data.regInput[4];
     regGomb.style.width = "100%";
     regGomb.style.marginBottom = "10px";
     regGomb.onclick = async () => {
@@ -140,7 +142,7 @@ export function modalLetrehoz() {
         const jelszo = regPass.value.trim();
 
         if(!email || !usernev || !jelszo){
-            alert('Minden mező kötelező');
+            alert(dataNyelv.data.regAlert[0]);
             return;
         }
 
@@ -153,7 +155,7 @@ export function modalLetrehoz() {
         const data = await res.json();
 
         if(data.success){
-            alert("Sikeres regisztráció");
+            alert(dataNyelv.data.regAlert[1]);
             modal.style.display = "none";
         }else{
             alert(data.message);
@@ -161,7 +163,7 @@ export function modalLetrehoz() {
     };
 
     const toLogin = document.createElement("p");
-    toLogin.innerHTML = `Van már fiókod? <span style="color:#4ea3ff;cursor:pointer">Bejelentkezés</span>`;
+    toLogin.innerHTML = `${dataNyelv.data.regToLog[0]} <span style="color:#4ea3ff;cursor:pointer">${dataNyelv.data.regToLog[1]}</span>`;
     toLogin.style.cursor = "pointer";
 
     registerDiv.append(regCim, regEmail ,regUser, regPass, regGomb, toLogin);
