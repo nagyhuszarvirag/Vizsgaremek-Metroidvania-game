@@ -1,4 +1,5 @@
-import { fecthData, masikJSMeghivasa , nyelv} from "./index.js";
+import { fecthData, masikJSMeghivasa} from "./index.js";
+import { nyelv } from "./options.js";
 
 export async function modalLetrehoz() {
     const dataNyelv = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/bejelentkezes_regisztracio.json");
@@ -62,8 +63,6 @@ export async function modalLetrehoz() {
     loginGomb.style.width = "100%";
     loginGomb.style.marginBottom = "10px";
     loginGomb.onclick = async () => {
-        /*alert(`Bejelentkezés: ${loginUser.value}`);
-        modal.style.display = "none";*/
 
         const usernev = loginUser.value.trim();
         const jelszo =  loginPass.value.trim();
@@ -134,8 +133,6 @@ export async function modalLetrehoz() {
     regGomb.style.width = "100%";
     regGomb.style.marginBottom = "10px";
     regGomb.onclick = async () => {
-        /*alert(`Regisztráció: ${regUser.value}`);
-        modal.style.display = "none";*/
 
         const email = regEmail.value.trim();
         const usernev = regUser.value.trim();

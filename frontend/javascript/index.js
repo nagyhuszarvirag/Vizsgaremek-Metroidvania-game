@@ -18,6 +18,9 @@ export function masikJSMeghivasa(src)
   document.head.prepend(script);
 }
 
+export function oldalTakarito()
+{
+  document.body.innerHTML = "";
+  console.log("Oldal takarítva");
+}
 
-let nyelv = "hungarian"; //alapértelmezett nyelv
-export {nyelv}; 

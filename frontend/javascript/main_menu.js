@@ -1,6 +1,8 @@
-import { fecthData, masikJSMeghivasa, nyelv } from "./index.js";
+import { fecthData, masikJSMeghivasa } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 import { sutiModalKeszit } from "./suti_modal.js";
+import { startGame } from "./start_game.js";
+import { nyelv, volume } from "./options.js";
 
 async function createMainMenu() {
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
@@ -24,6 +26,7 @@ async function createMainMenu() {
     if (zene.muted) {
       zene.muted = false;
       zene.play(); //user interact ez engedélyezett böngészőkben
+      zene.volume = volume;
       zeneGomb.textContent = data.data.music[1];
     } else {
       zene.muted = true;
@@ -52,7 +55,6 @@ async function createMainMenu() {
   title.textContent = data.data.title;
 
   const gombTarolo = document.createElement("div");
-  const centerbe = document.createElement("center");
 
   data.data.buttons.forEach((gombText, index) => {
 
@@ -64,8 +66,7 @@ async function createMainMenu() {
       console.log(`Clicked: ${gombText}, index: ${index}`);
       switch (index) {
         case 0:
-          console.log("Játék indítása");
-          masikJSMeghivasa("../javascript/start_game.js");
+          startGame();
           break;
 
         case 1:
@@ -94,9 +95,8 @@ async function createMainMenu() {
       }
     });
 
-    centerbe.appendChild(gomb);
+    gombTarolo.appendChild(gomb);
   });
-  gombTarolo.appendChild(centerbe);
 
   menu.appendChild(title);
   menu.appendChild(gombTarolo);

@@ -1,4 +1,5 @@
-import { fecthData, masikJSMeghivasa, nyelv } from "./index.js";
+import { fecthData, masikJSMeghivasa } from "./index.js";
+import { nyelv } from "./options.js";
 
 export async function sutiModalKeszit() {
     const dataNyelv = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/suti_modal.json");
