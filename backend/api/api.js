@@ -2,8 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('../sql/database.js');
-const fs = require('fs/promises');
-const path = require('path');
+const fs = require('node:fs/promises');
+const path = require('node:path');
 const nyelvMappaUtvonala = path.join(__dirname, '../languages/');
 
 //!Multer

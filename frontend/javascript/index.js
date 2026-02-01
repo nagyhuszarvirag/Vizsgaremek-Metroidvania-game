@@ -21,6 +21,5 @@ export function masikJSMeghivasa(src)
 export function oldalTakarito()
 {
   document.body.innerHTML = "";
-  console.log("Oldal takarítva");
 }
 

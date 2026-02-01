@@ -1,10 +1,11 @@
-import { fecthData, masikJSMeghivasa } from "./index.js";
+import { fecthData, masikJSMeghivasa, oldalTakarito } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 import { sutiModalKeszit } from "./suti_modal.js";
 import { startGame } from "./start_game.js";
 import { nyelv, volume } from "./options.js";
 
-async function createMainMenu() {
+export async function createMainMenu() {
+  oldalTakarito();
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
 
   const zene = document.createElement("audio");
