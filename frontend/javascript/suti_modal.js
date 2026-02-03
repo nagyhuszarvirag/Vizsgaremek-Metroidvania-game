@@ -1,4 +1,4 @@
-import { fecthData, masikJSMeghivasa } from "./index.js";
+import { fecthData } from "./index.js";
 import { nyelv } from "./options.js";
 
 export async function sutiModalKeszit() {

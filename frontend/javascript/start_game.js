@@ -1,7 +1,6 @@
 //Meg kell csinálni az SQL-t, mert addig nem tudok itt haladni
-import { oldalTakarito, fecthData  } from "./index.js";
+import { oldalTakarito, fecthData, visszaGomb  } from "./index.js";
 import { nyelv } from "./options.js";
-import { createMainMenu } from "./main_menu.js";
 
 export async function startGame() {
   oldalTakarito();
@@ -58,16 +57,10 @@ export async function startGame() {
   sor.classList.add("row");
 
   sor=document.createElement("div");
-  let Gomblehetsosegek=document.createElement("button");
-
-  Gomblehetsosegek.innerText=data.data.vissza;
-  sor.appendChild(Gomblehetsosegek);
+  
+  sor.appendChild(visszaGomb(data.data.vissza));
   sor.classList.add("gombok", "row");
-  Gomblehetsosegek.classList.add("gombok");
-
-  Gomblehetsosegek.addEventListener("click", async ()=>{
-    await createMainMenu();
-  });
+  
   fodiv.appendChild(sor);
 
   document.body.appendChild(fodiv);

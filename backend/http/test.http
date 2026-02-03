@@ -1,2 +1,2 @@
 ### Nyelv mappa JSON fájl olvasása
-GET http://127.0.0.1:3000/api/JSONolvas/hungarian/main_menu.json
+GET http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/hungarian/main_menu.json

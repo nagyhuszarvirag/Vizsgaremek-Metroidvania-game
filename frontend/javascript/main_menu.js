@@ -1,22 +1,21 @@
-import { fecthData, masikJSMeghivasa, oldalTakarito } from "./index.js";
+import { fecthData, oldalTakarito } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 import { sutiModalKeszit } from "./suti_modal.js";
 import { startGame } from "./start_game.js";
 import { nyelv, volume } from "./options.js";
+import {loadCredits} from "./credits.js";
 
 export async function createMainMenu() {
   oldalTakarito();
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
 
-  const zene = document.createElement("audio");
+  const VanEZene = document.getElementById('zenemarad');
 
-  zene.src = "../audio/the_humbling_river.mp3";
-  zene.loop = true;
-  zene.autoplay = true;
-  zene.muted = true; // induláskor némának kell lennie
-  zene.preload = "auto";
+  if (!VanEZene) {
+    zeneLetrehoz(data);
+  } 
 
-  document.body.appendChild(zene);
+  const zene = document.getElementById('zenemarad');
 
   const zeneGomb = document.createElement("button");
   zeneGomb.id = "zeneGomb";
@@ -36,6 +35,7 @@ export async function createMainMenu() {
   });
 
   document.body.appendChild(zeneGomb);
+
 
   const bejelentkezesGomb = document.createElement("button");
   bejelentkezesGomb.textContent = data.data.login;
@@ -81,8 +81,7 @@ export async function createMainMenu() {
           break;
 
         case 3:
-          console.log("Kreditek");
-          masikJSMeghivasa("../javascript/credits.js");
+          loadCredits();
           break;
 
         case 4:
@@ -109,6 +108,18 @@ export async function createMainMenu() {
   await sutiModalKeszit();
 }
 
+function zeneLetrehoz(data) {
+  const zene = document.createElement("audio");
+
+  zene.src = "../audio/the_humbling_river.mp3";
+  zene.loop = true;
+  zene.autoplay = true;
+  zene.muted = true; // induláskor némának kell lennie
+  zene.preload = "auto";
+  zene.id="zenemarad";
+
+  document.body.appendChild(zene);
+}
 
 
 document.addEventListener("DOMContentLoaded", async () => {
