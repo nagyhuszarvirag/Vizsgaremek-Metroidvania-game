@@ -109,3 +109,9 @@ html {
   height: 10px;
   transform: rotate(45deg); 
 }
+
+#vissza_gomb {
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
