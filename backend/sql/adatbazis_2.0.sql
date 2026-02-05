@@ -54,6 +54,18 @@ CREATE TABLE IF NOT EXISTS mentes (
     mentett_adatok VARCHAR(255)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS felh_beallitasok (
+    user_id INT,
+    hangero FLOAT DEFAULT 0.5,
+    nyelv VARCHAR(20) DEFAULT 'hungarian',
+    kiosztas JSON DEFAULT JSON_OBJECT(
+        'playerEloreMegyGombja','d',
+        'playerHatraMegyGombja','a',
+        'playerUgroGombja','space',
+        'playerAttackGombja','left click',
+        'playerInteractGombja','e'
+) ENGINE=InnoDB;
+
 ALTER TABLE being_on_map
 ADD CONSTRAINT fk_being_on_map_being_type
 FOREIGN KEY (type_id)
@@ -87,6 +99,13 @@ ON UPDATE CASCADE;
 
 ALTER TABLE mentes
 ADD CONSTRAINT fk_mentes_felhasznalo
+FOREIGN KEY (user_id)
+REFERENCES felhasznalo(user_id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE felh_beallitasok
+ADD CONSTRAINT fk_felh_beallitas_felhasznalo
 FOREIGN KEY (user_id)
 REFERENCES felhasznalo(user_id)
 ON DELETE CASCADE

@@ -2,8 +2,9 @@ import { fecthData, oldalTakarito } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 import { sutiModalKeszit } from "./suti_modal.js";
 import { startGame } from "./start_game.js";
-import { nyelv, volume } from "./options.js";
-import {loadCredits} from "./credits.js";
+import { volume, nyelv } from "./options.js";
+import { loadCredits } from "./credits.js";
+import { beallitasMenuLetrehoz } from "./beallitas_menu.js";
 
 export async function createMainMenu() {
   oldalTakarito();
@@ -13,7 +14,7 @@ export async function createMainMenu() {
 
   if (!VanEZene) {
     zeneLetrehoz(data);
-  } 
+  }
 
   const zene = document.getElementById('zenemarad');
 
@@ -72,7 +73,8 @@ export async function createMainMenu() {
 
         case 1:
           console.log("Beállítások");
-          masikJSMeghivasa("../javascript/options.js");
+          const userData = JSON.parse(localStorage.getItem('user_id')) || { id: 0 };
+          beallitasMenuLetrehoz(userData.id);
           break;
 
         case 2:
@@ -86,7 +88,7 @@ export async function createMainMenu() {
 
         case 4:
           console.log("Kilépés");
-          masikJSMeghivasa("../javascript/exit.js");
+          import("./exit.js");
           break;
 
         default:
@@ -116,7 +118,7 @@ function zeneLetrehoz(data) {
   zene.autoplay = true;
   zene.muted = true; // induláskor némának kell lennie
   zene.preload = "auto";
-  zene.id="zenemarad";
+  zene.id = "zenemarad";
 
   document.body.appendChild(zene);
 }
