@@ -49,3 +49,18 @@ export function visszaGomb(vissza) {
 
     return Gomblehetsosegek;
 }
+
+export function dekor_vonal_blokkal(){
+    const sor=document.createElement("div");
+    sor.classList.add("row", "dekor_vonal");
+
+    for(let i=0; i<3; i++)
+    {
+      let span=document.createElement("span");
+      span.classList.add("kocka");
+      span.innerText="■";
+      sor.appendChild(span);
+    }
+
+    return sor;
+}

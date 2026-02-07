@@ -1,5 +1,5 @@
 //Meg kell csinálni az SQL-t, mert addig nem tudok itt haladni
-import { oldalTakarito, fecthData, visszaGomb  } from "./index.js";
+import { oldalTakarito, fecthData, visszaGomb, dekor_vonal_blokkal} from "./index.js";
 import { nyelv } from "./options.js";
 
 export async function startGame() {
@@ -22,18 +22,8 @@ export async function startGame() {
   sor.classList.add("row", "mb-5");
   p.classList.add("text-center");
 
-  sor=document.createElement("div");
-  sor.classList.add("row", "dekor_vonal");
 
-  for(let i=0; i<3; i++)
-    {
-      let span=document.createElement("span");
-      span.classList.add("kocka");
-      span.innerText="■";
-      sor.appendChild(span);
-    }
-  
-  fodiv.appendChild(sor);
+  fodiv.appendChild(dekor_vonal_blokkal());
   
 
   sor=document.createElement("div");

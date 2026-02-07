@@ -72,7 +72,6 @@ export async function createMainMenu() {
           break;
 
         case 1:
-          console.log("Beállítások");
           const userData = JSON.parse(localStorage.getItem('user_id')) || { id: 0 };
           beallitasMenuLetrehoz(userData.id);
           break;
