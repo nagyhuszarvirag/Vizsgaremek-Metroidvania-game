@@ -1,0 +1,1 @@
+console.log("Játékos.js betöltve");
