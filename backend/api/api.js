@@ -46,44 +46,44 @@ router.get('/testsql', async (request, response) => {
 
 //? GET /api/nyelv_alapjan_JSON_olvasas
 router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response) => {
-  try {
-    const { nyelv, fajl } = request.params;
+    try {
+        const { nyelv, fajl } = request.params;
 
-    // Biztonsági ellenőrzés: csak .json kiterjesztésű fájlok engedélyezése (Mert más fájlokat nem akarunk olvasni és támadások elkerülésének érdekében van itt)
-    if (!fajl.endsWith(".json")) {
-      return request.status(400).json({
-        success: false,
-        message: "Csak JSON fájlokat fogadunk el!"
-      });
+        // Biztonsági ellenőrzés: csak .json kiterjesztésű fájlok engedélyezése (Mert más fájlokat nem akarunk olvasni és támadások elkerülésének érdekében van itt)
+        if (!fajl.endsWith(".json")) {
+            return request.status(400).json({
+                success: false,
+                message: "Csak JSON fájlokat fogadunk el!"
+            });
+        }
+
+        const fajlUtvonal = path.join(nyelvMappaUtvonala, nyelv, "/", fajl);
+
+        const fajlTartalom = await fs.readFile(fajlUtvonal, "utf8");
+        const JSONAdatok = JSON.parse(fajlTartalom);
+
+        response.status(200).json({
+            success: true,
+            data: JSONAdatok
+        });
+
+    } catch (error) {
+        console.error("GET error:", error);
+
+        response.status(404).json({
+            success: false,
+            message: "A JSON fájl nem létezik!"
+        });
     }
-
-    const fajlUtvonal = path.join(nyelvMappaUtvonala, nyelv, "/"  ,  fajl);
-
-    const fajlTartalom = await fs.readFile(fajlUtvonal, "utf8");
-    const JSONAdatok = JSON.parse(fajlTartalom);
-
-    response.status(200).json({
-        success: true,
-        data: JSONAdatok
-    });
-
-  } catch (error) {
-    console.error("GET error:", error);
-
-    response.status(404).json({
-      success: false,
-      message: "A JSON fájl nem létezik!"
-    });
-  }
 });
 
-router.post('/register', async (req, res) =>{
-    try{
-        const {usernev, jelszo, email} = req.body;
+router.post('/register', async (req, res) => {
+    try {
+        const { usernev, jelszo, email } = req.body;
 
         //ellenőrzés hogy a felhasználó szabad
         const letezik = await database.usernevKereses(usernev);
-        if(letezik){
+        if (letezik) {
             return res.status(409).json({
                 success: false,
                 message: 'Felhasználónév foglalt'
@@ -94,7 +94,7 @@ router.post('/register', async (req, res) =>{
         const hash = await bcrypt.hash(jelszo, 10);
 
         //adminok emailje
-        const adminEmailek =  ["nagyhuszarvirag@gmail.com", "imre.huszar6@gmail.com"];
+        const adminEmailek = ["nagyhuszarvirag@gmail.com", "imre.huszar6@gmail.com"];
 
         //jog megkülönböztetése
         const userJogId = adminEmailek.includes(email.toLowerCase()) ? 1 : 2;
@@ -105,7 +105,7 @@ router.post('/register', async (req, res) =>{
             success: true,
             userId
         });
-    }catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
@@ -114,14 +114,14 @@ router.post('/register', async (req, res) =>{
     }
 });
 
-router.post('/login', async (req, res) =>{
-    try{
-        const {usernev, jelszo} = req.body;
+router.post('/login', async (req, res) => {
+    try {
+        const { usernev, jelszo } = req.body;
 
         const user = await database.usernevKereses(usernev);
 
         //felhasználónév ellenőrzése
-        if(!user){
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Felhasználónév nem létezik"
@@ -131,7 +131,7 @@ router.post('/login', async (req, res) =>{
         //jelszó ellenőrzés hash összehasonlítással
         const egyezik = await bcrypt.compare(jelszo, user.user_password);
 
-        if(!egyezik){
+        if (!egyezik) {
             return res.status(401).json({
                 success: false,
                 message: "Hibás jelszó"
@@ -144,13 +144,87 @@ router.post('/login', async (req, res) =>{
             usernev: user.username,
             userJogId: user.user_jog_id
         });
-    }catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
             message: "Adatbázis hiba"
         });
     }
+});
+
+//lekéri az adatbázisból a beállítási adatokat
+router.get("/felhasznalo/:id", async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+        if (!Number.isInteger(userId) || userId <= 0) {
+            return res.status(400).json({ success: false, message: "Hibás user ID." });
+        }
+
+        const data = await database.felhBeallitasAdatok(userId);
+
+        if (!data) {
+            return res.json({ success: true, data: null });
+        }
+
+        return res.json({ success: true, data });
+    } catch (err) {
+        console.error("GET /api/felhasznalo/:id hiba:", err);
+        res.status(500).json({ success: false, message: "Szerverhiba." });
+    }
+});
+
+//menti vagy ha még nem létezik adott felhasználóhoz akkor beszúrja a beállítások adatai
+router.post("/felhasznalo/beallitas", async (req, res) => {
+    try {
+        const { user_id, key, value } = req.body;
+
+        if (!user_id || user_id <= 0) {
+            return res.status(400).json({ success: false, message: "Hibás user." });
+        }
+
+        const current = await database.getUserSettings(user_id) || {
+            hangero: 0.5,
+            nyelv: "hungarian",
+            kiosztas: {}
+        };
+
+        if (key === "hangero") current.hangero = Number(value);
+        if (key === "nyelv") current.nyelv = String(value);
+        if (key === "kiosztas") current.kiosztas = value;
+
+        await database.saveUserSettings({
+            user_id,
+            hangero: current.hangero,
+            nyelv: current.nyelv,
+            kiosztas: current.kiosztas
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("POST /api/felhasznalo/beallitasok hiba:", err);
+        res.status(500).json({ success: false, message: "Szerverhiba." });
+    }
+});
+
+//fiók adatainak megváltoztatása
+router.patch("/user/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    const { username, user_email } = req.body;
+
+    if (!username || !user_email) {
+        return res.status(422).json({ message: "Hiányzó adat" });
+    }
+
+    await database.updateUser(id, username, user_email);
+    res.json({ success: true });
+});
+
+//felhasználói adatok törlése
+router.delete("/user/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    await database.deleteUser(id);
+    res.json({ success: true });
 });
 
 module.exports = router;
