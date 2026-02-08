@@ -1,0 +1,16 @@
+{
+    "cim": "Beállítások",
+    "hangero": "Zene hangereje:",
+    "billentyu": [
+        "Előre",
+        "Hátra",
+        "Ugrás",
+        "Támadás",
+        "Interakció"
+    ],
+    "nyelv": "Nyelv:",
+    "mobilMod": "Telefonos mód:",
+    "mentes": "Mentés",
+    "mentett": "Beállítások mentve!",
+    "vissza": "Vissza"
+}

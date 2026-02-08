@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS felh_beallitasok (
         'playerUgroGombja','space',
         'playerAttackGombja','left click',
         'playerInteractGombja','e'
-) ENGINE=InnoDB;
+))ENGINE=InnoDB;
 
 ALTER TABLE being_on_map
 ADD CONSTRAINT fk_being_on_map_being_type
