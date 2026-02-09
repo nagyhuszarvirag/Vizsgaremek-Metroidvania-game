@@ -174,6 +174,27 @@ router.get("/felhasznalo/:id", async (req, res) => {
     }
 });
 
+//lekéri az adatbázisból a fiók adatokat a beállítás menühöz
+router.get("/fiokadat/:id", async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+        if (!Number.isInteger(userId) || userId <= 0) {
+            return res.status(400).json({ success: false, message: "Hibás user ID." });
+        }
+
+        const data = await database.felhFiokAdat(userId);
+
+        if (!data) {
+            return res.json({ success: true, data: null });
+        }
+
+        return res.json({ success: true, data });
+    } catch (err) {
+        console.error("GET /api/felhasznalo/:id hiba:", err);
+        res.status(500).json({ success: false, message: "Szerverhiba." });
+    }
+});
+
 //menti vagy ha még nem létezik adott felhasználóhoz akkor beszúrja a beállítások adatai
 router.post("/felhasznalo/beallitas", async (req, res) => {
     try {
@@ -183,7 +204,7 @@ router.post("/felhasznalo/beallitas", async (req, res) => {
             return res.status(400).json({ success: false, message: "Hibás user." });
         }
 
-        const current = await database.getUserSettings(user_id) || {
+        const current = await database.felhBeallitasAdatok(user_id) || {
             hangero: 0.5,
             nyelv: "hungarian",
             kiosztas: {}
@@ -193,7 +214,7 @@ router.post("/felhasznalo/beallitas", async (req, res) => {
         if (key === "nyelv") current.nyelv = String(value);
         if (key === "kiosztas") current.kiosztas = value;
 
-        await database.saveUserSettings({
+        await database.felhBeallitasMentes({
             user_id,
             hangero: current.hangero,
             nyelv: current.nyelv,
@@ -216,14 +237,14 @@ router.patch("/user/:id", async (req, res) => {
         return res.status(422).json({ message: "Hiányzó adat" });
     }
 
-    await database.updateUser(id, username, user_email);
+    await database.updateFelhasznalo(id, username, user_email);
     res.json({ success: true });
 });
 
 //felhasználói adatok törlése
 router.delete("/user/:id", async (req, res) => {
     const id = Number(req.params.id);
-    await database.deleteUser(id);
+    await database.felhTorles(id);
     res.json({ success: true });
 });
 

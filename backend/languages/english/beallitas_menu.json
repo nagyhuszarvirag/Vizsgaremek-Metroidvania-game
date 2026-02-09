@@ -1,0 +1,25 @@
+{
+    "tab": [
+        "General",
+        "Account"
+    ],
+    "cim": "Settings",
+    "hangero": "Music volume:",
+    "billentyu": [
+        "Forward",
+        "Backwards",
+        "Jump",
+        "Attack",
+        "Interaction"
+    ],
+    "nyelv": "Language:",
+    "mobilMod": "Mobile mode:",
+    "mentes": "Save",
+    "mentett": "Settings saved!",
+    "fiokszoveg": "No account in guest mode.",
+    "fiokmentes": "Save account",
+    "fiokalert": "Account updated!",
+    "torles": "Delete account",
+    "torlesalert": "Are you sure you want to delete the account?",
+    "vissza": "Back"
+}

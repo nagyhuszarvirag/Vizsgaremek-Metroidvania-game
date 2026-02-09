@@ -81,7 +81,7 @@ export async function modalLetrehoz() {
         const data = await res.json();
 
         if(data.success){
-            alert(dataNyelv.data-loginAlert[1]);
+            alert(dataNyelv.data.loginAlert[1]);
             modal.style.display = "none";
 
             //felhasználó adatainak mentése localstorage-ba

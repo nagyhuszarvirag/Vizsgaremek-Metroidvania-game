@@ -18,3 +18,7 @@ export {
   playerInteractGombja,
   mobileMode
 };
+
+export function irNyelv(ujNyelv) {
+  nyelv = ujNyelv;
+}

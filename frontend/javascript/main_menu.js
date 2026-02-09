@@ -16,6 +16,16 @@ export async function createMainMenu() {
     zeneLetrehoz(data);
   }
 
+  window.addEventListener("hangeroValtozas", (e) => {
+    const zene = document.getElementById("zenemarad");
+    if (!zene) return;
+
+    const vol = Number(e.detail.volume);
+    if (isNaN(vol)) return;
+
+    zene.volume = Math.min(1, Math.max(0, vol));
+  });
+
   const zene = document.getElementById('zenemarad');
 
   const zeneGomb = document.createElement("button");
@@ -27,7 +37,9 @@ export async function createMainMenu() {
     if (zene.muted) {
       zene.muted = false;
       zene.play(); //user interact ez engedélyezett böngészőkben
-      zene.volume = volume;
+      window.dispatchEvent(new CustomEvent("hangeroValtozas", {
+        detail: { volume }
+      }));
       zeneGomb.textContent = data.data.music[1];
     } else {
       zene.muted = true;
@@ -72,7 +84,7 @@ export async function createMainMenu() {
           break;
 
         case 1:
-          const userData = JSON.parse(localStorage.getItem('user_id')) || { id: 0 };
+          const userData = JSON.parse(localStorage.getItem('user')) || { id: 0 };
           beallitasMenuLetrehoz(userData.id);
           break;
 

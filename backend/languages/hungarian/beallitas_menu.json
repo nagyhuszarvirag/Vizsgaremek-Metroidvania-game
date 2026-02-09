@@ -1,4 +1,8 @@
 {
+    "tab": [
+        "Általános",
+        "Fiók"
+    ],
     "cim": "Beállítások",
     "hangero": "Zene hangereje:",
     "billentyu": [
@@ -12,5 +16,10 @@
     "mobilMod": "Telefonos mód:",
     "mentes": "Mentés",
     "mentett": "Beállítások mentve!",
+    "fiokszoveg": "Vendég módban nincs fiók.",
+    "fiokmentes": "Fiók mentése",
+    "fiokalert": "Fiók frissítve!",
+    "torles": "Fiók törlése",
+    "torlesalert": "Biztosan törlöd a fiókot?",
     "vissza": "Vissza"
 }
