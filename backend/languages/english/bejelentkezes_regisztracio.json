@@ -1,0 +1,36 @@
+{
+    "loginInput": [
+        "Login",
+        "Username",
+        "Password",
+        "Login"
+    ],
+
+    "loginAlert":[
+        "All fields are required",
+        "Login successful"
+    ],
+
+    "logToReg":[
+        "Don't have an account?",
+        "Register"
+    ],
+
+    "regInput": [
+        "Register",
+        "Email",
+        "Username",
+        "Password",
+        "Register"
+    ],
+
+    "regAlert":[
+        "All fields are required",
+        "Registration successful"
+    ],
+
+    "regToLog":[
+        "Already have an account?",
+        "Login"
+    ]
+}

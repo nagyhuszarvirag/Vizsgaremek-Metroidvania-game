@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS user_jog (
     userjog_megnevezes VARCHAR(100) NOT NULL
 ) ENGINE=InnoDB;
 
+INSERT INTO user_jog (user_jog_id, userjog_megnevezes) VALUES (1, "admin");
+INSERT INTO user_jog (user_jog_id, userjog_megnevezes) VALUES (2, "player");
+
 CREATE TABLE IF NOT EXISTS felhasznalo (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,

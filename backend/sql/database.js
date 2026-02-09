@@ -42,6 +42,17 @@ async function felhBeallitasAdatok(userId) {
     return rows[0] || null;
 }
 
+//lekéri az adott felhasználó fiók adatait
+async function felhFiokAdat(userId) {
+    const sql = `
+    SELECT  user_id, username, user_email
+    FROM felhasznalo
+    WHERE user_id = ?;
+  `;
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows[0] || null;
+}
+
 //menti a változásokat vagy ha még nem volt adata a felhasználónak beszúr egyet
 async function felhBeallitasMentes({ user_id, hangero, nyelv, kiosztas }) {
     const sql = `
@@ -82,6 +93,7 @@ module.exports = {
     userHozzaAd,
     usernevKereses,
     felhBeallitasAdatok,
+    felhFiokAdat,
     felhBeallitasMentes,
     updateFelhasznalo,
     felhTorles
