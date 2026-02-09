@@ -1,0 +1,26 @@
+{
+    "cim": "Achivements:",
+    "felssorolt_achivements": [ 
+        {
+            "nev": "First Steps - EZEK MIND PÉLDÁK, MAJD ATIROM OKET",
+            "leiras": "Complete the tutorial level."
+        },
+        {
+            "nev": "Monster Hunter",
+            "leiras": "Defeat 100 enemies."
+        },
+        {
+            "nev": "Treasure Seeker",
+            "leiras": "Find all hidden treasures in the game."
+        },
+        {
+            "nev": "Speed Runner",
+            "leiras": "Complete the game in under 2 hours."
+        },
+        {
+            "nev": "Master Explorer",
+            "leiras": "Discover all secret areas in the game."
+        }
+    ],
+    "vissza": "Back"
+}
