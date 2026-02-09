@@ -5,6 +5,7 @@ import { startGame } from "./start_game.js";
 import { volume, nyelv } from "./options.js";
 import { loadCredits } from "./credits.js";
 import { beallitasMenuLetrehoz } from "./beallitas_menu.js";
+import { ShowAchivements } from "./achivements.js";
 
 export async function createMainMenu() {
   oldalTakarito();
@@ -89,8 +90,7 @@ export async function createMainMenu() {
           break;
 
         case 2:
-          console.log("Extrák");
-          masikJSMeghivasa("../javascript/extras.js");
+          ShowAchivements();
           break;
 
         case 3:
