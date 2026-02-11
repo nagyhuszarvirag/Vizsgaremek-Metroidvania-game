@@ -12,5 +12,7 @@
     "Zene bekapcsolása",
     "Zene kikapcsolása"
   ],
-  "login": "Bejelentkezés/Regisztráció"
+  "login": "Bejelentkezés/Regisztráció",
+  "logout": "Kijelentkezés",
+  "logoutConfirm": "Biztosan ki akarsz jelentkezni?"
 }

@@ -7,6 +7,60 @@ import { loadCredits } from "./credits.js";
 import { beallitasMenuLetrehoz } from "./beallitas_menu.js";
 import { ShowAchivements } from "./achivements.js";
 
+//segédfüggvények
+function getUserFromStorage() {
+  const raw = localStorage.getItem("user");
+  return raw ? JSON.parse(raw) : { id: 0, usernev: "guest", jog: 2 };
+}
+
+function setGuestUser() {
+  localStorage.setItem("user", JSON.stringify({ id: 0, usernev: "guest", jog: 2 }));
+}
+
+//kirajzolja a megfelelő gombot (bejelentkezés vagy kijelentkezés)
+async function renderAuthButton(authContainer, data) {
+  authContainer.innerHTML = "";
+
+  const user = getUserFromStorage();
+
+  //ha be van jelentkezve
+  if (user.id && user.id !== 0) {
+    const logoutBtn = document.createElement("button");
+    logoutBtn.classList.add("gombok");
+    logoutBtn.textContent = data.data.logout;
+
+    logoutBtn.onclick = () => {
+      const ok = confirm(data.data.logoutConfirm);
+      if (!ok) return;
+
+      setGuestUser();
+
+      window.dispatchEvent(new CustomEvent("authChanged", {
+        detail: { loggedIn: false }
+      }));
+
+      renderAuthButton(authContainer, data);
+    };
+
+    authContainer.appendChild(logoutBtn);
+    return;
+  }
+
+  //ha guest
+  const loginBtn = document.createElement("button");
+  loginBtn.classList.add("gombok");
+  loginBtn.textContent = data.data.login;
+
+  let authModal = null;
+  loginBtn.onclick = async () => {
+    if (!authModal) authModal = await modalLetrehoz();
+    authModal.style.display = "flex";
+  };
+
+  authContainer.appendChild(loginBtn);
+}
+
+
 export async function createMainMenu() {
   oldalTakarito();
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
@@ -51,7 +105,7 @@ export async function createMainMenu() {
   document.body.appendChild(zeneGomb);
 
 
-  const bejelentkezesGomb = document.createElement("button");
+  /*const bejelentkezesGomb = document.createElement("button");
   bejelentkezesGomb.textContent = data.data.login;
   bejelentkezesGomb.classList.add("gombok");
   let authModal = null;
@@ -60,7 +114,11 @@ export async function createMainMenu() {
       authModal = await modalLetrehoz();
     }
     authModal.style.display = "flex";
-  });
+  });*/
+
+  const authContainer = document.createElement("div");
+  authContainer.id = "authContainer";
+  await renderAuthButton(authContainer, data);
 
   const menu = document.createElement("div");
   menu.id = "menu";
@@ -114,7 +172,8 @@ export async function createMainMenu() {
   menu.appendChild(title);
   menu.appendChild(gombTarolo);
   menu.appendChild(zeneGomb);
-  menu.appendChild(bejelentkezesGomb);
+  //menu.appendChild(bejelentkezesGomb);
+  menu.appendChild(authContainer);
   document.body.appendChild(menu);
 
   //süti modal
@@ -136,5 +195,9 @@ function zeneLetrehoz(data) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
+  createMainMenu();
+});
+
+window.addEventListener("authChanged", () => {
   createMainMenu();
 });

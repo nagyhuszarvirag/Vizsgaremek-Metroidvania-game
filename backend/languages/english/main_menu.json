@@ -12,5 +12,7 @@
     "Turn on the music",
     "Turn off the music"
   ],
-  "login": "Log in/Register"
+  "login": "Log in/Register",
+    "logout": "Logout",
+  "logoutConfirm": "Are you sure you want to log out?"
 }

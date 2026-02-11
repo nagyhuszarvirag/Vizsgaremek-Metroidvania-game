@@ -1,4 +1,4 @@
-import { fecthData} from "./index.js";
+import { fecthData } from "./index.js";
 import { nyelv } from "./options.js";
 
 export async function modalLetrehoz() {
@@ -65,9 +65,9 @@ export async function modalLetrehoz() {
     loginGomb.onclick = async () => {
 
         const usernev = loginUser.value.trim();
-        const jelszo =  loginPass.value.trim();
+        const jelszo = loginPass.value.trim();
 
-        if(!usernev || !jelszo){
+        if (!usernev || !jelszo) {
             alert(dataNyelv.data.loginAlert[0]);
             return;
         }
@@ -75,13 +75,14 @@ export async function modalLetrehoz() {
         const res = await fetch('http://127.0.0.1:3000/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({usernev, jelszo})
+            body: JSON.stringify({ usernev, jelszo })
         });
 
         const data = await res.json();
 
-        if(data.success){
+        if (data.success) {
             alert(dataNyelv.data.loginAlert[1]);
+            mezokUrites();
             modal.style.display = "none";
 
             //felhasználó adatainak mentése localstorage-ba
@@ -90,7 +91,12 @@ export async function modalLetrehoz() {
                 usernev: data.usernev,
                 jog: data.userJogId
             }));
-        }else{
+
+            //kijelentkezés gomb cseréhez kell
+            window.dispatchEvent(new CustomEvent("authChanged", {
+                detail: { loggedIn: true }
+            }));
+        } else {
             alert(data.message);
         }
     };
@@ -138,23 +144,26 @@ export async function modalLetrehoz() {
         const usernev = regUser.value.trim();
         const jelszo = regPass.value.trim();
 
-        if(!email || !usernev || !jelszo){
+        if (!email || !usernev || !jelszo) {
             alert(dataNyelv.data.regAlert[0]);
             return;
         }
 
         const res = await fetch("http://127.0.0.1:3000/api/register", {
-           method: 'POST',
-           headers: {"Content-Type": "application/json"},
-           body: JSON.stringify({usernev, jelszo, email})
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usernev, jelszo, email })
         });
 
         const data = await res.json();
 
-        if(data.success){
+        if (data.success) {
             alert(dataNyelv.data.regAlert[1]);
+            mezokUrites();
             modal.style.display = "none";
-        }else{
+            registerDiv.style.display = "none";
+            loginDiv.style.display = "block";
+        } else {
             alert(data.message);
         }
     };
@@ -163,28 +172,48 @@ export async function modalLetrehoz() {
     toLogin.innerHTML = `${dataNyelv.data.regToLog[0]} <span style="color:#4ea3ff;cursor:pointer">${dataNyelv.data.regToLog[1]}</span>`;
     toLogin.style.cursor = "pointer";
 
-    registerDiv.append(regCim, regEmail ,regUser, regPass, regGomb, toLogin);
+    registerDiv.append(regCim, regEmail, regUser, regPass, regGomb, toLogin);
 
     content.append(close, loginDiv, registerDiv);
     modal.appendChild(content);
     document.body.appendChild(modal);
 
     //események
-    close.onclick = () => (modal.style.display = "none");
+    close.onclick = () => {
+        modal.style.display = "none";
+        mezokUrites();
+        registerDiv.style.display = "none";
+        loginDiv.style.display = "block";
+    };
 
     modal.onclick = (e) => {
-        if (e.target === modal) modal.style.display = "none";
+        if (e.target === modal) {
+            modal.style.display = "none";
+            mezokUrites();
+            registerDiv.style.display = "none";
+            loginDiv.style.display = "block";
+        }
     };
 
     toRegister.querySelector("span").onclick = () => {
         loginDiv.style.display = "none";
+        mezokUrites();
         registerDiv.style.display = "block";
     };
 
     toLogin.querySelector("span").onclick = () => {
         registerDiv.style.display = "none";
+        mezokUrites();
         loginDiv.style.display = "block";
     };
+
+    function mezokUrites() {
+        loginUser.value = "";
+        loginPass.value = "";
+        regEmail.value = "";
+        regUser.value = "";
+        regPass.value = "";
+    }
 
     return modal;
 }
