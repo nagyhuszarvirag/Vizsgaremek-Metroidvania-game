@@ -93,14 +93,17 @@ export async function beallitasMenuLetrehoz(userId) {
   oldalTakarito();
 
   //window változók inicializálása alapértelmezett értékekkel
-  window.volume = defaultVolume;
-  window.language = defaultLanguage;
-  window.playerEloreMegyGombja = defaultPlayerElore;
-  window.playerHatraMegyGombja = defaultPlayerHatra;
-  window.playerUgroGombja = defaultPlayerUgro;
-  window.playerAttackGombja = defaultPlayerAttack;
-  window.playerInteractGombja = defaultPlayerInteract;
-  window.mobileMode = defaultMobileMode;
+  if (window.volume === undefined) window.volume = defaultVolume;
+  if (window.language === undefined) window.language = defaultLanguage;
+
+  if (window.playerEloreMegyGombja === undefined) window.playerEloreMegyGombja = defaultPlayerElore;
+  if (window.playerHatraMegyGombja === undefined) window.playerHatraMegyGombja = defaultPlayerHatra;
+  if (window.playerUgroGombja === undefined) window.playerUgroGombja = defaultPlayerUgro;
+  if (window.playerAttackGombja === undefined) window.playerAttackGombja = defaultPlayerAttack;
+  if (window.playerInteractGombja === undefined) window.playerInteractGombja = defaultPlayerInteract;
+
+  if (window.mobileMode === undefined) window.mobileMode = defaultMobileMode;
+
 
   //nyelv adatok betöltése JSON-ból
   const nyelvData = await fecthData(`http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/${nyelv}/beallitas_menu.json`);
@@ -277,106 +280,110 @@ export async function beallitasMenuLetrehoz(userId) {
           playerInteractGombja: window.playerInteractGombja
         }
       };
-      await FelhBeallitasMentes(jelenlegiFelh, beallitasMentes);
+      if (jelenlegiFelh !== 0) {
+        await FelhBeallitasMentes(jelenlegiFelh, beallitasMentes);
+      }
+      localStorage.setItem("cachedSettings", JSON.stringify(beallitasMentes));
       alert(nyelvData.data.mentett);
     });
+    
     content.appendChild(mentesGomb);
   }
 
   //fiók beállítások
   async function valtasFiok() {
-  if (!jelenlegiFelh) {
-    content.textContent = nyelvData.data.fiokszoveg;
-    return;
-  }
+    if (!jelenlegiFelh) {
+      content.textContent = nyelvData.data.fiokszoveg;
+      return;
+    }
 
-  const felhasznalo = await betoltFelhFiok(jelenlegiFelh);
+    const felhasznalo = await betoltFelhFiok(jelenlegiFelh);
 
-  if (!felhasznalo) {
-    content.textContent = "Hiba: nem sikerült betölteni a felhasználó adatait.";
-    return;
-  }
+    if (!felhasznalo) {
+      content.textContent = "Hiba: nem sikerült betölteni a felhasználó adatait.";
+      return;
+    }
 
-  //fiók adatok konténere
-  const felhContainer = document.createElement("div");
-  felhContainer.style.cssText = `
+    //fiók adatok konténere
+    const felhContainer = document.createElement("div");
+    felhContainer.style.cssText = `
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
   `;
 
-  //felhasználónév inputja
-  const felhDiv = document.createElement("div");
-  felhDiv.style.cssText = `
+    //felhasználónév inputja
+    const felhDiv = document.createElement("div");
+    felhDiv.style.cssText = `
     display: flex;
     flex-direction: column;
   `;
-  const felhLabel = document.createElement("label");
-  felhLabel.textContent = "Felhasználónév";
-  const felhInput = document.createElement("input");
-  felhInput.value = felhasznalo.username || "";
-  felhInput.style.cssText = "padding: 8px; font-size: 16px;";
-  felhDiv.append(felhLabel, felhInput);
+    const felhLabel = document.createElement("label");
+    felhLabel.textContent = "Felhasználónév";
+    const felhInput = document.createElement("input");
+    felhInput.value = felhasznalo.username || "";
+    felhInput.style.cssText = "padding: 8px; font-size: 16px;";
+    felhDiv.append(felhLabel, felhInput);
 
-  //email inputja
-  const emailDiv = document.createElement("div");
-  emailDiv.style.cssText = `
+    //email inputja
+    const emailDiv = document.createElement("div");
+    emailDiv.style.cssText = `
     display: flex;
     flex-direction: column;
   `;
-  const emailLabel = document.createElement("label");
-  emailLabel.textContent = "Email";
-  const emailInput = document.createElement("input");
-  emailInput.value = felhasznalo.user_email || "";
-  emailInput.style.cssText = "padding: 8px; font-size: 16px;";
-  emailDiv.append(emailLabel, emailInput);
+    const emailLabel = document.createElement("label");
+    emailLabel.textContent = "Email";
+    const emailInput = document.createElement("input");
+    emailInput.value = felhasznalo.user_email || "";
+    emailInput.style.cssText = "padding: 8px; font-size: 16px;";
+    emailDiv.append(emailLabel, emailInput);
 
-  const gombContainer = document.createElement("div");
-  gombContainer.style.cssText = `
+    const gombContainer = document.createElement("div");
+    gombContainer.style.cssText = `
     display: flex;
     gap: 10px;
     margin-top: 10px;
   `;
 
-  //mentés gomb
-  const mentesGombFiok = document.createElement("button");
-  mentesGombFiok.textContent = nyelvData.data.fiokmentes;
-  mentesGombFiok.style.cssText = `
+    //mentés gomb
+    const mentesGombFiok = document.createElement("button");
+    mentesGombFiok.textContent = nyelvData.data.fiokmentes;
+    mentesGombFiok.style.cssText = `
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
   `;
-  mentesGombFiok.onclick = async () => {
-    await mentFelhBeallitas(jelenlegiFelh, {
-      username: felhInput.value,
-      user_email: emailInput.value
-    });
-    alert(nyelvData.data.fiokalert);
-  };
+    mentesGombFiok.onclick = async () => {
+      await mentFelhBeallitas(jelenlegiFelh, {
+        username: felhInput.value,
+        user_email: emailInput.value
+      });
+      alert(nyelvData.data.fiokalert);
+    };
 
-  //törlés gomb
-  const torlesGomb = document.createElement("button");
-  torlesGomb.textContent = nyelvData.data.torles;
-  torlesGomb.style.cssText = `
+    //törlés gomb
+    const torlesGomb = document.createElement("button");
+    torlesGomb.textContent = nyelvData.data.torles;
+    torlesGomb.style.cssText = `
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     color: white;
     background-color: red;
   `;
-  torlesGomb.onclick = async () => {
-    if (confirm(nyelvData.data.torlesalert)) {
-      await fiokTorles(jelenlegiFelh);
-    }
-  };
+    torlesGomb.onclick = async () => {
+      if (confirm(nyelvData.data.torlesalert)) {
+        await fiokTorles(jelenlegiFelh);
+      }
+    };
 
-  gombContainer.append(mentesGombFiok, torlesGomb);
+    gombContainer.append(mentesGombFiok, torlesGomb);
 
-  felhContainer.append(felhDiv, emailDiv, gombContainer);
+    felhContainer.append(felhDiv, emailDiv, gombContainer);
 
-  content.appendChild(felhContainer);
-}
+    content.appendChild(felhContainer);
+  }
 
   //vissza gomb
   const vissza = visszaGomb(nyelvData.data.vissza);

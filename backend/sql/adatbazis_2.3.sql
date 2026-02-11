@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS mentes (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS felh_beallitasok (
-    user_id INT,
+    user_id INT PRIMARY KEY,
     hangero FLOAT DEFAULT 0.5,
     nyelv VARCHAR(20) DEFAULT 'hungarian',
     kiosztas JSON DEFAULT JSON_OBJECT(
