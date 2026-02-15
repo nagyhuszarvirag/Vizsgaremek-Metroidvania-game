@@ -1,5 +1,5 @@
 // beallitas_menu.js
-import { oldalTakarito, fecthData, visszaGomb } from "./index.js";
+import { oldalTakarito, fecthData, visszaGomb, dekor_vonal_blokkal } from "./index.js";
 import {
   volume as defaultVolume,
   nyelv as defaultLanguage,
@@ -15,7 +15,6 @@ import {
 
 //globális változó
 let jelenlegiFelh = null;
-let aktivTab = "általános"
 
 //felhasználói beállítások lekérése backendből
 async function betoltFelhBeallitas(userId) {
@@ -108,64 +107,78 @@ export async function beallitasMenuLetrehoz(userId) {
   //nyelv adatok betöltése JSON-ból
   const nyelvData = await fecthData(`http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/${nyelv}/beallitas_menu.json`);
 
-  //menü container
-  const container = document.createElement("div");
-  container.style.cssText = `
-    color: white;
-    border: 2px solid white;
-    padding: 20px;
-    width: 500px;
-    margin: auto;
-    font-size: 18px;
-  `;
+  
+  let fodiv=document.createElement("div");
+  fodiv.classList.add("container", "mt-5", "beallitas_menu"); 
 
-  //cím
+  let sor=document.createElement("div");
+
+  //Cím
   const cim = document.createElement("h1");
   cim.textContent = nyelvData.data.cim;
   cim.style.textAlign = "center";
-  container.appendChild(cim);
+  sor.appendChild(cim);
 
-  //tab gombok
-  const tabContainer = document.createElement("div");
-  tabContainer.style.display = "flex";
-  tabContainer.style.justifyContent = "space-around";
+  fodiv.appendChild(sor);
 
-  const altalanosTab = document.createElement("button");
-  altalanosTab.textContent = nyelvData.data.tab[0];
-  const fiokTab = document.createElement("button");
-  fiokTab.textContent = nyelvData.data.tab[1];
+  //Dekor vonal
+  fodiv.appendChild(dekor_vonal_blokkal());
 
-  tabContainer.append(altalanosTab, fiokTab);
-  container.appendChild(tabContainer);
+  //Beállítások tartalma (tabok)
+  sor=document.createElement("div");
+  let tabContainer = document.createElement("div");
 
-  const content = document.createElement("div");
-  container.appendChild(content);
+  tabContainer.innerText = nyelvData.data.tab[0];
+  tabContainer.classList.add("p-3","center", "gombok");
 
-  altalanosTab.onclick = () => {
-    aktivTab = "általános";
-    valtas();
-  };
-  fiokTab.onclick = () => {
-    aktivTab = "fiók";
-    valtas();
-  };
+  tabContainer.addEventListener("click", () => {
+    valtasAltalanos(nyelvData.data);
+  });
 
-  async function valtas() {
-    content.innerHTML = "";
+  sor.appendChild(tabContainer);
+  fodiv.appendChild(sor);
 
-    if (aktivTab === "általános") {
-      valtasAltalanos();
-    } else {
-      await valtasFiok();
-    }
-  }
+  sor=document.createElement("div");
+  tabContainer = document.createElement("div");
 
-  //általános beállítások
-  function valtasAltalanos() {
+  tabContainer.innerText = nyelvData.data.tab[1];
+  tabContainer.classList.add("p-3","center", "gombok");
 
+  tabContainer.addEventListener("click", () => {
+    valtasFiok(nyelvData.data);
+  });
+
+  sor.appendChild(tabContainer);
+  fodiv.appendChild(sor);
+
+  //Vissza gomb
+  sor=document.createElement("div");
+  
+  sor.appendChild(visszaGomb(nyelvData.data.vissza));
+  sor.classList.add("gombok", "row");
+  
+  fodiv.appendChild(sor);
+
+  document.body.appendChild(fodiv);
+}
+
+//általános beállítások
+async function valtasAltalanos(nyelvData) {
+  oldalTakarito();
+  let content = document.createElement("div");
+  content.classList.add("container", "mt-5", "beallitas_menu");
+
+  const cim = document.createElement("h1");
+  cim.textContent = nyelvData.tab[0];
+  cim.style.textAlign = "center";
+  content.appendChild(cim);
+
+  content.appendChild(dekor_vonal_blokkal());
+
+  
     //hangerő
     const hangeroLabel = document.createElement("label");
-    hangeroLabel.textContent = nyelvData.data.hangero;
+    hangeroLabel.textContent = nyelvData.hangero;
     const hangeroCsuszka = document.createElement("input");
     hangeroCsuszka.type = "range";
     hangeroCsuszka.min = 0;
@@ -184,6 +197,8 @@ export async function beallitasMenuLetrehoz(userId) {
 
     const hangeroContainer = document.createElement("div");
     hangeroContainer.append(hangeroLabel, hangeroCsuszka);
+    hangeroContainer.style.display = "flex";
+    hangeroContainer.style.justifyContent = "space-between";
     content.appendChild(hangeroContainer);
 
     //billentyűzet kiosztás
@@ -211,20 +226,19 @@ export async function beallitasMenuLetrehoz(userId) {
       div.append(label, input);
       div.style.display = "flex";
       div.style.justifyContent = "space-between";
-      div.style.width = "300px";
       keyContainer.appendChild(div);
       content.appendChild(keyContainer)
     }
 
-    billenytuInputLetrehoz(nyelvData.data.billentyu[0], window.playerEloreMegyGombja, v => window.playerEloreMegyGombja = v);
-    billenytuInputLetrehoz(nyelvData.data.billentyu[1], window.playerHatraMegyGombja, v => window.playerHatraMegyGombja = v);
-    billenytuInputLetrehoz(nyelvData.data.billentyu[2], window.playerUgroGombja, v => window.playerUgroGombja = v);
-    billenytuInputLetrehoz(nyelvData.data.billentyu[3], window.playerAttackGombja, v => window.playerAttackGombja = v);
-    billenytuInputLetrehoz(nyelvData.data.billentyu[4], window.playerInteractGombja, v => window.playerInteractGombja = v);
+    billenytuInputLetrehoz(nyelvData.billentyu[0], window.playerEloreMegyGombja, v => window.playerEloreMegyGombja = v);
+    billenytuInputLetrehoz(nyelvData.billentyu[1], window.playerHatraMegyGombja, v => window.playerHatraMegyGombja = v);
+    billenytuInputLetrehoz(nyelvData.billentyu[2], window.playerUgroGombja, v => window.playerUgroGombja = v);
+    billenytuInputLetrehoz(nyelvData.billentyu[3], window.playerAttackGombja, v => window.playerAttackGombja = v);
+    billenytuInputLetrehoz(nyelvData.billentyu[4], window.playerInteractGombja, v => window.playerInteractGombja = v);
 
     //oldal nyelvének beállítása
     const nyelvLabel = document.createElement("label");
-    nyelvLabel.textContent = nyelvData.data.nyelv;
+    nyelvLabel.textContent = nyelvData.nyelv;
     const nyelvValaszt = document.createElement("select");
     ["hungarian", "english"].forEach(l => {
       const option = document.createElement("option");
@@ -243,14 +257,19 @@ export async function beallitasMenuLetrehoz(userId) {
       }));
     });
     const nyelvContainer = document.createElement("div");
+    nyelvContainer.style.display = "flex";
+    nyelvContainer.style.justifyContent = "space-between";
+    nyelvContainer.classList.add("p-1");
     nyelvContainer.append(nyelvLabel, nyelvValaszt);
     content.appendChild(nyelvContainer);
 
     //telefonos mód
     const telefonLabel = document.createElement("label");
-    telefonLabel.textContent = nyelvData.data.mobilMod;
+    telefonLabel.textContent = nyelvData.mobilMod;
     const telefonCheckbox = document.createElement("input");
     telefonCheckbox.type = "checkbox";
+    telefonCheckbox.style.width = "20px";
+    telefonCheckbox.style.height = "20px";
     window.mobileMode = window.innerWidth <= 768;
     telefonCheckbox.checked = window.mobileMode;
     telefonCheckbox.addEventListener("change", () => { window.mobileMode = telefonCheckbox.checked; });
@@ -262,11 +281,13 @@ export async function beallitasMenuLetrehoz(userId) {
     });
     const telefonContainer = document.createElement("div");
     telefonContainer.append(telefonLabel, telefonCheckbox);
+    telefonContainer.style.display = "flex";
+    telefonContainer.style.justifyContent = "space-between";
     content.appendChild(telefonContainer);
 
     //mentés gomb
     const mentesGomb = document.createElement("button");
-    mentesGomb.textContent = nyelvData.data.mentes;
+    mentesGomb.textContent = nyelvData.mentes;
     mentesGomb.classList.add("gombok");
     mentesGomb.addEventListener("click", async () => {
       const beallitasMentes = {
@@ -284,16 +305,26 @@ export async function beallitasMenuLetrehoz(userId) {
         await FelhBeallitasMentes(jelenlegiFelh, beallitasMentes);
       }
       localStorage.setItem("cachedSettings", JSON.stringify(beallitasMentes));
-      alert(nyelvData.data.mentett);
+      alert(nyelvData.mentett);
     });
+    let sor=document.createElement("div");
+    mentesGomb.classList.add("col-6");
+    sor.appendChild(mentesGomb);
+    let vissza=visszaGomb(nyelvData.vissza);
+    vissza.id="";
+    vissza.classList.add("col-6", "gombok");
+    sor.appendChild(vissza);
+    sor.classList.add("row");
     
-    content.appendChild(mentesGomb);
-  }
+    content.appendChild(sor);
+    document.body.appendChild(content);
+}
 
-  //fiók beállítások
-  async function valtasFiok() {
-    if (!jelenlegiFelh) {
-      content.textContent = nyelvData.data.fiokszoveg;
+//fiók beállítások
+async function valtasFiok(nyelvData) {
+
+  if (!jelenlegiFelh) {
+      content.textContent = nyelvData.fiokszoveg;
       return;
     }
 
@@ -304,6 +335,14 @@ export async function beallitasMenuLetrehoz(userId) {
       return;
     }
 
+    oldalTakarito();
+    let content = document.createElement("div");
+    let h1 = document.createElement("h1");
+    h1.textContent = nyelvData.tab[1];
+    h1.style.textAlign = "center";
+    content.appendChild(h1);
+    content.classList.add("container", "mt-5", "beallitas_menu");
+    content.appendChild(dekor_vonal_blokkal());
     //fiók adatok konténere
     const felhContainer = document.createElement("div");
     felhContainer.style.cssText = `
@@ -348,48 +387,64 @@ export async function beallitasMenuLetrehoz(userId) {
 
     //mentés gomb
     const mentesGombFiok = document.createElement("button");
-    mentesGombFiok.textContent = nyelvData.data.fiokmentes;
+    mentesGombFiok.textContent = nyelvData.fiokmentes;
     mentesGombFiok.style.cssText = `
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
   `;
-    mentesGombFiok.onclick = async () => {
-      await mentFelhBeallitas(jelenlegiFelh, {
+
+  mentesGombFiok.addEventListener("click", async () => {
+    await mentFelhBeallitas(jelenlegiFelh, {
         username: felhInput.value,
         user_email: emailInput.value
       });
-      alert(nyelvData.data.fiokalert);
-    };
+      alert(nyelvData.fiokalert);
+    });
 
     //törlés gomb
     const torlesGomb = document.createElement("button");
-    torlesGomb.textContent = nyelvData.data.torles;
+    torlesGomb.textContent = nyelvData.torles;
     torlesGomb.style.cssText = `
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    color: white;
-    background-color: red;
+    color: red;
   `;
-    torlesGomb.onclick = async () => {
-      if (confirm(nyelvData.data.torlesalert)) {
+
+  torlesGomb.addEventListener("click", async () => {
+    if (confirm(nyelvData.torlesalert)) {
         await fiokTorles(jelenlegiFelh);
       }
-    };
+    }
+  );
 
-    gombContainer.append(mentesGombFiok, torlesGomb);
+    const admin_panel = document.createElement("button");
+    admin_panel.textContent = nyelvData.admin;
+    admin_panel.style.cssText = `
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    `;
+
+    admin_panel.addEventListener("click", () => {
+      console.log("Admin panel megnyitása, de még fejlesztés alatt van");
+    });
+
+    admin_panel.classList.add("gombok");
+    mentesGombFiok.classList.add("gombok");
+    torlesGomb.classList.add("gombok"); 
+
+    gombContainer.append(mentesGombFiok, torlesGomb, admin_panel);
 
     felhContainer.append(felhDiv, emailDiv, gombContainer);
 
     content.appendChild(felhContainer);
-  }
 
-  //vissza gomb
-  const vissza = visszaGomb(nyelvData.data.vissza);
-  container.appendChild(vissza);
+    content.appendChild(dekor_vonal_blokkal());
+    content.appendChild(visszaGomb(nyelvData.vissza));
 
-  document.body.appendChild(container);
+    document.body.appendChild(content);
 }
 
 window.addEventListener("nyelvValtozas", () => {
