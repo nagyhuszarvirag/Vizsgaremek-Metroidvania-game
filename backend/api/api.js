@@ -248,4 +248,38 @@ router.delete("/user/:id", async (req, res) => {
     res.json({ success: true });
 });
 
+//lekéri az adatbázisból a achivement adatokat
+router.get("/showachivements/:id/:nyelv", async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+        if (!Number.isInteger(userId) || userId <= 0) {
+            return res.status(400).json({ success: false, message: "Hibás user ID." });
+        }
+
+        const data = await database.felhBeallitasAdatok(userId);
+
+        if (!data) {
+            return res.json({ success: true, data: null });
+        }
+
+        return res.json({ success: true, data });
+    } catch (err) {
+        console.error("GET /api/felhasznalo/:id hiba:", err);
+        res.status(500).json({ success: false, message: "Szerverhiba." });
+    }
+});
+
+//achivements adatainak megváltoztatása
+router.patch("/updateachivements/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    const { username, user_email } = req.body;
+
+    if (!username || !user_email) {
+        return res.status(422).json({ message: "Hiányzó adat" });
+    }
+
+    await database.updateFelhasznalo(id, username, user_email);
+    res.json({ success: true });
+});
+
 module.exports = router;
