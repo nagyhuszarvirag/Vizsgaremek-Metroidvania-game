@@ -88,6 +88,18 @@ async function felhTorles(id) {
     await pool.execute(sql, [id]);
 }
 
+//felhasználó beállításainak adatát lekéri
+async function felhAchivementAdatok(userId,usernyelv) {
+    const sql = `
+    SELECT a.achievement_title, a.achievement_text, p.unlocked
+    FROM achievements a
+    INNER JOIN player_achievements p ON a.id=p.achievement_id
+    WHERE p.account_id = ? AND a.nyelv=?;
+  `;
+    const [rows] = await pool.execute(sql, [userId, usernyelv]);
+    return rows || null;
+}
+
 //!Export
 module.exports = {
     userHozzaAd,
@@ -96,5 +108,6 @@ module.exports = {
     felhFiokAdat,
     felhBeallitasMentes,
     updateFelhasznalo,
-    felhTorles
+    felhTorles,
+    felhAchivementAdatok
 };
