@@ -252,24 +252,21 @@ router.delete("/user/:id", async (req, res) => {
 router.get("/showachivements/:id/:nyelv", async (req, res) => {
     try {
         const userId = Number(req.params.id);
-        if (!Number.isInteger(userId) || userId <= 0) {
-            return res.status(400).json({ success: false, message: "Hibás user ID." });
+        const usernyelv = req.params.nyelv;
+        if (!Number.isInteger(userId) || userId <= 0 || typeof usernyelv !== "string" || usernyelv=== "") {
+            return res.status(400).json({ success: false, message: "Hibás user ID vagy nyelv." });
         }
 
-        const data = await database.felhBeallitasAdatok(userId);
-
-        if (!data) {
-            return res.json({ success: true, data: null });
-        }
+        const data = await database.felhAchivementAdatok(userId, usernyelv);
 
         return res.json({ success: true, data });
     } catch (err) {
-        console.error("GET /api/felhasznalo/:id hiba:", err);
+        console.error("GET /showachivements/:id/:nyelv hiba:", err);
         res.status(500).json({ success: false, message: "Szerverhiba." });
     }
 });
 
-//achivements adatainak megváltoztatása
+//achivements adatainak megváltoztatása NINCS KÉSZ
 router.patch("/updateachivements/:id", async (req, res) => {
     const id = Number(req.params.id);
     const { username, user_email } = req.body;

@@ -1,7 +1,6 @@
 body {
   background-image: url('../../backend/img/starting_screen/Wallpaper.jpg');
   font-family: Impact;
-  height: 100vh;
   width: 100%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -11,13 +10,14 @@ body {
 
 html { 
   overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása */
-} 
+  overflow-x: hidden;   
+}
 
 #menu {
   text-align: center;
   vertical-align:middle;
-  position: absolute;
-  top: 50%;
+  position:relative;
+  bottom: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -120,4 +120,19 @@ html {
   padding: 20px;
   color: white;
   font-size: 28px;
+}
+
+.achivement_kep {
+  width: 100%;
+  height: auto;
+}
+
+.click_to_reveal{
+  text-align: center;
+  background-color: black;
+}
+
+#achivementtarolo{
+  overflow-y: scroll !important;
+  max-height: 300px;
 }

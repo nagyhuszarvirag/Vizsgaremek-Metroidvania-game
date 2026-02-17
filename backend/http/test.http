@@ -14,3 +14,6 @@ Content-Type: application/json
 {
     
 }
+
+### Felhasználói achivement adatok lekérése
+GET http://127.0.0.1:3000/api/showachivements/4/hungarian

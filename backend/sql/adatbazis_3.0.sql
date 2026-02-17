@@ -23,10 +23,27 @@ CREATE TABLE IF NOT EXISTS felhasznalo (
 CREATE TABLE IF NOT EXISTS mentes (
     mentes_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    mentett_adatok JSON DEFAULT JSON_OBJECT(
-        'teszt','teszt'
-)
+    mentett_adatok JSON DEFAULT (
+        JSON_OBJECT(
+            'savepoint', 'kezdomap_1',
+            'world_interactions', JSON_OBJECT(
+                'mitteous-plateau_breakable-ground1', false
+            ),
+            'NPC_interactions', JSON_OBJECT(
+                'Ratchet', false,
+                'Prowl', false
+            ),
+            'bosses', JSON_OBJECT(
+                'Tarn', false
+            ),
+            'ability_unlocked', JSON_OBJECT(
+                'double_jump', false,
+                'dash', false
+            )
+        )
+    )
 );
+
 
 CREATE TABLE IF NOT EXISTS felh_beallitasok (
     user_id INT PRIMARY KEY,

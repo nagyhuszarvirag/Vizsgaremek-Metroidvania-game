@@ -1,4 +1,3 @@
-//Meg kell csinálni az SQL-t, mert addig nem tudok itt haladni
 import { oldalTakarito, fecthData, visszaGomb, dekor_vonal_blokkal} from "./index.js";
 import { nyelv } from "./options.js";
 import { Jatekkezdes } from "./jatek/jatek_kezelo.js";
