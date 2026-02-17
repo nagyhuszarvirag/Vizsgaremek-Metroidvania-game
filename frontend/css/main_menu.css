@@ -121,3 +121,24 @@ html {
   color: white;
   font-size: 28px;
 }
+
+.achivement_container{
+  padding: 20px;
+  color: white;
+  font-size: 28px;
+}
+
+.achivement_kep {
+  width: 100%;
+  height: auto;
+}
+
+.click_to_reveal{
+  text-align: center;
+  background-color: black;
+}
+
+#achivementtarolo{
+  overflow-y: scroll !important;
+  max-height: 300px;
+}
