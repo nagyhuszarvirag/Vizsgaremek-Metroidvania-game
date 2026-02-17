@@ -136,7 +136,6 @@ export async function createMainMenu() {
     gomb.textContent = data.data.buttons[index];
 
     gomb.addEventListener("click", () => {
-      console.log(`Clicked: ${gombText}, index: ${index}`);
       switch (index) {
         case 0:
           startGame();

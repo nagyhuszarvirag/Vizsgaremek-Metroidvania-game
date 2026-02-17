@@ -1,7 +1,10 @@
-//Meg kell csinálni az SQL-t, mert addig nem tudok itt haladni
 import { oldalTakarito, fecthData, visszaGomb, dekor_vonal_blokkal} from "./index.js";
 import { nyelv } from "./options.js";
-import { KaboomBetolto } from "./jatek/kaboomBetolto.js";
+import { Jatekkezdes } from "./jatek/jatek_kezelo.js";
+
+let mentesid=0;
+
+export {mentesid};
 
 export async function startGame() {
   oldalTakarito();
@@ -39,8 +42,10 @@ export async function startGame() {
     jatekFajlok.addEventListener("click", async ()=>{
       //itt kell majd betölteni a mentett játék fájlokat SQL-ből vagy létrehozni új játékot
       oldalTakarito();
-      KaboomBetolto();
+      mentesid=i;
+      Jatekkezdes();
       console.log("Új játék létrehozva/betöltve");
+      
     });
 
     sor.appendChild(jatekFajlok);
