@@ -1,1 +1,0 @@
-console.log("Valamiért kifagy nekem, ha nem létezik ez a fájl. Hamarosan kezelve lesz.");

@@ -90,6 +90,16 @@ router.post('/register', async (req, res) => {
             });
         }
 
+        //email regex ellenőrzés
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                message: "Érvénytelen email formátum"
+            });
+        }
+
         //jelszó hash-elése 2^10 (1024) lépésben
         const hash = await bcrypt.hash(jelszo, 10);
 

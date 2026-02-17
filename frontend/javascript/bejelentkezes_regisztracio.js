@@ -134,6 +134,40 @@ export async function modalLetrehoz() {
     regPass.style.marginBottom = "10px";
     regPass.style.padding = "5px";
 
+    //jelszó követelmények lista
+    const passwordInfo = document.createElement("div");
+    passwordInfo.style.fontSize = "12px";
+    passwordInfo.style.marginBottom = "10px";
+
+    const requirements = [
+        { text: "Minimum 8 karakter", regex: /.{8,}/ },
+        { text: "Legalább 1 nagybetű", regex: /[A-Z]/ },
+        { text: "Legalább 1 szám", regex: /\d/ },
+        { text: "Legalább 1 speciális karakter", regex: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ }
+    ];
+
+    requirements.forEach(req => {
+        const p = document.createElement("div");
+        p.textContent = req.text;
+        p.style.color = "red";
+        p.dataset.regex = req.regex;
+        passwordInfo.appendChild(p);
+    });
+
+    //valós idejű jelszó ellenőrzés
+    regPass.addEventListener("input", () => {
+        const value = regPass.value;
+        const items = passwordInfo.children;
+
+        requirements.forEach((req, index) => {
+            if (req.regex.test(value)) {
+                items[index].style.color = "lime";
+            } else {
+                items[index].style.color = "red";
+            }
+        });
+    });
+
     const regGomb = document.createElement("button");
     regGomb.textContent = dataNyelv.data.regInput[4];
     regGomb.style.width = "100%";
@@ -146,6 +180,22 @@ export async function modalLetrehoz() {
 
         if (!email || !usernev || !jelszo) {
             alert(dataNyelv.data.regAlert[0]);
+            return;
+        }
+
+        //jelszó ellenőrzése mégegyszer
+        const allValid = requirements.every(req => req.regex.test(jelszo));
+
+        if (!allValid) {
+            alert(dataNyelv.data.regAlert[3]);
+            return;
+        }
+
+        //email regex ellenőrzés
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            alert(dataNyelv.data.regAlert[2]);
             return;
         }
 
@@ -172,7 +222,7 @@ export async function modalLetrehoz() {
     toLogin.innerHTML = `${dataNyelv.data.regToLog[0]} <span style="color:#4ea3ff;cursor:pointer">${dataNyelv.data.regToLog[1]}</span>`;
     toLogin.style.cursor = "pointer";
 
-    registerDiv.append(regCim, regEmail, regUser, regPass, regGomb, toLogin);
+    registerDiv.append(regCim, regEmail, regUser, regPass, passwordInfo, regGomb, toLogin);
 
     content.append(close, loginDiv, registerDiv);
     modal.appendChild(content);
