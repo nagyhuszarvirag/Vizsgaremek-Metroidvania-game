@@ -135,4 +135,8 @@ html {
 #achivementtarolo{
   overflow-y: scroll !important;
   max-height: 300px;
+.beallitas_menu {
+  padding: 20px;
+  color: white;
+  font-size: 28px;
 }
