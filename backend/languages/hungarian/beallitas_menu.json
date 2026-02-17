@@ -12,7 +12,11 @@
         "Támadás",
         "Interakció"
     ],
-    "nyelv": "Nyelv:",
+    "nyelv": [
+        "Nyelv:",
+        "Magyar",
+        "Angol"
+    ],
     "mobilMod": "Telefonos mód:",
     "mentes": "Mentés",
     "mentett": "Beállítások mentve!",

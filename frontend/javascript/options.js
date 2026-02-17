@@ -1,6 +1,6 @@
 //alapértelmezett felhasználói beállítások
 let volume = 0.5;
-let nyelv = "hungarian";
+let nyelv = localStorage.getItem("nyelv") || "hungarian";
 let playerEloreMegyGombja = "d";
 let playerHatraMegyGombja = "a";
 let playerUgroGombja = "space";

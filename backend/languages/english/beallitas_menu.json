@@ -12,7 +12,11 @@
         "Attack",
         "Interaction"
     ],
-    "nyelv": "Language:",
+    "nyelv": [
+        "Language:",
+        "Hungarian",
+        "English"
+    ],
     "mobilMod": "Mobile mode:",
     "mentes": "Save",
     "mentett": "Settings saved!",
