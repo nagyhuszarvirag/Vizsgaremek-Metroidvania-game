@@ -248,35 +248,4 @@ router.delete("/user/:id", async (req, res) => {
     res.json({ success: true });
 });
 
-//lekéri az adatbázisból a achivement adatokat
-router.get("/showachivements/:id/:nyelv", async (req, res) => {
-    try {
-        const userId = Number(req.params.id);
-        const usernyelv = req.params.nyelv;
-        if (!Number.isInteger(userId) || userId <= 0 || typeof usernyelv !== "string" || usernyelv=== "") {
-            return res.status(400).json({ success: false, message: "Hibás user ID vagy nyelv." });
-        }
-
-        const data = await database.felhAchivementAdatok(userId, usernyelv);
-
-        return res.json({ success: true, data });
-    } catch (err) {
-        console.error("GET /showachivements/:id/:nyelv hiba:", err);
-        res.status(500).json({ success: false, message: "Szerverhiba." });
-    }
-});
-
-//achivements adatainak megváltoztatása NINCS KÉSZ
-router.patch("/updateachivements/:id", async (req, res) => {
-    const id = Number(req.params.id);
-    const { username, user_email } = req.body;
-
-    if (!username || !user_email) {
-        return res.status(422).json({ message: "Hiányzó adat" });
-    }
-
-    await database.updateFelhasznalo(id, username, user_email);
-    res.json({ success: true });
-});
-
 module.exports = router;
