@@ -7,9 +7,6 @@ export async function ShowAchivements() {
     const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/achivements.json");
     const achivmentAdatok = await fecthData("http://127.0.0.1:3000/api/showachivements/" + userid.id + "/" + nyelv  );
 
-    console.log("Achivements megjelenítése: "+data.data);
-    document.body.appendChild(visszaGomb(data.data.vissza));
-    console.log(achivmentAdatok);
     let fodiv=document.createElement("div");
     let sor=document.createElement("div");
     fodiv.classList.add("achivement_container");
@@ -25,7 +22,7 @@ export async function ShowAchivements() {
     fodiv.appendChild(sor);
 
     let achivementtarolo=document.createElement("div");
-    achivementtarolo.id="achivementtarolo";
+    achivementtarolo.classList.add("scrolldiv");
 
     for(let i=0; i<achivmentAdatok.data.length; i++){
         sor=document.createElement("div");
