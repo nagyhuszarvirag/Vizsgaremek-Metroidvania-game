@@ -1,19 +1,39 @@
-import { fecthData, oldalTakarito, visszaGomb } from "./index.js";
+import { fecthData, oldalTakarito, visszaGomb, dekor_vonal_blokkal } from "./index.js";
 import { nyelv } from "./options.js";
 
 export async function loadCredits() {
   oldalTakarito();
   const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/credits.json");
-  console.log(data);
 
   let fodiv=document.createElement("div");
+  fodiv.classList.add("credits_container");
 
   let sor=document.createElement("div");
- 
-  fodiv.appendChild(createCreditRow(data.data.Fo_kozremukodok, sor));
+  let h1=document.createElement("h1");
+  h1.innerText=data.data.credits;
+  sor.appendChild(h1);
+  fodiv.appendChild(sor);
 
   sor=document.createElement("div");
-  fodiv.appendChild( createCreditRow(data.data.Tovabbi_segitok, sor));
+  sor.appendChild(dekor_vonal_blokkal());
+  fodiv.appendChild(sor);
+
+  let credittarol=document.createElement("div");
+  credittarol.classList.add("scrolldiv");
+
+  sor=document.createElement("div");
+ 
+  credittarol.appendChild(createCreditRow(data.data.Fo_kozremukodok, sor));
+
+  sor=document.createElement("div");
+  credittarol.appendChild( createCreditRow(data.data.Tovabbi_segitok, sor));
+
+  fodiv.appendChild(credittarol);
+
+  sor=document.createElement("div");
+  sor.appendChild(dekor_vonal_blokkal());
+  fodiv.appendChild(sor);
+
   sor=document.createElement("div");
   sor.appendChild(visszaGomb(data.data.vissza));
   fodiv.appendChild(sor);
