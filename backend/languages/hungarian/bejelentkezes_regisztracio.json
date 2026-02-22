@@ -24,6 +24,13 @@
         "Regisztráció"
     ],
 
+    "pasReq":[
+        "Minimum 8 karakter",
+        "Legalább 1 nagybetű",
+        "Legalább 1 szám",
+        "Legalább 1 speciális karakter"
+    ],
+
     "regAlert":[
         "Minden mező kötelező",
         "Sikeres regisztráció",

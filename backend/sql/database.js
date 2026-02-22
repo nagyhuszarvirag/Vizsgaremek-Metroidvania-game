@@ -10,23 +10,22 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-//!SQL Queries
-async function selectall() {
-    const query = 'SELECT * FROM exampletable;';
+async function osszesUser(){
+    const query = `SELECT user_id, username, user_email, user_jog_id FROM felhasznalo ORDER BY user_id;`;
     const [rows] = await pool.execute(query);
     return rows;
 }
 
 //User hozzáadás
 async function userHozzaAd(usernev, jelszoHash, email, userJogId) {
-    const query = 'INSERT INTO felhasznalo (username, user_password, user_email, user_jog_id) VALUES (?, ?, ?, ?);';
+    const query = `INSERT INTO felhasznalo (username, user_password, user_email, user_jog_id) VALUES (?, ?, ?, ?);`;
     const [row] = await pool.execute(query, [usernev, jelszoHash, email, userJogId]);
     return row.insertId;
 }
 
 //felhasználó keresés név alapján
 async function usernevKereses(usernev) {
-    const query = 'SELECT * FROM felhasznalo WHERE username = ?;';
+    const query = `SELECT * FROM felhasznalo WHERE username = ?;`;
     const [row] = await pool.execute(query, [usernev]);
     return row[0];
 }
@@ -109,5 +108,6 @@ module.exports = {
     felhBeallitasMentes,
     updateFelhasznalo,
     felhTorles,
-    felhAchivementAdatok
+    felhAchivementAdatok,
+    osszesUser
 };

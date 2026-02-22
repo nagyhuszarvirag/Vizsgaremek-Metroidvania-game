@@ -2,9 +2,47 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('../sql/database.js');
-const fs = require('node:fs/promises');
+const fs = require('fs');
+const fsPromises = require("fs/promises");
 const path = require('node:path');
 const nyelvMappaUtvonala = path.join(__dirname, '../languages/');
+
+//log fájl
+const uploadFolder = path.join(__dirname, "../http");
+
+const logPath = path.join(uploadFolder, "log.txt");
+
+//log fájl létrehozás ha nincs
+if (!fs.existsSync(logPath)) {
+    fs.writeFileSync(logPath, "", "utf8");
+}
+
+//végpont hívásakor logolás
+router.use((req, res, next) => {
+
+    const start = Date.now();
+    const now = new Date().toLocaleString("hu-HU");
+
+    res.on("finish", () => {
+
+        const ms = Date.now() - start;
+
+        const line =
+            "[" + now + "] " +
+            req.method + " " +
+            req.originalUrl +
+            " -> " +
+            res.statusCode +
+            " (" + ms + "ms)\n";
+
+        fs.appendFile(logPath, line, (err) => {
+            if (err) console.error("Log hiba:", err);
+        });
+
+    });
+
+    next();
+});
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -59,7 +97,7 @@ router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response)
 
         const fajlUtvonal = path.join(nyelvMappaUtvonala, nyelv, "/", fajl);
 
-        const fajlTartalom = await fs.readFile(fajlUtvonal, "utf8");
+        const fajlTartalom = await fsPromises.readFile(fajlUtvonal, "utf8");
         const JSONAdatok = JSON.parse(fajlTartalom);
 
         response.status(200).json({
@@ -113,7 +151,9 @@ router.post('/register', async (req, res) => {
 
         res.status(200).json({
             success: true,
-            userId
+            userId: userId,
+            usernev: usernev,
+            userJogId: userJogId
         });
     } catch (error) {
         console.error(error);
@@ -263,7 +303,7 @@ router.get("/showachivements/:id/:nyelv", async (req, res) => {
     try {
         const userId = Number(req.params.id);
         const usernyelv = req.params.nyelv;
-        if (!Number.isInteger(userId) || userId <= 0 || typeof usernyelv !== "string" || usernyelv=== "") {
+        if (!Number.isInteger(userId) || userId <= 0 || typeof usernyelv !== "string" || usernyelv === "") {
             return res.status(400).json({ success: false, message: "Hibás user ID vagy nyelv." });
         }
 
@@ -287,6 +327,44 @@ router.patch("/updateachivements/:id", async (req, res) => {
 
     await database.updateFelhasznalo(id, username, user_email);
     res.json({ success: true });
+});
+
+// Összes user lekérése (admin)
+router.get("/admin/users", async (req, res) => {
+  try {
+    const users = await database.osszesUser();
+
+    res.json({
+      success: true,
+      data: users
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success:false,
+      message:"Adatbázis hiba"
+    });
+  }
+});
+
+//ez alá ne írj új apit csak fölé
+router.use((err, req, res, next) => {
+
+    const now = new Date().toLocaleString("hu-HU");
+
+    const line =
+        "[" + now + "] ERROR " +
+        req.method + " " +
+        req.originalUrl +
+        " -> " +
+        err.message + "\n";
+
+    fs.appendFile(logPath, line, () => {});
+
+    next(err);
+
 });
 
 module.exports = router;
