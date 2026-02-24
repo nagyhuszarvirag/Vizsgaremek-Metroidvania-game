@@ -82,20 +82,7 @@ export async function modalLetrehoz() {
 
         if (data.success) {
             alert(dataNyelv.data.loginAlert[1]);
-            mezokUrites();
-            modal.style.display = "none";
-
-            //felhasználó adatainak mentése localstorage-ba
-            localStorage.setItem('user', JSON.stringify({
-                id: data.userId,
-                usernev: data.usernev,
-                jog: data.userJogId
-            }));
-
-            //kijelentkezés gomb cseréhez kell
-            window.dispatchEvent(new CustomEvent("authChanged", {
-                detail: { loggedIn: true }
-            }));
+            sikeresBelepes(data)
         } else {
             alert(data.message);
         }
@@ -140,10 +127,10 @@ export async function modalLetrehoz() {
     passwordInfo.style.marginBottom = "10px";
 
     const requirements = [
-        { text: "Minimum 8 karakter", regex: /.{8,}/ },
-        { text: "Legalább 1 nagybetű", regex: /[A-Z]/ },
-        { text: "Legalább 1 szám", regex: /\d/ },
-        { text: "Legalább 1 speciális karakter", regex: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ }
+        { text: dataNyelv.data.pasReq[0], regex: /.{8,}/ },
+        { text: dataNyelv.data.pasReq[1], regex: /[A-Z]/ },
+        { text: dataNyelv.data.pasReq[2], regex: /\d/ },
+        { text: dataNyelv.data.pasReq[3], regex: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ }
     ];
 
     requirements.forEach(req => {
@@ -209,10 +196,7 @@ export async function modalLetrehoz() {
 
         if (data.success) {
             alert(dataNyelv.data.regAlert[1]);
-            mezokUrites();
-            modal.style.display = "none";
-            registerDiv.style.display = "none";
-            loginDiv.style.display = "block";
+            sikeresBelepes(data);
         } else {
             alert(data.message);
         }
@@ -236,15 +220,6 @@ export async function modalLetrehoz() {
         loginDiv.style.display = "block";
     };
 
-    modal.onclick = (e) => {
-        if (e.target === modal) {
-            modal.style.display = "none";
-            mezokUrites();
-            registerDiv.style.display = "none";
-            loginDiv.style.display = "block";
-        }
-    };
-
     toRegister.querySelector("span").onclick = () => {
         loginDiv.style.display = "none";
         mezokUrites();
@@ -263,6 +238,25 @@ export async function modalLetrehoz() {
         regEmail.value = "";
         regUser.value = "";
         regPass.value = "";
+    }
+
+    function sikeresBelepes(data) {
+        mezokUrites();
+        modal.style.display = "none";
+        registerDiv.style.display = "none";
+        loginDiv.style.display = "block";
+
+        //felhasználó adatainak mentése localstorage-ba
+        localStorage.setItem('user', JSON.stringify({
+            id: data.userId,
+            usernev: data.usernev,
+            jog: data.userJogId
+        }));
+
+        //kijelentkezés gomb cseréhez kell
+        window.dispatchEvent(new CustomEvent("authChanged", {
+            detail: { loggedIn: true }
+        }));
     }
 
     return modal;

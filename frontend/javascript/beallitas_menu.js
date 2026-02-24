@@ -12,6 +12,7 @@ import {
   irNyelv,
   nyelv
 } from "./options.js";
+import { adminPanelLetrehoz } from "./admin_panel.js";
 
 //globális változó
 let jelenlegiFelh = null;
@@ -330,27 +331,46 @@ async function valtasAltalanos(nyelvData) {
 
 //fiók beállítások
 async function valtasFiok(nyelvData) {
+  oldalTakarito();
 
-  if (!jelenlegiFelh) {
-    content.textContent = nyelvData.fiokszoveg;
+  const content = document.createElement("div");
+  content.classList.add("container", "mt-5", "beallitas_menu");
+
+  const h1 = document.createElement("h1");
+  h1.textContent = nyelvData.tab[1];
+  h1.style.textAlign = "center";
+  content.appendChild(h1);
+
+  content.appendChild(dekor_vonal_blokkal());
+
+  if (!jelenlegiFelh || jelenlegiFelh === 0) {
+    const p = document.createElement("p");
+    p.textContent = nyelvData.fiokszoveg;
+    p.style.textAlign = "center";
+    content.appendChild(p);
+
+    content.appendChild(dekor_vonal_blokkal());
+    content.appendChild(visszaGomb(nyelvData.vissza));
+
+    document.body.appendChild(content);
     return;
   }
 
   const felhasznalo = await betoltFelhFiok(jelenlegiFelh);
 
   if (!felhasznalo) {
-    content.textContent = "Hiba: nem sikerült betölteni a felhasználó adatait.";
+    const p = document.createElement("p");
+    p.textContent = "Hiba: nem sikerült betölteni a felhasználó adatait.";
+    p.style.textAlign = "center";
+    content.appendChild(p);
+
+    content.appendChild(dekor_vonal_blokkal());
+    content.appendChild(visszaGomb(nyelvData.vissza));
+
+    document.body.appendChild(content);
     return;
   }
 
-  oldalTakarito();
-  let content = document.createElement("div");
-  let h1 = document.createElement("h1");
-  h1.textContent = nyelvData.tab[1];
-  h1.style.textAlign = "center";
-  content.appendChild(h1);
-  content.classList.add("container", "mt-5", "beallitas_menu");
-  content.appendChild(dekor_vonal_blokkal());
   //fiók adatok konténere
   const felhContainer = document.createElement("div");
   felhContainer.style.cssText = `
@@ -436,14 +456,20 @@ async function valtasFiok(nyelvData) {
     `;
 
   admin_panel.addEventListener("click", () => {
-    console.log("Admin panel megnyitása, de még fejlesztés alatt van");
+    adminPanelLetrehoz();
   });
 
   admin_panel.classList.add("gombok");
   mentesGombFiok.classList.add("gombok");
   torlesGomb.classList.add("gombok");
 
-  gombContainer.append(mentesGombFiok, torlesGomb, admin_panel);
+  const userLS = JSON.parse(localStorage.getItem("user") || "null");
+  const isAdmin = userLS?.jog === 1;
+
+  gombContainer.append(mentesGombFiok, torlesGomb);
+  if (isAdmin) {
+    gombContainer.append(admin_panel);
+  }
 
   felhContainer.append(felhDiv, emailDiv, gombContainer);
 
