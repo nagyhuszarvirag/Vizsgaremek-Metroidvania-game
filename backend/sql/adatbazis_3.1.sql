@@ -146,6 +146,15 @@ BEGIN
     INSERT INTO mentes (user_id)
     VALUES (NEW.User_id);
 
+    INSERT INTO mentes (user_id)
+    VALUES (NEW.User_id);
+
+    INSERT INTO mentes (user_id)
+    VALUES (NEW.User_id);
+
+    INSERT INTO mentes (user_id)
+    VALUES (NEW.User_id);
+
 END$$
 
 DELIMITER ;

@@ -26,6 +26,9 @@ return;
 
 }
 
+const scrollDiv = document.createElement("div");
+scrollDiv.classList.add("scrolldiv");
+
 const tabla = document.createElement("table");
 tabla.style.cssText = `
 width:100%;
@@ -151,7 +154,8 @@ sor.appendChild(muvelet);
 tabla.appendChild(sor);
 });
 
-content.appendChild(tabla);
+scrollDiv.appendChild(tabla);
+content.appendChild(scrollDiv);
 content.appendChild(dekor_vonal_blokkal());
 content.appendChild(visszaGomb("Vissza"));
 document.body.appendChild(content);

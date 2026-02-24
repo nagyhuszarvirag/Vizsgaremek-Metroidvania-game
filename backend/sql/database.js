@@ -99,6 +99,60 @@ async function felhAchivementAdatok(userId,usernyelv) {
     return rows || null;
 }
 
+async function meghivmentes(user_id, mentes_id) {
+    
+    let sql =`SELECT *
+    FROM mentes
+    WHERE user_id = ?`;
+
+    switch (mentes_id){
+        case "1":
+            sql =`SELECT *
+            FROM mentes
+            WHERE user_id = ?
+            ORDER BY mentes_id
+            LIMIT 1;`;
+            break;
+
+        case "2":
+            sql =`SELECT *
+            FROM mentes
+            WHERE user_id = ?
+            ORDER BY mentes_id
+            LIMIT 1 OFFSET 1;`;
+            break;
+
+        case "3":
+            sql =`SELECT *
+            FROM mentes
+            WHERE user_id = ?
+            ORDER BY mentes_id
+            LIMIT 1 OFFSET 2;`;
+            break;
+
+        case "4":
+            sql =`SELECT *
+            FROM mentes
+            WHERE user_id = ?
+            ORDER BY mentes_id
+            LIMIT 1 OFFSET 3;`;
+            break;
+
+        default:
+            console.log("Nem ismert mentés id!!!");
+            break;
+    }
+    const [rows] = await pool.execute(sql, [user_id]);
+
+    if (rows.length === 0) {
+        return null;
+    }
+
+    rows[0].mentett_adatok = JSON.parse(rows[0].mentett_adatok);
+
+    return rows[0];
+}
+
 //!Export
 module.exports = {
     userHozzaAd,
@@ -109,5 +163,6 @@ module.exports = {
     updateFelhasznalo,
     felhTorles,
     felhAchivementAdatok,
-    osszesUser
+    osszesUser,
+    meghivmentes
 };

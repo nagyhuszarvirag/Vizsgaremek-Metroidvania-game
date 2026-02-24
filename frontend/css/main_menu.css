@@ -140,7 +140,7 @@ html {
 
 .scrolldiv{
   overflow-y: scroll !important;
-  max-height: 300px;
+  max-height: 500px;
 }
 
 .credits_container{
@@ -148,5 +148,4 @@ html {
   color: white;
   font-size: 28px;
   text-align: center;
-
 }
