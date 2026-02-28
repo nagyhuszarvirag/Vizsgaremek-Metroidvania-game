@@ -1,22 +1,86 @@
-### Nyelv mappa JSON fájl olvasása
-GET http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/hungarian/main_menu.json
-
-### Regisztráció
-POST http://127.0.0.1:3000/api/register
-Content-Type: application/json
-{
-    
-}
-
-### Bejelentkezés
-POST http://127.0.0.1:3000/api/register
-Content-Type: application/json
-{
-    
-}
-
 ### Felhasználói achivement adatok lekérése
 GET http://127.0.0.1:3000/api/showachivements/4/hungarian
 
-### Felhasználói adott mentés adatok lekérése
-GET http://127.0.0.1:3000/api/mentesmeghiv/7/3
+### Api működésének tesztelése
+GET http://127.0.0.1:3000/api/test
+
+### Nyelv mappa JSON fájl olvasása
+GET http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/hungarian/main_menu.json
+
+### Regisztráció – új felhasználó létrehozása
+POST http://127.0.0.1:3000/api/register
+Content-Type: application/json
+
+{
+    "usernev": "tesztuser",
+    "jelszo": "Teszt_1234",
+    "email": "teszt@example.com"
+}
+
+### Bejelentkezés 
+POST http://127.0.0.1:3000/api/login
+Content-Type: application/json
+
+{
+    "usernev": "tesztuser",
+    "jelszo": "Teszt_1234"
+}
+
+### Felhasználói beállítások lekérése 
+GET http://127.0.0.1:3000/api/felhasznalo/8
+
+### Fiókadatok lekérése a beállításokhoz 
+GET http://127.0.0.1:3000/api/fiokadat/8
+
+### menti vagy ha még nem létezik adott felhasználóhoz akkor beszúrja a beállítások adatai
+POST http://127.0.0.1:3000/api/felhasznalo/beallitas
+Content-Type: application/json
+
+{
+    "user_id": 8,
+    "key": "hangero",
+    "value": 0.5
+}
+
+### Nyelv változtatás
+POST http://127.0.0.1:3000/api/felhasznalo/beallitas
+Content-Type: application/json
+
+{
+    "user_id": 8,
+    "key": "nyelv",
+    "value": "english"
+}
+
+### Billentyűzetkiosztás módosítása
+POST http://127.0.0.1:3000/api/felhasznalo/beallitas
+Content-Type: application/json
+
+{
+    "user_id": 8,
+    "key": "kiosztas",
+    "value": {
+        "elore": "w",
+        "hatra": "s",
+        "bal": "a",
+        "jobb": "d"
+    }
+}
+
+### Felhasználói adatok módosítása (felhasználónév, email)
+PATCH http://127.0.0.1:3000/api/user/8
+Content-Type: application/json
+
+{
+    "username": "ujtesztuser",
+    "user_email": "ujteszt@example.com"
+}
+
+### Felhasználó törlése
+DELETE http://127.0.0.1:3000/api/user/8
+
+### Achievement adatok lekérése adott nyelven
+GET http://127.0.0.1:3000/api/showachivements/4/hungarian
+
+### Összes felhasználó listázása (csak admin jogosultsággal)
+GET http://127.0.0.1:3000/api/admin/users
