@@ -349,6 +349,28 @@ router.get("/admin/users", async (req, res) => {
   }
 });
 
+//A mentés_id alapján meghívni a mentést
+router.get("/mentesmeghiv/:user_id/:mentes_id", async (req, res) => {
+  try {
+    let user_id= req.params.user_id;
+    let mentes_id=req.params.mentes_id;
+    const meghivmentes = await database.meghivmentes(user_id, mentes_id);
+
+    res.json({
+      success: true,
+      data: meghivmentes
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success:false,
+      message:"Adatbázis hiba"
+    });
+  }
+});
+
 //ez alá ne írj új apit csak fölé
 router.use((err, req, res, next) => {
 
