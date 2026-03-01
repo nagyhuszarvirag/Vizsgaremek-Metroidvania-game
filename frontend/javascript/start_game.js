@@ -39,8 +39,8 @@ export async function startGame() {
     jatekFajlok.addEventListener("click", async ()=>{
       //itt kell majd betölteni a mentett játék fájlokat SQL-ből vagy létrehozni új játékot
       oldalTakarito();
-      KaboomBetolto();
-      console.log("Új játék létrehozva/betöltve");
+      KaboomBetolto(i);
+      console.log("Új játék létrehozva/betöltve Mentés_id: "+i);
     });
 
     sor.appendChild(jatekFajlok);

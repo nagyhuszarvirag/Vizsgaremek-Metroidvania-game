@@ -6,6 +6,7 @@ const fs = require('fs');
 const fsPromises = require("fs/promises");
 const path = require('node:path');
 const nyelvMappaUtvonala = path.join(__dirname, '../languages/');
+const gamejsonutvonal = path.join(__dirname, '../game_json/');
 
 //log fájl
 const uploadFolder = path.join(__dirname, "../http");
@@ -369,6 +370,39 @@ router.get("/mentesmeghiv/:user_id/:mentes_id", async (req, res) => {
       message:"Adatbázis hiba"
     });
   }
+});
+
+//Map adatbetöltő
+router.get("/map_data/:szoba_neve", async (req, res) => {
+  try {
+        const { szoba_neve } = req.params;
+
+        // Biztonsági ellenőrzés: csak .json kiterjesztésű fájlok engedélyezése (Mert más fájlokat nem akarunk olvasni és támadások elkerülésének érdekében van itt)
+        if (!szoba_neve.endsWith(".json")) {
+            return res.status(400).json({
+                success: false,
+                message: "Csak JSON fájlokat fogadunk el!"
+            });
+        }
+
+        const fajlUtvonal = path.join(gamejsonutvonal, "maps/", szoba_neve);
+
+        const fajlTartalom = await fsPromises.readFile(fajlUtvonal, "utf8");
+        const JSONAdatok = JSON.parse(fajlTartalom);
+
+        res.status(200).json({
+            success: true,
+            data: JSONAdatok
+        });
+
+    } catch (error) {
+        console.error("GET error:", error);
+
+        res.status(404).json({
+            success: false,
+            message: "A JSON fájl nem létezik!"
+        });
+    }
 });
 
 //ez alá ne írj új apit csak fölé

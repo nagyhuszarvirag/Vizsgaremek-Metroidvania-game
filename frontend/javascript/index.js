@@ -1,17 +1,21 @@
 import { createMainMenu } from "./main_menu.js";
 
-export function fecthData(url) {
-    return fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Hálózati hiba: " + response.statusText);
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('A fetchel van a hiba:', error);
+export async function fecthData(url, method = 'GET', body = null) { //Ezt, ha van idő átnevezzük mindenhol és optimalizálunk vele
+   try {
+        const res = await fetch(url, {
+            method: method,
+            headers: { 'Content-type': 'application/json' },
+            body: body ? JSON.stringify(body) : null
         });
+
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
+        return res.json();
+    } catch (error) {
+        throw new Error('Hiba: ' + error.message);
     }
+}
 
 export function masikJSMeghivasa(src)
 {

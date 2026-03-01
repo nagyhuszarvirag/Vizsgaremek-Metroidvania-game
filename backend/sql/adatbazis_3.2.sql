@@ -158,3 +158,16 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER before_user_delete 
+BEFORE DELETE ON felhasznalo
+FOR EACH ROW
+BEGIN
+    DELETE FROM mentes WHERE user_id = OLD.user_id;
+    DELETE FROM felh_beallitasok WHERE user_id = OLD.user_id;
+    DELETE FROM player_achievements WHERE account_id = OLD.user_id;
+END$$
+
+DELIMITER ;
