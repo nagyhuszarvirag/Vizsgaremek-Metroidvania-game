@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS transcica_jatek;
+
 CREATE DATABASE IF NOT EXISTS transcica_jatek
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_hungarian_ci;
@@ -171,3 +173,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+INSERT INTO felhasznalo(username, user_password, user_email, user_jog_id) VALUES ('admin','$2b$10$3fj8F/YMcizicfEDwQ.qO.b9LlzSDSev.8WQhNEWjfJYO6YOP.Iui','admin@gmail.com',1);
