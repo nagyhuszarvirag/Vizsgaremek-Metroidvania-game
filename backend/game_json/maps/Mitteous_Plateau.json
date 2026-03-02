@@ -148,6 +148,28 @@
         }, 
         {
          "draworder":"topdown",
+         "id":10,
+         "name":"To_End_map",
+         "objects":[
+                {
+                 "height":576,
+                 "id":19,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":152,
+                 "x":3104,
+                 "y":926.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":7,
          "name":"To_Polyhex_1",
          "objects":[
@@ -355,8 +377,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":10,
- "nextobjectid":19,
+ "nextlayerid":11,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
