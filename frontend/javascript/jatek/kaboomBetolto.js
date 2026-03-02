@@ -20,7 +20,7 @@ export async function KaboomBetolto(mentes_id) {
 
     console.log("Mentés betöltve: "+mentesbetolto.data.mentett_adatok.savepoint);
 
-    const scale=3;
+    const scale=1;
 
     const k = kaboom({ 
         width: window.innerWidth,
@@ -29,9 +29,10 @@ export async function KaboomBetolto(mentes_id) {
     });
 
     k.scene("intro", () => {
+
         k.add([
             k.text("Intro jelenet"),
-            k.pos(120, 80),
+            k.pos(191, 566),
         ]);
 
         k.onKeyPress("enter", () => { //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
