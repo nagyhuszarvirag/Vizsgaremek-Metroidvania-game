@@ -120,6 +120,95 @@ export async function sutiModalKeszit() {
     elfogadasGomb.style.cssText = sciFiGombStyle(true);
     elfogadasGomb.onclick = () => {
         localStorage.setItem("sutiElfogad", "1");
+
+        localStorage.setItem("mentes_0", JSON.stringify({ //Ezt updatelni kell a database-szel egyidőben, hogy a guestnél is mindig jó legyen
+                success: true,
+                data: {
+                mentett_adatok: {
+                    savepoint: 'kezdomap_1',
+                    world_interactions: {
+                        'mitteous-plateau_breakable-ground1': false
+                    },
+                    'NPC_interactions': {
+                        'Ratchet': false,
+                        'Prowl': false
+                    },
+                    'bosses': {
+                        'Tarn': false
+                    },
+                    'ability_unlocked': {
+                        'double_jump': false,
+                        'dash': false
+                    }
+                }}
+        }));
+
+        localStorage.setItem("mentes_1", JSON.stringify({ //Ezt updatelni kell a database-szel egyidőben, hogy a guestnél is mindig jó legyen
+                success: true,
+                data: {
+                mentett_adatok: {
+                    savepoint: 'kezdomap_1',
+                    world_interactions: {
+                        'mitteous-plateau_breakable-ground1': false
+                    },
+                    'NPC_interactions': {
+                        'Ratchet': false,
+                        'Prowl': false
+                    },
+                    'bosses': {
+                        'Tarn': false
+                    },
+                    'ability_unlocked': {
+                        'double_jump': false,
+                        'dash': false
+                    }
+                }}
+        }));
+
+        localStorage.setItem("mentes_2", JSON.stringify({ //Ezt updatelni kell a database-szel egyidőben, hogy a guestnél is mindig jó legyen
+                success: true,
+                data: {
+                mentett_adatok: {
+                    savepoint: 'kezdomap_1',
+                    world_interactions: {
+                        'mitteous-plateau_breakable-ground1': false
+                    },
+                    'NPC_interactions': {
+                        'Ratchet': false,
+                        'Prowl': false
+                    },
+                    'bosses': {
+                        'Tarn': false
+                    },
+                    'ability_unlocked': {
+                        'double_jump': false,
+                        'dash': false
+                    }
+                }}
+        }));
+
+        localStorage.setItem("mentes_3", JSON.stringify({ //Ezt updatelni kell a database-szel egyidőben, hogy a guestnél is mindig jó legyen
+                success: true,
+                data: {
+                    mentett_adatok: {
+                        savepoint: 'kezdomap_1',
+                    world_interactions: {
+                        'mitteous-plateau_breakable-ground1': false
+                    },
+                    'NPC_interactions': {
+                        'Ratchet': false,
+                        'Prowl': false
+                    },
+                    'bosses': {
+                        'Tarn': false
+                    },
+                    'ability_unlocked': {
+                        'double_jump': false,
+                        'dash': false
+                    }
+                }}
+        }));
+
         if (!localStorage.getItem("user")) {
             localStorage.setItem("user", JSON.stringify({
                 id: 0,
