@@ -7,7 +7,8 @@ export async function jatekos_betolt(k, xpos, ypos) {
         area(),
     ]);
 
-    await camPos(xpos, ypos);
+    k.camPos(xpos, ypos);
+    k.camScale(3);
     
     player.onUpdate(() => {
         k.camPos(player.pos);
@@ -21,7 +22,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
     k.debug.drawArea = true
 
 
-    const SPEED=120;
+    const SPEED=120; //Ezt is lehet JSON-ben tárolni security miatt
     const JUMP_FORCE=400;
 
     //A billenytűket majd dinamikusan kell kezelni.
