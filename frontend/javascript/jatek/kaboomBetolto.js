@@ -6,7 +6,17 @@ import {fecthData} from "../index.js";
 export async function KaboomBetolto(mentes_id) {
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const mentesbetolto=await fecthData("http://127.0.0.1:3000/api/mentesmeghiv/"+user.id+"/"+mentes_id);
+    let mentesbetolto;
+    if(user.usernev==="guest"){
+        console.log("Guest mentés betöltése localStorage-ból");
+        console.log(localStorage.getItem("mentes_0"));
+        mentesbetolto=JSON.parse(localStorage.getItem("mentes_"+mentes_id));
+    }
+    else{
+        console.log("User mentés betöltése az adatbázis-ból");
+        mentesbetolto=await fecthData("http://127.0.0.1:3000/api/mentesmeghiv/"+user.id+"/"+mentes_id);
+    }
+    
 
     console.log("Mentés betöltve: "+mentesbetolto.data.mentett_adatok.savepoint);
 
