@@ -9,9 +9,11 @@ body {
   margin: 0px;
 }
 
+/*
 html { 
-  overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása */
-} 
+  overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása 
+  overflow-x: hidden;
+} */
 
 #menu {
   text-align: center;

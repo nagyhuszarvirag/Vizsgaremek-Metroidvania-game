@@ -106,7 +106,7 @@ async function meghivmentes(user_id, mentes_id) {
     WHERE user_id = ?`;
 
     switch (mentes_id){
-        case "1":
+        case "0":
             sql =`SELECT *
             FROM mentes
             WHERE user_id = ?
@@ -114,7 +114,7 @@ async function meghivmentes(user_id, mentes_id) {
             LIMIT 1;`;
             break;
 
-        case "2":
+        case "1":
             sql =`SELECT *
             FROM mentes
             WHERE user_id = ?
@@ -122,7 +122,7 @@ async function meghivmentes(user_id, mentes_id) {
             LIMIT 1 OFFSET 1;`;
             break;
 
-        case "3":
+        case "2":
             sql =`SELECT *
             FROM mentes
             WHERE user_id = ?
@@ -130,7 +130,7 @@ async function meghivmentes(user_id, mentes_id) {
             LIMIT 1 OFFSET 2;`;
             break;
 
-        case "4":
+        case "3":
             sql =`SELECT *
             FROM mentes
             WHERE user_id = ?
