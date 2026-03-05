@@ -1,5 +1,5 @@
 body {
-  background-image: url('../../backend/img/starting_screen/Wallpaper.jpg');
+  background-image: url("../../backend/img/starting_screen/Wallpaper.jpg");
   font-family: Impact;
   height: 100vh;
   width: 100%;
@@ -9,15 +9,14 @@ body {
   margin: 0px;
 }
 
-/*
-html { 
-  overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása 
+html {
+  overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása */
   overflow-x: hidden;
-} */
+}
 
 #menu {
   text-align: center;
-  vertical-align:middle;
+  vertical-align: middle;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -43,7 +42,9 @@ html {
   font-size: 28px;
   cursor: pointer;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-  transition: transform 0.2s, color 0.2s;
+  transition:
+    transform 0.2s,
+    color 0.2s;
 }
 
 .gombok:hover {
@@ -56,10 +57,10 @@ html {
   float: left;
 }
 
-.menu-gomb{
+.menu-gomb {
   width: 40%;
   margin-left: 30%;
-  margin-right: 30%
+  margin-right: 30%;
 }
 
 #game-container {
@@ -68,7 +69,7 @@ html {
   font-size: 28px;
 }
 
-.jatek_fajlok{
+.jatek_fajlok {
   display: grid;
   gap: 20px;
   color: white;
@@ -82,7 +83,7 @@ html {
 
 .jatek_fajlok:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .dekor_vonal {
@@ -94,13 +95,12 @@ html {
   position: relative;
 }
 
-
 .dekor_vonal::before,
 .dekor_vonal::after {
   content: "";
   flex: 1;
   height: 2px;
-  background-color: #ffffff; 
+  background-color: #ffffff;
 }
 
 .kocka {
@@ -109,7 +109,7 @@ html {
   left: 8px;
   width: 10px;
   height: 10px;
-  transform: rotate(45deg); 
+  transform: rotate(45deg);
 }
 
 #vissza_gomb {
@@ -124,7 +124,7 @@ html {
   font-size: 28px;
 }
 
-.achivement_container{
+.achivement_container {
   padding: 20px;
   color: white;
   font-size: 28px;
@@ -135,17 +135,17 @@ html {
   height: auto;
 }
 
-.click_to_reveal{
+.click_to_reveal {
   text-align: center;
   background-color: black;
 }
 
-.scrolldiv{
+.scrolldiv {
   overflow-y: scroll !important;
   max-height: 500px;
 }
 
-.credits_container{
+.credits_container {
   padding: 20px;
   color: white;
   font-size: 28px;
