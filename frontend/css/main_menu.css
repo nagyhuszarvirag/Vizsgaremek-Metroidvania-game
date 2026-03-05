@@ -9,6 +9,16 @@ body {
   margin: 0px;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5); /*itt tudsz a hátteren sötétíteni ha nem tetszik 1 és 0 között*/
+  pointer-events: none;
+  z-index: -1;
+}
+
+
 /*
 html { 
   overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása 
