@@ -9,6 +9,15 @@ body {
   margin: 0px;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5); /* itt tudod az utolsó értékkel halványítani a hátteret 1 és 0 között */
+  pointer-events: none;
+  z-index: -1;
+}
+
 html {
   overflow-y: hidden; /* scrollbar eltüntetése, deaktíválása */
   overflow-x: hidden;

@@ -16,9 +16,9 @@ export async function jatekos_betolt(k, xpos, ypos) {
   player.onUpdate(() => {
     k.camPos(player.pos);
 
-    if (player.isGrounded()) {
+    /*if (player.isGrounded()) {
       k.setGravity(0);
-    }
+    }*/
   });
 
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
@@ -56,4 +56,6 @@ export async function jatekos_betolt(k, xpos, ypos) {
     onKeyDown("down", () => {
 	player.move(0, SPEED)
     })*/
+
+  return player;
 }
