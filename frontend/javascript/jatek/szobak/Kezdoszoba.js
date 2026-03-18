@@ -16,8 +16,7 @@ export async function Kezdoszoba(k) {
     const szoba_layerek = kezdoszoba_data.data.layers;
     const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
-  const szoba_layerek = kezdoszoba_data.data.layers;
-  const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
+    MapColliderek(k, map, szoba_layerek[1].objects);
 
     //map méret pixelben
     const mapW = 30 * 32;

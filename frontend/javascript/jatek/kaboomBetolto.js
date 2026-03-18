@@ -87,7 +87,7 @@ export async function KaboomBetolto(mentes_id) {
         }
     });
 
-  k.setGravity(800); //Ezt is fine tuningolni kell majd
+    k.setGravity(800); //Ezt is fine tuningolni kell majd
 
     switch (mentesbetolto.data.mentett_adatok.savepoint) { //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
         case "kezdomap_1":
