@@ -16,11 +16,19 @@ export async function jatekos_betolt(k, xpos, ypos) {
   k.camPos(xpos, ypos);
   k.camScale(3);
 
+  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
+  const JUMP_FORCE = 400;
+  const GRAVITY = 800;
+  //k.setGravity(GRAVITY);
+
   player.onUpdate(() => {
     k.camPos(player.pos);
 
     if (player.isGrounded()) {
       k.setGravity(0);
+    }
+    else{
+      k.setGravity(GRAVITY);
     }
   });
 
@@ -43,12 +51,6 @@ export async function jatekos_betolt(k, xpos, ypos) {
     });
   });
 
-  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
-  k.debug.drawArea = true;
-
-  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
-  const JUMP_FORCE = 400;
-
   //A billenytűket majd dinamikusan kell kezelni.
   //Fine tuningolni kell a sebességet
 
@@ -64,7 +66,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   k.onKeyDown("space", () => {
     if (player.isGrounded()) {
-      k.setGravity(800);
+      k.setGravity(GRAVITY);
       player.jump(JUMP_FORCE);
     }
   });

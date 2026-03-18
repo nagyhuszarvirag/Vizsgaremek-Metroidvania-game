@@ -20,7 +20,7 @@ export async function Kezdoszoba(k) {
   const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
   MapColliderek(k, map, szoba_layerek[1].objects);
-  NPCCollider(k, map, szoba_layerek[2].objects, "Prowl");
+  NPCCollider(k, szoba_layerek[2].objects, "Prowl");
 
   jatekos_betolt(k, xpos, ypos);
 }
