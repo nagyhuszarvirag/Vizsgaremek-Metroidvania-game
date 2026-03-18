@@ -16,12 +16,15 @@ export async function jatekos_betolt(k, xpos, ypos) {
   k.camPos(xpos, ypos);
   k.camScale(3);
 
+  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
+  const JUMP_FORCE = 400;
+
   player.onUpdate(() => {
     k.camPos(player.pos);
 
-    if (player.isGrounded()) {
+   /* if (player.isGrounded()) {
       k.setGravity(0);
-    }
+    }*/
   });
 
   let kelleprowl = await KellEAzNPC(
@@ -43,11 +46,6 @@ export async function jatekos_betolt(k, xpos, ypos) {
     });
   });
 
-  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
-  k.debug.drawArea = true;
-
-  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
-  const JUMP_FORCE = 400;
 
   //A billenytűket majd dinamikusan kell kezelni.
   //Fine tuningolni kell a sebességet
