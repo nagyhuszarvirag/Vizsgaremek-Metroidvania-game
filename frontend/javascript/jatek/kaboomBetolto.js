@@ -39,10 +39,8 @@ export async function KaboomBetolto(mentes_id) {
 
     k.scene("intro", () => {
 
-        k.add([
-            k.text("Intro jelenet"),
-            k.pos(191, 566),
-        ]);
+  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
+  k.debug.drawArea = true;
 
         k.onKeyPress("enter", () => { //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
             //Ide majd zenét elindítását is belerakhatjuk
@@ -51,6 +49,7 @@ export async function KaboomBetolto(mentes_id) {
             k.go("kezdoszoba");
         });
     });
+  });
 
     k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
     k.loadSprite("Mitteous_Plateau_bal", "../../images/maps/Mitteous_Plateau_bal.png");
@@ -70,7 +69,7 @@ export async function KaboomBetolto(mentes_id) {
         }
     });
 
-    k.setGravity(800); //Ezt is fine tuningolni kell majd
+  k.setGravity(800); //Ezt is fine tuningolni kell majd
 
     switch (mentesbetolto.data.mentett_adatok.savepoint) { //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
         case "kezdomap_1":
@@ -81,4 +80,10 @@ export async function KaboomBetolto(mentes_id) {
             console.log("Ismeretlen savepoint: " + mentesbetolto.data.mentett_adatok.savepoint);
     };
 
+export async function KellEAzNPC(user_id, achivement_id) {
+  const kell = await fecthData(
+    "http://127.0.0.1:3000/api/kelleNPC/" + user_id + "/" + achivement_id,
+  );
+  console.log(kell);
+  return kell.message;
 }
