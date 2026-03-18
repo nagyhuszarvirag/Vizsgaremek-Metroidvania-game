@@ -19,6 +19,7 @@ export async function KaboomBetolto(mentes_id) {
     }
 
 
+    let kellintro = false;
     console.log("Mentés betöltve: " + mentesbetolto.data.mentett_adatok.savepoint);
 
     const scale = 1;
@@ -37,19 +38,36 @@ export async function KaboomBetolto(mentes_id) {
         Mitteous(k);
     });
 
-    k.scene("intro", () => {
+    k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
+    k.debug.drawArea = true;
 
-  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
-  k.debug.drawArea = true;
+    console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
 
-        k.onKeyPress("enter", () => { //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
-            //Ide majd zenét elindítását is belerakhatjuk
-            console.log("Intro átugorva");
-            //Kezdoszoba(k);
-            k.go("kezdoszoba");
-        });
+  k.scene("intro", () => {
+    k.add([k.text("Intro jelenet"), k.pos(191, 566)]);
+    k.add([k.text("Skip Intro"), k.pos(window.innerWidth-50 , window.innerHeight-850), k.anchor("topright"), k.color(k.Color.fromHex("#000000"))]);
+    
+    k.add([
+        k.pos(window.innerWidth-250 , window.innerHeight-860),
+        k.area({
+          shape: new k.Rect(k.vec2(0), 200, 60),
+        }),
+        k.body({ isStatic: true }),
+        "SkipIntro",
+      ]);
+    kellintro = true;
+
+    k.onClick("SkipIntro", () => {
+      //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
+      //Ide majd zenét elindítását is belerakhatjuk
+      if (kellintro) {
+        console.log("Intro átugorva");
+        kellintro = false;
+        Kezdoszoba(k);
+        }
     });
-  });
+});
+
 
     k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
     k.loadSprite("Mitteous_Plateau_bal", "../../images/maps/Mitteous_Plateau_bal.png");
@@ -79,6 +97,7 @@ export async function KaboomBetolto(mentes_id) {
         default:
             console.log("Ismeretlen savepoint: " + mentesbetolto.data.mentett_adatok.savepoint);
     };
+}
 
 export async function KellEAzNPC(user_id, achivement_id) {
   const kell = await fecthData(
