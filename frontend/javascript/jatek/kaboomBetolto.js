@@ -31,9 +31,36 @@ export async function KaboomBetolto(mentes_id) {
     scale: scale,
   });
 
+
+   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
+  k.debug.drawArea = true;
+
+  console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
+
+
   k.scene("intro", () => {
     k.add([k.text("Intro jelenet"), k.pos(191, 566)]);
+    k.add([k.text("Skip Intro"), k.pos(window.innerWidth-50 , window.innerHeight-850), k.anchor("topright"), k.color(k.Color.fromHex("#000000"))]);
+    
+    k.add([
+        k.pos(window.innerWidth-250 , window.innerHeight-860),
+        k.area({
+          shape: new k.Rect(k.vec2(0), 200, 60),
+        }),
+        k.body({ isStatic: true }),
+        "SkipIntro",
+      ]);
     kellintro = true;
+
+    k.onClick("SkipIntro", () => {
+      //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
+      //Ide majd zenét elindítását is belerakhatjuk
+      if (kellintro) {
+        console.log("Intro átugorva");
+        kellintro = false;
+        Kezdoszoba(k);
+      }
+    });
 
     k.onKeyPress("enter", () => {
       //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
