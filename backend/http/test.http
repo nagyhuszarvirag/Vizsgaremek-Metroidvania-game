@@ -80,7 +80,7 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/api/user/8
 
 ### Achievement adatok lekérése adott nyelven
-GET http://127.0.0.1:3000/api/showachivements/1/hungarian
+GET http://127.0.0.1:3000/api/showachivements/4/hungarian
 
 ### Összes felhasználó listázása (csak admin jogosultsággal)
 GET http://127.0.0.1:3000/api/admin/users
@@ -90,9 +90,3 @@ GET http://127.0.0.1:3000/api/mentesmeghiv/7/2
 
 ### A map adatainak meghívása
 GET http://127.0.0.1:3000/api/map_data/kezdomap.json
-
-### Az achivementek updateljük
-PATCH http://127.0.0.1:3000/api/updateachivements/1/1/2
-
-### A Kell-e NPC meghívása
-GET http://127.0.0.1:3000/api/kelleNPC/1/3
