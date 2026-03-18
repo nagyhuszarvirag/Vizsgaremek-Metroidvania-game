@@ -44,7 +44,7 @@ export function MapColliderek(k, map, colliderek) {
   }
 }
 
-export function NPCCollider(k, map, collider, NPC) {
+export function NPCCollider(k, collider, NPC) {
   console.log(collider);
   console.log(collider[0].x);
   console.log(collider[0].y);
