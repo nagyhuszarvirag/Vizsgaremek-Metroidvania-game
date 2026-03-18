@@ -43,3 +43,23 @@ export function MapColliderek(k, map, colliderek){
     ]);
   }
 }
+
+export function NPCCollider(k, collider, NPC) {
+  console.log(collider);
+  console.log(collider[0].x);
+  console.log(collider[0].y);
+  console.log(collider[0].width);
+  console.log(collider[0].height);
+
+  //Note to self: Az NPC collider első koordinátája ott legyen, ahol akarom az NPC-t. A kezdőszobát ez alapján átírom
+
+  let NPC_adder = k.add([
+    k.sprite(NPC),
+    k.pos(collider[0].x, collider[0].y),
+    k.anchor("center"),
+    k.area({
+      shape: new k.Rect(k.vec2(0), collider[0].width, collider[0].height),
+    }),
+    NPC,
+  ]);
+}

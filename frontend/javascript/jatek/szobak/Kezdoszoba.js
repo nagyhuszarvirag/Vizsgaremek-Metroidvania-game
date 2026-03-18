@@ -13,10 +13,13 @@ export async function Kezdoszoba(k) {
     /*k.camPos(xpos, ypos);
     k.camScale(3);*/
 
+  MapColliderek(k, map, szoba_layerek[1].objects);
+  NPCCollider(k, szoba_layerek[2].objects, "Prowl");
+  
     const szoba_layerek = kezdoszoba_data.data.layers;
     const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
-    MapColliderek(k, map, szoba_layerek[1].objects);
+    //MapColliderek(k, map, szoba_layerek[1].objects);
 
     //map méret pixelben
     const mapW = 30 * 32;

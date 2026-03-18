@@ -13,19 +13,36 @@ export async function jatekos_betolt(k, xpos, ypos) {
   k.camPos(xpos, ypos);
   k.camScale(3);
 
+  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
+  const JUMP_FORCE = 400;
+
   player.onUpdate(() => {
     k.camPos(player.pos);
 
-    /*if (player.isGrounded()) {
+   /* if (player.isGrounded()) {
       k.setGravity(0);
     }*/
   });
 
-  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
-  k.debug.drawArea = true;
+  let kelleprowl = await KellEAzNPC(
+    JSON.parse(localStorage.getItem("user")).id,
+    1,
+  );
 
-  const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
-  const JUMP_FORCE = 400;
+  console.log(kelleprowl);
+
+  player.onCollideUpdate("Prowl", () => {
+    k.onKeyPress((key) => {
+      //const check
+      //Removeolni kell az első futatás után, ez az enternél is kell
+      if (key == "e" && kelleprowl) {
+        console.log("A player beszél: Prowlral");
+        kelleprowl = false;
+        console.log(kelleprowl);
+      }
+    });
+  });
+
 
   //A billenytűket majd dinamikusan kell kezelni.
   //Fine tuningolni kell a sebességet
