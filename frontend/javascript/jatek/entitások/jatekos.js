@@ -1,3 +1,5 @@
+import { KellEAzNPC } from "../kaboomBetolto.js";
+
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
     k.sprite("player"),
@@ -15,6 +17,8 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
   const JUMP_FORCE = 400;
+  const GRAVITY = 800;
+
 
   player.onUpdate(() => {
     k.camPos(player.pos);

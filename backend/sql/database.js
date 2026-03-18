@@ -153,6 +153,32 @@ async function meghivmentes(user_id, mentes_id) {
     return rows[0];
 }
 
+//Updateli az achivementeket
+async function UpdatehAchivementAdatok(
+  user_id,
+  achivement_id_magyar,
+  achivement_id_angol,
+) {
+  const sql = `
+    UPDATE player_achievements SET unlocked=1 WHERE account_id=? and (achievement_id=? or achievement_id=?);
+  `;
+  const [rows] = await pool.execute(sql, [
+    user_id,
+    achivement_id_magyar,
+    achivement_id_angol,
+  ]);
+  return rows || null;
+}
+
+//Lehívni az adott achivement unlocked tulajdonságát (NPC kezeléshez kell)
+async function FINDhAchivementAdatok(user_id, achivement_id) {
+  const sql = `
+    SELECT unlocked FROM player_achievements WHERE account_id=? and achievement_id=?;
+  `;
+  const [rows] = await pool.execute(sql, [user_id, achivement_id]);
+  return rows || null;
+}
+
 //!Export
 module.exports = {
     userHozzaAd,
@@ -164,5 +190,7 @@ module.exports = {
     felhTorles,
     felhAchivementAdatok,
     osszesUser,
-    meghivmentes
+    meghivmentes,
+    UpdatehAchivementAdatok,
+    FINDhAchivementAdatok
 };

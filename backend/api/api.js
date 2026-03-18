@@ -301,34 +301,45 @@ router.delete("/user/:id", async (req, res) => {
 
 //lekéri az adatbázisból a achivement adatokat
 router.get("/showachivements/:id/:nyelv", async (req, res) => {
-    try {
-        const userId = Number(req.params.id);
-        const usernyelv = req.params.nyelv;
-        if (!Number.isInteger(userId) || userId <= 0 || typeof usernyelv !== "string" || usernyelv === "") {
-            return res.status(400).json({ success: false, message: "Hibás user ID vagy nyelv." });
-        }
-
-        const data = await database.felhAchivementAdatok(userId, usernyelv);
-
-        return res.json({ success: true, data });
-    } catch (err) {
-        console.error("GET /showachivements/:id/:nyelv hiba:", err);
-        res.status(500).json({ success: false, message: "Szerverhiba." });
+  try {
+    const userId = Number(req.params.id);
+    const usernyelv = req.params.nyelv;
+    if (
+      !Number.isInteger(userId) ||
+      userId <= 0 ||
+      typeof usernyelv !== "string" ||
+      usernyelv === ""
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Hibás user ID vagy nyelv." });
     }
+
+    const data = await database.felhAchivementAdatok(userId, usernyelv);
+
+    return res.json({ success: true, data });
+  } catch (err) {
+    console.error("GET /showachivements/:id/:nyelv hiba:", err);
+    res.status(500).json({ success: false, message: "Szerverhiba." });
+  }
 });
 
-//achivements adatainak megváltoztatása NINCS KÉSZ
-router.patch("/updateachivements/:id", async (req, res) => {
-    const id = Number(req.params.id);
-    const { username, user_email } = req.body;
+//achivements adatainak megváltoztatása 
+router.patch(
+  "/updateachivements/:user_id/:achivement_id_magyar/:achivement_id_angol",
+  async (req, res) => {
+    const user_id = Number(req.params.user_id);
+    const achivement_id_magyar = Number(req.params.achivement_id_magyar);
+    const achivement_id_angol = Number(req.params.achivement_id_angol);
 
-    if (!username || !user_email) {
-        return res.status(422).json({ message: "Hiányzó adat" });
-    }
-
-    await database.updateFelhasznalo(id, username, user_email);
+    await database.UpdatehAchivementAdatok(
+      user_id,
+      achivement_id_magyar,
+      achivement_id_angol,
+    );
     res.json({ success: true });
-});
+  },
+);
 
 // Összes user lekérése (admin)
 router.get("/admin/users", async (req, res) => {
@@ -403,6 +414,37 @@ router.get("/map_data/:szoba_neve", async (req, res) => {
             message: "A JSON fájl nem létezik!"
         });
     }
+});
+
+// Kell-e az NPC
+router.get("/kelleNPC/:user_id/:achivement_id", async (req, res) => {
+  try {
+    const user_id = Number(req.params.user_id);
+    const achivement_id = Number(req.params.achivement_id);
+    const FINDhAchivementAdatok = await database.FINDhAchivementAdatok(
+      user_id,
+      achivement_id,
+    );
+
+    if (FINDhAchivementAdatok[0].unlocked) {
+      res.json({
+        success: true,
+        message: false,
+      });
+    } else {
+      res.json({
+        success: true,
+        message: true,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Adatbázis hiba",
+    });
+  }
 });
 
 //ez alá ne írj új apit csak fölé
