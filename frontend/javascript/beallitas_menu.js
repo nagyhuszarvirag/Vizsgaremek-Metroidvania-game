@@ -246,11 +246,11 @@ async function valtasAltalanos(nyelvData) {
   const nyelvLabel = document.createElement("label");
   nyelvLabel.textContent = nyelvData.nyelv[0];
   const nyelvValaszt = document.createElement("select");
-  ["hungarian", "english"].forEach(l => {
+  [1, 2].forEach(lang => {
     const option = document.createElement("option");
-    option.value = l;
-    option.textContent = l === "hungarian" ? nyelvData.nyelv[1] : nyelvData.nyelv[2];
-    if (l === window.language) option.selected = true;
+    option.value = lang;
+    option.textContent =  nyelvData.nyelv[lang] ;
+    if (lang == window.language) {option.selected = true;}
     nyelvValaszt.appendChild(option);
   });
   nyelvValaszt.addEventListener("change", () => {
@@ -387,7 +387,7 @@ async function valtasFiok(nyelvData) {
     flex-direction: column;
   `;
   const felhLabel = document.createElement("label");
-  felhLabel.textContent = "Felhasználónév";
+  felhLabel.textContent = nyelvData.felhasznalonev;
   const felhInput = document.createElement("input");
   felhInput.value = felhasznalo.username || "";
   felhInput.style.cssText = "padding: 8px; font-size: 16px;";
@@ -400,7 +400,7 @@ async function valtasFiok(nyelvData) {
     flex-direction: column;
   `;
   const emailLabel = document.createElement("label");
-  emailLabel.textContent = "Email";
+  emailLabel.textContent = nyelvData.email;
   const emailInput = document.createElement("input");
   emailInput.value = felhasznalo.user_email || "";
   emailInput.style.cssText = "padding: 8px; font-size: 16px;";

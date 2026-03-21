@@ -1,14 +1,19 @@
-import { oldalTakarito, dekor_vonal_blokkal, visszaGomb } from "./index.js";
+import { oldalTakarito, dekor_vonal_blokkal, visszaGomb, fecthData } from "./index.js";
+import { nyelv } from "./options.js";
 
 export async function adminPanelLetrehoz() {
 
 oldalTakarito();
 
+const szoveg = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/admin_panel.json");
+
+console.log(szoveg);
+
 const content = document.createElement("div");
 content.classList.add("container","mt-5","beallitas_menu");
 
 const cim = document.createElement("h1");
-cim.textContent = "Admin Panel";
+cim.textContent = szoveg.data.title;
 cim.style.textAlign="center";
 
 content.appendChild(cim);
@@ -39,11 +44,11 @@ color:white;
 const fejlec = document.createElement("tr");
 
 [
-"ID",
-"Username",
-"Email",
-"Jog",
-"Műveletek"
+szoveg.data.id,
+szoveg.data.users,
+szoveg.data.email,
+szoveg.data.jog,
+szoveg.data.muveletek
 ].forEach(szoveg=>{
 
 const th = document.createElement("th");
@@ -109,7 +114,7 @@ sor.appendChild(jog);
 const muvelet = document.createElement("td");
 
 const saveBtn = document.createElement("button");
-saveBtn.textContent = "Mentés";
+saveBtn.textContent = szoveg.data.mentes;
 saveBtn.classList.add("gombok");
 saveBtn.onclick=async()=>{
 
@@ -133,7 +138,7 @@ alert("Mentve");
 };
 
 const deleteBtn = document.createElement("button");
-deleteBtn.textContent = "Törlés";
+deleteBtn.textContent = szoveg.data.torles;
 deleteBtn.classList.add("gombok");
 deleteBtn.onclick=async()=>{
 
@@ -157,6 +162,6 @@ tabla.appendChild(sor);
 scrollDiv.appendChild(tabla);
 content.appendChild(scrollDiv);
 content.appendChild(dekor_vonal_blokkal());
-content.appendChild(visszaGomb("Vissza"));
+content.appendChild(visszaGomb(szoveg.data.vissza));
 document.body.appendChild(content);
 }

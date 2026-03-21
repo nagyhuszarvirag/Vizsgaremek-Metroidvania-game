@@ -19,7 +19,8 @@ export async function KaboomBetolto(mentes_id) {
     }
 
     let kellintro = false;
-    console.log("Mentés betöltve: " + mentesbetolto.data.mentett_adatok.savepoint);
+    //console.log("Mentés betöltve: " + mentesbetolto.data.mentett_adatok.savepoint);
+    console.log("Mentés betöltve: ", mentesbetolto);
 
     const scale = 1;
 
@@ -40,7 +41,7 @@ export async function KaboomBetolto(mentes_id) {
     k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
     k.debug.drawArea = true;
 
-  console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
+  //console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
 
     k.scene("intro", () => {
     //k.add([k.text("Intro jelenet"), k.pos(191, 566)]);

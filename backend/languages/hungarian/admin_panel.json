@@ -1,0 +1,11 @@
+{
+    "title": "Admin Panel",
+    "users": "Username",
+    "id": "ID",
+    "email": "Email",
+    "jog": "Jog",
+    "muveletek": "Műveletek",
+    "mentes": "Mentés",
+    "torles": "Törlés",
+    "vissza": "Vissza"
+}
