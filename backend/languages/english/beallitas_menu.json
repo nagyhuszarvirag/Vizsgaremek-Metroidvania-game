@@ -26,5 +26,7 @@
     "torles": "Delete account",
     "torlesalert": "Are you sure you want to delete the account?",
     "admin": "Open admin panel",
-    "vissza": "Back"
+    "vissza": "Back",
+    "felhasznalonev": "Username",
+    "email": "Email"
 }

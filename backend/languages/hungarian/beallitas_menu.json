@@ -26,5 +26,7 @@
     "torles": "Fiók törlése",
     "torlesalert": "Biztosan törlöd a fiókot?",
     "admin": "Admin panel megnyitása",
-    "vissza": "Vissza"
+    "vissza": "Vissza",
+    "felhasznalonev": "Felhasználónév",
+    "email": "Email"
 }

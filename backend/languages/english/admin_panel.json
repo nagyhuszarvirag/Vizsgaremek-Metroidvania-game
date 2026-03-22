@@ -1,0 +1,11 @@
+{
+    "title": "Admin Panel",
+    "users": "Username",
+    "id": "ID",
+    "email": "Email",
+    "jog": "Role",
+    "muveletek": "Actions",
+    "mentes": "Save",
+    "torles": "Delete",
+    "vissza": "Back"
+}

@@ -33,7 +33,7 @@ async function usernevKereses(usernev) {
 //felhasználó beállításainak adatát lekéri
 async function felhBeallitasAdatok(userId) {
     const sql = `
-    SELECT user_id, hangero, nyelv, kiosztas
+    SELECT * 
     FROM felh_beallitasok
     WHERE user_id = ?;
   `;
@@ -53,20 +53,21 @@ async function felhFiokAdat(userId) {
 }
 
 //menti a változásokat vagy ha még nem volt adata a felhasználónak beszúr egyet
-async function felhBeallitasMentes({ user_id, hangero, nyelv, kiosztas }) {
+async function felhBeallitasMentes({ user_id, hangero, nyelv_id, kiosztas }) {
+
     const sql = `
-    INSERT INTO felh_beallitasok (user_id, hangero, nyelv, kiosztas)
+    INSERT INTO felh_beallitasok (user_id, hangero, nyelv_id, kiosztas)
     VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
       hangero = VALUES(hangero),
-      nyelv = VALUES(nyelv),
+      nyelv_id = VALUES(nyelv_id),
       kiosztas = VALUES(kiosztas);
   `;
 
     const [result] = await pool.execute(sql, [
         user_id,
         hangero,
-        nyelv,
+        nyelv_id,
         JSON.stringify(kiosztas)
     ]);
 

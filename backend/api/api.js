@@ -96,7 +96,23 @@ router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response)
             });
         }
 
-        const fajlUtvonal = path.join(nyelvMappaUtvonala, nyelv, "/", fajl);
+        let nyelvutvonal="hungarian";
+
+        switch (nyelv) {
+            case "1":
+                nyelvutvonal = "hungarian";
+                break;
+            case "2":
+                nyelvutvonal = "english";
+                break;
+            default:
+                return request.status(400).json({
+                    success: false,
+                    message: "Érvénytelen nyelv!"
+                });
+        }
+
+        const fajlUtvonal = path.join(nyelvMappaUtvonala, nyelvutvonal, "/", fajl);
 
         const fajlTartalom = await fsPromises.readFile(fajlUtvonal, "utf8");
         const JSONAdatok = JSON.parse(fajlTartalom);
@@ -257,18 +273,18 @@ router.post("/felhasznalo/beallitas", async (req, res) => {
 
         const current = await database.felhBeallitasAdatok(user_id) || {
             hangero: 0.5,
-            nyelv: "hungarian",
+            nyelv_id: 1,
             kiosztas: {}
         };
 
         if (key === "hangero") current.hangero = Number(value);
-        if (key === "nyelv") current.nyelv = String(value);
+        if (key === "nyelv_id") current.nyelv_id = Number(value);
         if (key === "kiosztas") current.kiosztas = value;
 
         await database.felhBeallitasMentes({
             user_id,
             hangero: current.hangero,
-            nyelv: current.nyelv,
+            nyelv_id: current.nyelv_id,
             kiosztas: current.kiosztas
         });
 
@@ -299,16 +315,17 @@ router.delete("/user/:id", async (req, res) => {
     res.json({ success: true });
 });
 
-//lekéri az adatbázisból a achivement adatokat
+//lekéri az adatbázisból a achivement adatokat ÁTÍRNI
 router.get("/showachivements/:id/:nyelv", async (req, res) => {
   try {
     const userId = Number(req.params.id);
-    const usernyelv = req.params.nyelv;
+    const usernyelv = Number(req.params.nyelv);
     if (
       !Number.isInteger(userId) ||
       userId <= 0 ||
-      typeof usernyelv !== "string" ||
-      usernyelv === ""
+      typeof usernyelv !== "number" ||
+      !Number.isInteger(usernyelv) ||
+      usernyelv === 0
     ) {
       return res
         .status(400)
@@ -324,7 +341,7 @@ router.get("/showachivements/:id/:nyelv", async (req, res) => {
   }
 });
 
-//achivements adatainak megváltoztatása 
+//achivements adatainak megváltoztatása ÁTÍRNI
 router.patch(
   "/updateachivements/:user_id/:achivement_id_magyar/:achivement_id_angol",
   async (req, res) => {
@@ -416,7 +433,7 @@ router.get("/map_data/:szoba_neve", async (req, res) => {
     }
 });
 
-// Kell-e az NPC
+// Kell-e az NPC ÁTÍRNI ???
 router.get("/kelleNPC/:user_id/:achivement_id", async (req, res) => {
   try {
     const user_id = Number(req.params.user_id);

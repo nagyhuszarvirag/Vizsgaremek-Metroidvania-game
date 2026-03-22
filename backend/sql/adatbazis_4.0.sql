@@ -11,15 +11,14 @@ CREATE TABLE IF NOT EXISTS user_jog (
     userjog_megnevezes VARCHAR(100) NOT NULL
 );
 
-INSERT INTO user_jog (user_jog_id, userjog_megnevezes) VALUES (1, "admin");
-INSERT INTO user_jog (user_jog_id, userjog_megnevezes) VALUES (2, "player");
+INSERT INTO user_jog (user_jog_id, userjog_megnevezes) VALUES (1, "admin"), (2, "player");
 
 CREATE TABLE IF NOT EXISTS felhasznalo (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     user_password VARCHAR(255),
     user_email VARCHAR(100) NOT NULL UNIQUE,
-    user_jog_id INT
+    user_jog_id INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS mentes (
@@ -46,24 +45,40 @@ CREATE TABLE IF NOT EXISTS mentes (
     )
 );
 
+CREATE TABLE IF NOT EXISTS nyelv (
+    nyelv_id INT AUTO_INCREMENT PRIMARY KEY,
+    nyelv VARCHAR(50) NOT NULL UNIQUE
+);
+
+INSERT INTO nyelv (nyelv_id, nyelv) VALUES (1, "hungarian"), (2, "english");
 
 CREATE TABLE IF NOT EXISTS felh_beallitasok (
     user_id INT PRIMARY KEY,
-    hangero FLOAT DEFAULT 0.5,
-    nyelv VARCHAR(20) DEFAULT 'hungarian',
+    hangero DECIMAL(2,2) DEFAULT 0.5,
+    nyelv_id INT DEFAULT 1 ,
     kiosztas JSON DEFAULT JSON_OBJECT(
         'playerEloreMegyGombja','d',
         'playerHatraMegyGombja','a',
         'playerUgroGombja','space',
         'playerAttackGombja','left click',
         'playerInteractGombja','e'
-));
+    ),
+    FOREIGN KEY (nyelv_id) REFERENCES nyelv(nyelv_id)
+);
+
+CREATE TABLE achievement_definitions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    key_name VARCHAR(50) NOT NULL UNIQUE 
+);
 
 CREATE TABLE achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nyelv VARCHAR(20) NOT NULL,
+    nyelv_id INT DEFAULT 1 ,
+    definition_id INT NOT NULL,
     achievement_title VARCHAR(255) NOT NULL,
-    achievement_text TEXT NOT NULL
+    achievement_text TEXT NOT NULL,
+    FOREIGN KEY (nyelv_id) REFERENCES nyelv(nyelv_id),
+    FOREIGN KEY (definition_id) REFERENCES achievement_definitions(id)
 );
 
 CREATE TABLE player_achievements (
@@ -79,32 +94,40 @@ CREATE TABLE player_achievements (
 
     CONSTRAINT fk_player_achievement
         FOREIGN KEY (achievement_id)
-        REFERENCES achievements(id)
+        REFERENCES achievement_definitions(id)
         ON DELETE CASCADE,
 
     CONSTRAINT unique_player_achievement
         UNIQUE (account_id, achievement_id)
 );
 
-INSERT INTO achievements (nyelv, achievement_title, achievement_text)
+INSERT INTO achievement_definitions (id, key_name) VALUES 
+(1, 'prowl_table_throw'),
+(2, 'ratchet_fail_save');
+
+INSERT INTO achievements (nyelv_id, definition_id, achievement_title, achievement_text)
 VALUES 
 (
-    'hungarian',
+    1,
+    1,
     'Mindig komoly vagyok',
     'Lásd, ahogy Prowl felborít egy asztalt.'
 ),
 (
-    'english',
+    2,
+    1,
     "I'm always serious",
     'Witness Prowl throw a table'
 ),
 (
-    'hungarian',
+    1,
+    2,
     'Túl öreg vagyok ehhez!',
     'Nézd végig, ahogy Ratchet nem tud megmenteni valakit.'
 ),
 (
-    'english',
+    2,
+    2,
     "I'm too old for this!",
     'Watch as Ratchet fails to save someone'
 );
@@ -140,22 +163,22 @@ BEGIN
 
     INSERT INTO player_achievements (account_id, achievement_id, unlocked)
     SELECT NEW.user_id, a.id, FALSE
-    FROM achievements a;
+    FROM achievement_definitions a;
 
     INSERT INTO felh_beallitasok (user_id)
     VALUES (NEW.user_id);
 
     INSERT INTO mentes (user_id)
-    VALUES (NEW.User_id);
+    VALUES (NEW.user_id);
 
     INSERT INTO mentes (user_id)
-    VALUES (NEW.User_id);
+    VALUES (NEW.user_id);
 
     INSERT INTO mentes (user_id)
-    VALUES (NEW.User_id);
+    VALUES (NEW.user_id);
 
     INSERT INTO mentes (user_id)
-    VALUES (NEW.User_id);
+    VALUES (NEW.user_id);
 
 END$$
 
