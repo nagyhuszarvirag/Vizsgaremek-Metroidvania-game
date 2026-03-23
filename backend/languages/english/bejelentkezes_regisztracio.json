@@ -6,16 +6,26 @@
         "Login"
     ],
 
-    "loginAlert":[
+    "loginAlert": [
         "All fields are required",
         "Login successful"
     ],
-
-    "logToReg":[
+    
+    "forgotPass": "Forgot your password?",
+    
+    "forgotTitle": "Forgotten Password",
+    
+    "forgotSend": "Send",
+    
+    "forgotClose": "Close",
+    
+    "forgotAlert": "Enter your email address",
+    
+    "logToReg": [
         "Don't have an account?",
         "Register"
     ],
-
+    
     "regInput": [
         "Register",
         "Email",
@@ -23,23 +33,36 @@
         "Password",
         "Register"
     ],
-
-    "pasReq":[
+    
+    "pasReq": [
         "Minimum 8 characters",
         "At least 1 uppercase letter",
         "At least 1 number",
         "At least 1 special character"
     ],
-
-    "regAlert":[
+    
+    "regAlert": [
         "All fields are required",
         "Registration successful",
         "Invalid email format",
         "The password does not meet the requirements"
     ],
-
-    "regToLog":[
+    
+    "regToLog": [
         "Already have an account?",
         "Login"
+    ],
+
+    "changeTitle": "Enter a new password",
+
+    "changeInput":[
+        "New password",
+        "Confirm new password",
+        "Save"
+    ],
+
+    "changeAlert":[
+        "All fields are required",
+        "The two passwords do not match"
     ]
 }

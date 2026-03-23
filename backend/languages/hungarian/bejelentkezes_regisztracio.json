@@ -11,6 +11,16 @@
         "Sikeres bejelentkezés"
     ],
 
+    "forgotPass": "Elfelejtetted a jelszavad?",
+
+    "forgotTitle": "Elfelejtett jelszó",
+
+    "forgotSend": "Küldés",
+
+    "forgotClose": "Bezár",
+
+    "forgotAlert": "Add meg az email címet",
+    
     "logToReg":[
         "Nincs fiókod?",
         "Regisztráció"
@@ -41,5 +51,18 @@
     "regToLog":[
         "Van már fiókod?",
         "Bejelentkezés"
+    ],
+
+    "changeTitle": "Új jelszó megadása",
+
+    "changeInput":[
+        "Új jelszó",
+        "Új jelszó megerősítése",
+        "Mentés"
+    ],
+
+    "changeAlert":[
+        "Minden mező kitöltése kötelező",
+        "A két jelszó nem egyezik"
     ]
 }
