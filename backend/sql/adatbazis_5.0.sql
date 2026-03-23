@@ -18,7 +18,15 @@ CREATE TABLE IF NOT EXISTS felhasznalo (
     username VARCHAR(100) NOT NULL UNIQUE,
     user_password VARCHAR(255),
     user_email VARCHAR(100) NOT NULL UNIQUE,
-    user_jog_id INT NOT NULL
+    user_jog_id INT NOT NULL,
+    jelszo_csere_kotelezo TINYINT(1) DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS elfelejtett_jelszo_keresek (
+    keres_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(100) NOT NULL,
+    keres_datum DATETIME DEFAULT CURRENT_TIMESTAMP,
+    allapot VARCHAR(20) DEFAULT 'uj'
 );
 
 CREATE TABLE IF NOT EXISTS mentes (

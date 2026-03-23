@@ -16,7 +16,7 @@ async function osszesUser(){
     return rows;
 }
 
-//User hozzáadás
+//user hozzáadás
 async function userHozzaAd(usernev, jelszoHash, email, userJogId) {
     const query = `INSERT INTO felhasznalo (username, user_password, user_email, user_jog_id) VALUES (?, ?, ?, ?);`;
     const [row] = await pool.execute(query, [usernev, jelszoHash, email, userJogId]);
@@ -180,6 +180,70 @@ async function FINDhAchivementAdatok(user_id, achivement_id) {
   return rows || null;
 }
 
+//elfelejtett jelszó kérés mentése
+async function elfelejtettJelszoKeresLetrehoz(user_email) {
+    const query = `
+        INSERT INTO elfelejtett_jelszo_keresek (user_email)
+        VALUES (?);
+    `;
+    const [result] = await pool.execute(query, [user_email]);
+    return result.insertId;
+}
+
+//összes elfelejtett jelszó kérés lekérése
+async function elfelejtettJelszoKeresek() {
+    const query = `
+        SELECT keres_id, user_email, keres_datum, allapot
+        FROM elfelejtett_jelszo_keresek
+        ORDER BY keres_datum DESC;
+    `;
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+//jelszó visszaállítása
+async function adminJelszoReset(email, ujHash) {
+    const query = `
+        UPDATE felhasznalo
+        SET user_password = ?, jelszo_csere_kotelezo = 1
+        WHERE user_email = ?;
+    `;
+    const [result] = await pool.execute(query, [ujHash, email]);
+    return result.affectedRows;
+}
+
+//kérés állapotának módosítása
+async function elfelejtettJelszoKeresAllapot(keres_id, allapot) {
+    const query = `
+        UPDATE elfelejtett_jelszo_keresek
+        SET allapot = ?
+        WHERE keres_id = ?;
+    `;
+    const [result] = await pool.execute(query, [allapot, keres_id]);
+    return result.affectedRows;
+}
+
+//jelszócsere belépés után
+async function felhasznaloJelszoCsere(userId, ujHash) {
+    const query = `
+        UPDATE felhasznalo
+        SET user_password = ?, jelszo_csere_kotelezo = 0
+        WHERE user_id = ?;
+    `;
+    const [result] = await pool.execute(query, [ujHash, userId]);
+    return result.affectedRows;
+}
+
+//felhasználó keresése email alapján
+async function emailKereses(email) {
+    const query = `
+        SELECT * FROM felhasznalo
+        WHERE user_email = ?;
+    `;
+    const [rows] = await pool.execute(query, [email]);
+    return rows[0];
+}
+
 //!Export
 module.exports = {
     userHozzaAd,
@@ -193,5 +257,11 @@ module.exports = {
     osszesUser,
     meghivmentes,
     UpdatehAchivementAdatok,
-    FINDhAchivementAdatok
+    FINDhAchivementAdatok,
+    elfelejtettJelszoKeresLetrehoz,
+    elfelejtettJelszoKeresek,
+    adminJelszoReset,
+    elfelejtettJelszoKeresAllapot,
+    felhasznaloJelszoCsere,
+    emailKereses
 };

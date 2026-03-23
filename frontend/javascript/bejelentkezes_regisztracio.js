@@ -83,16 +83,26 @@ export async function modalLetrehoz() {
         if (data.success) {
             alert(dataNyelv.data.loginAlert[1]);
             sikeresBelepes(data)
+
+            if (data.jelszoCsereKotelezo) {
+                kotelezoJelszoCsereModal(data.userId);
+            }
         } else {
             alert(data.message);
         }
     };
 
+    const forgotPass = document.createElement("p");
+    forgotPass.textContent = dataNyelv.data.forgotPass;
+    forgotPass.style.cursor = "pointer";
+    forgotPass.style.color = "#4ea3ff";
+    forgotPass.style.marginBottom = "10px";
+
     const toRegister = document.createElement("p");
     toRegister.innerHTML = `${dataNyelv.data.logToReg[0]} <span style="color:#4ea3ff;cursor:pointer">${dataNyelv.data.logToReg[1]}</span>`;
     toRegister.style.cursor = "pointer";
 
-    loginDiv.append(loginCim, loginUser, loginPass, loginGomb, toRegister);
+    loginDiv.append(loginCim, loginUser, loginPass, loginGomb, forgotPass, toRegister);
 
     //regisztráció
     const registerDiv = document.createElement("div");
@@ -220,6 +230,10 @@ export async function modalLetrehoz() {
         loginDiv.style.display = "block";
     };
 
+    forgotPass.onclick = () => {
+        elfelejtettJelszoModal();
+    };
+
     toRegister.querySelector("span").onclick = () => {
         loginDiv.style.display = "none";
         mezokUrites();
@@ -232,6 +246,7 @@ export async function modalLetrehoz() {
         loginDiv.style.display = "block";
     };
 
+    //segédfüggvények
     function mezokUrites() {
         loginUser.value = "";
         loginPass.value = "";
@@ -257,6 +272,154 @@ export async function modalLetrehoz() {
         window.dispatchEvent(new CustomEvent("authChanged", {
             detail: { loggedIn: true }
         }));
+    }
+
+    function elfelejtettJelszoModal() {
+        const modal2 = document.createElement("div");
+        modal2.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+
+        const box = document.createElement("div");
+        box.style.cssText = `
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        color: white;
+    `;
+
+        const cim = document.createElement("h3");
+        cim.textContent = dataNyelv.data.forgotTitle;
+
+        const emailInput = document.createElement("input");
+        emailInput.type = "email";
+        emailInput.placeholder = dataNyelv.data.regInput[1];
+        emailInput.style.width = "100%";
+        emailInput.style.marginBottom = "10px";
+        emailInput.style.padding = "5px";
+
+        const kuldesGomb = document.createElement("button");
+        kuldesGomb.textContent = dataNyelv.data.forgotSend;
+        kuldesGomb.style.width = "100%";
+        kuldesGomb.style.marginBottom = "10px";
+
+        const bezar = document.createElement("button");
+        bezar.textContent = dataNyelv.data.forgotClose;
+        bezar.style.width = "100%";
+
+        kuldesGomb.onclick = async () => {
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                alert(dataNyelv.data.forgotAlert);
+                return;
+            }
+
+            const res = await fetch("http://127.0.0.1:3000/api/elfelejtett-jelszo", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert(data.message);
+                modal2.remove();
+            } else {
+                alert(data.message);
+            }
+        };
+
+        bezar.onclick = () => modal2.remove();
+
+        box.append(cim, emailInput, kuldesGomb, bezar);
+        modal2.appendChild(box);
+        document.body.appendChild(modal2);
+    }
+
+    function kotelezoJelszoCsereModal(userId) {
+        const modal3 = document.createElement("div");
+        modal3.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10001;
+    `;
+
+        const box = document.createElement("div");
+        box.style.cssText = `
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        width: 320px;
+        color: white;
+    `;
+
+        const cim = document.createElement("h3");
+        cim.textContent = dataNyelv.data.changeTitle;
+
+        const ujJelszo = document.createElement("input");
+        ujJelszo.type = "password";
+        ujJelszo.placeholder = dataNyelv.data.changeInput[0];
+        ujJelszo.style.width = "100%";
+        ujJelszo.style.marginBottom = "10px";
+        ujJelszo.style.padding = "5px";
+
+        const ujJelszo2 = document.createElement("input");
+        ujJelszo2.type = "password";
+        ujJelszo2.placeholder = dataNyelv.data.changeInput[1];
+        ujJelszo2.style.width = "100%";
+        ujJelszo2.style.marginBottom = "10px";
+        ujJelszo2.style.padding = "5px";
+
+        const mentes = document.createElement("button");
+        mentes.textContent = dataNyelv.data.changeInput[2];
+        mentes.style.width = "100%";
+
+        mentes.onclick = async () => {
+            const j1 = ujJelszo.value.trim();
+            const j2 = ujJelszo2.value.trim();
+
+            if (!j1 || !j2) {
+                alert(dataNyelv.data.changeAlert[0]);
+                return;
+            }
+
+            if (j1 !== j2) {
+                alert(dataNyelv.data.changeAlert[1]);
+                return;
+            }
+
+            const res = await fetch(`http://127.0.0.1:3000/api/user/jelszo-csere/${userId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ujJelszo: j1 })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert(data.message);
+                modal3.remove();
+            } else {
+                alert(data.message);
+            }
+        };
+
+        box.append(cim, ujJelszo, ujJelszo2, mentes);
+        modal3.appendChild(box);
+        document.body.appendChild(modal3);
     }
 
     return modal;

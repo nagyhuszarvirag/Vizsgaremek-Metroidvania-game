@@ -90,7 +90,7 @@ router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response)
 
         // Biztonsági ellenőrzés: csak .json kiterjesztésű fájlok engedélyezése (Mert más fájlokat nem akarunk olvasni és támadások elkerülésének érdekében van itt)
         if (!fajl.endsWith(".json")) {
-            return request.status(400).json({
+            return response.status(400).json({
                 success: false,
                 message: "Csak JSON fájlokat fogadunk el!"
             });
@@ -106,7 +106,7 @@ router.get("/nyelv_alapjan_JSON_olvasas/:nyelv/:fajl", async (request, response)
                 nyelvutvonal = "english";
                 break;
             default:
-                return request.status(400).json({
+                return response.status(400).json({
                     success: false,
                     message: "Érvénytelen nyelv!"
                 });
@@ -209,7 +209,8 @@ router.post('/login', async (req, res) => {
             success: true,
             userId: user.user_id,
             usernev: user.username,
-            userJogId: user.user_jog_id
+            userJogId: user.user_jog_id,
+            jelszoCsereKotelezo: user.jelszo_csere_kotelezo
         });
     } catch (error) {
         console.error(error);
@@ -462,6 +463,146 @@ router.get("/kelleNPC/:user_id/:achivement_id", async (req, res) => {
       message: "Adatbázis hiba",
     });
   }
+});
+
+router.post("/elfelejtett-jelszo", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Hiányzó email cím"
+            });
+        }
+
+        const user = await database.emailKereses(email);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Nincs ilyen email címmel felhasználó"
+            });
+        }
+
+        await database.elfelejtettJelszoKeresLetrehoz(email);
+
+        res.json({
+            success: true,
+            message: "A jelszó-visszaállítási kérés rögzítve lett"
+        });
+
+    } catch (error) {
+        console.error("POST /elfelejtett-jelszo hiba:", error);
+        res.status(500).json({
+            success: false,
+            message: "Adatbázis hiba"
+        });
+    }
+});
+
+//listázz az összes kérést admin panelen
+router.get("/admin/elfelejtett-jelszo-keresek", async (req, res) => {
+    try {
+        const rows = await database.elfelejtettJelszoKeresek();
+
+        res.json({
+            success: true,
+            data: rows
+        });
+    } catch (error) {
+        console.error("GET /admin/elfelejtett-jelszo-keresek hiba:", error);
+        res.status(500).json({
+            success: false,
+            message: "Adatbázis hiba"
+        });
+    }
+});
+
+router.patch("/admin/reset-jelszo", async (req, res) => {
+    try {
+        const { email, keres_id } = req.body;
+
+        if (!email || !keres_id) {
+            return res.status(400).json({
+                success: false,
+                message: "Hiányzó adat"
+            });
+        }
+
+        const ideiglenesJelszo = "Temp1234!";
+        const hash = await bcrypt.hash(ideiglenesJelszo, 10);
+
+        const affected = await database.adminJelszoReset(email, hash);
+
+        if (affected === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Nem található felhasználó"
+            });
+        }
+
+        await database.elfelejtettJelszoKeresAllapot(keres_id, "feldolgozva");
+
+        res.json({
+            success: true,
+            message: "A jelszó vissza lett állítva",
+            tempPassword: ideiglenesJelszo
+        });
+
+    } catch (error) {
+        console.error("PATCH /admin/reset-jelszo hiba:", error);
+        res.status(500).json({
+            success: false,
+            message: "Adatbázis hiba"
+        });
+    }
+});
+
+router.patch("/user/jelszo-csere/:id", async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+        const { ujJelszo } = req.body;
+
+        if (!userId || !ujJelszo) {
+            return res.status(400).json({
+                success: false,
+                message: "Hiányzó adat"
+            });
+        }
+
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+
+        if (!passwordRegex.test(ujJelszo)) {
+            return res.status(400).json({
+                success: false,
+                message: "A jelszó nem felel meg a követelményeknek"
+            });
+        }
+
+        const hash = await bcrypt.hash(ujJelszo, 10);
+
+        const affected = await database.felhasznaloJelszoCsere(userId, hash);
+
+        if (affected === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Nem található felhasználó"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "A jelszó sikeresen módosítva"
+        });
+
+    } catch (error) {
+        console.error("PATCH /user/jelszo-csere/:id hiba:", error);
+        res.status(500).json({
+            success: false,
+            message: "Adatbázis hiba"
+        });
+    }
 });
 
 //ez alá ne írj új apit csak fölé

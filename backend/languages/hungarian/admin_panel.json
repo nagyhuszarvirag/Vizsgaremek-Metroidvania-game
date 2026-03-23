@@ -7,5 +7,18 @@
     "muveletek": "Műveletek",
     "mentes": "Mentés",
     "torles": "Törlés",
-    "vissza": "Vissza"
+    "vissza": "Vissza",
+    "hiba":[ 
+        "Hiba a user lista betöltésekor",
+        "Hiba a jelszókérelmek betöltésekor"
+    ],
+    "alert": "Mentve",
+    "confirm": "Biztos törlöd?",
+    "usersTab": "Felhasználók",
+    "resetTab": "Elfelejtett jelszavak",
+    "reqId": "Kérés ID",
+    "datum": "Dátum",
+    "allapot": "Állapot",
+    "resetPass": "Jelszó visszaállítás",
+    "resetSuc": "A jelszó visszaállítva."
 }
