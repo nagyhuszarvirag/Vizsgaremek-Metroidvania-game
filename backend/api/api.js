@@ -235,7 +235,7 @@ router.get("/felhasznalo/:id", async (req, res) => {
             return res.json({ success: true, data: null });
         }
 
-        return res.json({ success: true, data });
+        return res.json({ success: true, data: data });
     } catch (err) {
         console.error("GET /api/felhasznalo/:id hiba:", err);
         res.status(500).json({ success: false, message: "Szerverhiba." });
