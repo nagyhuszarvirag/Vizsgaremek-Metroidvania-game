@@ -1,4 +1,4 @@
-import { KellEAzNPC } from "../kaboomBetolto.js";
+import { KellEAzNPC, GRAVITY } from "../kaboomBetolto.js";
 
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
@@ -12,20 +12,20 @@ export async function jatekos_betolt(k, xpos, ypos) {
     "player",
   ]);
 
+  player.play("idle");
+
   k.camPos(xpos, ypos);
   k.camScale(3);
 
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
   const JUMP_FORCE = 400;
-  const GRAVITY = 800;
-
 
   player.onUpdate(() => {
     k.camPos(player.pos);
 
-   /* if (player.isGrounded()) {
+    if (player.isGrounded()) {
       k.setGravity(0);
-    }*/
+    }
   });
 
   let kelleprowl = await KellEAzNPC(
@@ -47,7 +47,6 @@ export async function jatekos_betolt(k, xpos, ypos) {
     });
   });
 
-
   //A billenytűket majd dinamikusan kell kezelni.
   //Fine tuningolni kell a sebességet
 
@@ -63,9 +62,25 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   k.onKeyDown("space", () => {
     if (player.isGrounded()) {
-      k.setGravity(800);
+      k.setGravity(GRAVITY);
       player.jump(JUMP_FORCE);
     }
+  });
+
+  ["left", "right"].forEach((key) => {
+    onKeyPress(key, () => {
+      player.play("run");
+    });
+    onKeyRelease(key, () => {
+      if (
+        !isKeyDown("left") &&
+        !isKeyDown("right") &&
+        !isKeyDown("up") &&
+        !isKeyDown("down")
+      ) {
+        player.play("idle");
+      }
+    });
   });
 
   /*

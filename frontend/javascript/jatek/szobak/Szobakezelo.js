@@ -6,12 +6,12 @@ export function setBackgroundColor(k, hexColorCode) {
   ]);
 }
 
-export function MapColliderek(k, map, colliderek){
-    console.log("MapColliderek meghívva"); 
-    console.log("MapColliderek map: "+map);
-    console.log("MapColliderek colliderek: "+colliderek);
+export function MapColliderek(k, map, colliderek) {
+  console.log("MapColliderek meghívva");
+  console.log("MapColliderek map: " + map);
+  console.log("MapColliderek colliderek: " + colliderek);
 
-    for (const collider of colliderek) {
+  for (const collider of colliderek) {
     if (collider.polygon) {
       const coordinates = [];
       for (const point of collider.polygon) {
@@ -62,4 +62,6 @@ export function NPCCollider(k, collider, NPC) {
     }),
     NPC,
   ]);
+
+  NPC_adder.play("idle");
 }

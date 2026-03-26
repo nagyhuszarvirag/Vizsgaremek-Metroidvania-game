@@ -80,13 +80,13 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/api/user/8
 
 ### Achievement adatok lekérése adott nyelven
-GET http://127.0.0.1:3000/api/showachivements/4/hungarian
+GET http://127.0.0.1:3000/api/showachivements/1/1
 
 ### Összes felhasználó listázása (csak admin jogosultsággal)
 GET http://127.0.0.1:3000/api/admin/users
 
 ### A mentés_id alapján meghívni a mentést
-GET http://127.0.0.1:3000/api/mentesmeghiv/1/2
+GET http://127.0.0.1:3000/api/mentesmeghiv/1/0
 
 ### A map adatainak meghívása
 GET http://127.0.0.1:3000/api/map_data/kezdomap.json
@@ -96,3 +96,15 @@ GET http://127.0.0.1:3000/api/kelleNPC/1/1
 
 ### listázz az összes kérést admin panelen
 GET http://127.0.0.1:3000/api/admin/elfelejtett-jelszo-keresek
+
+###A mentésben és az achikban updateljük a teljesítményt
+PATCH http://127.0.0.1:3000/api/updateachivements
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "achivement_id":1,
+    "mentes_id":1,
+    "valtozo_utvonal": "$.NPC_interactions.Prowl",
+    "valtozott_adat": 1
+}
