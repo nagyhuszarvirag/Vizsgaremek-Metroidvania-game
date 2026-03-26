@@ -93,3 +93,6 @@ GET http://127.0.0.1:3000/api/map_data/kezdomap.json
 
 ### Kell e az NPC?
 GET http://127.0.0.1:3000/api/kelleNPC/1/1
+
+### listázz az összes kérést admin panelen
+GET http://127.0.0.1:3000/api/admin/elfelejtett-jelszo-keresek
