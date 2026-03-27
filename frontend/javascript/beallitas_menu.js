@@ -1,5 +1,10 @@
 // beallitas_menu.js
-import { oldalTakarito, fecthData, visszaGomb, dekor_vonal_blokkal } from "./index.js";
+import {
+  oldalTakarito,
+  fecthData,
+  visszaGomb,
+  dekor_vonal_blokkal,
+} from "./index.js";
 import {
   volume as defaultVolume,
   nyelv as defaultLanguage,
@@ -10,7 +15,7 @@ import {
   playerInteractGombja as defaultPlayerInteract,
   mobileMode as defaultMobileMode,
   irNyelv,
-  nyelv
+  nyelv,
 } from "./options.js";
 import { adminPanelLetrehoz } from "./admin_panel.js";
 
@@ -49,7 +54,7 @@ async function FelhBeallitasMentes(userId, beallitas) {
   const updates = [
     { key: "hangero", value: beallitas.volume },
     { key: "nyelv", value: beallitas.language },
-    { key: "kiosztas", value: beallitas.keyBindings }
+    { key: "kiosztas", value: beallitas.keyBindings },
   ];
   try {
     for (const u of updates) {
@@ -59,8 +64,8 @@ async function FelhBeallitasMentes(userId, beallitas) {
         body: JSON.stringify({
           user_id: userId,
           key: u.key,
-          value: u.value
-        })
+          value: u.value,
+        }),
       });
     }
   } catch (e) {
@@ -73,14 +78,14 @@ async function mentFelhBeallitas(userId, data) {
   await fetch(`http://127.0.0.1:3000/api/user/${userId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 }
 
 //törli a felhasználó fiókját az adatbázisból
 async function fiokTorles(userId) {
   await fetch(`http://127.0.0.1:3000/api/user/${userId}`, {
-    method: "DELETE"
+    method: "DELETE",
   });
   localStorage.clear();
   location.reload();
@@ -101,18 +106,23 @@ export async function beallitasMenuLetrehoz(userId) {
     window.language = defaultLanguage;
   }
 
-  if (window.playerEloreMegyGombja === undefined) window.playerEloreMegyGombja = defaultPlayerElore;
-  if (window.playerHatraMegyGombja === undefined) window.playerHatraMegyGombja = defaultPlayerHatra;
-  if (window.playerUgroGombja === undefined) window.playerUgroGombja = defaultPlayerUgro;
-  if (window.playerAttackGombja === undefined) window.playerAttackGombja = defaultPlayerAttack;
-  if (window.playerInteractGombja === undefined) window.playerInteractGombja = defaultPlayerInteract;
+  if (window.playerEloreMegyGombja === undefined)
+    window.playerEloreMegyGombja = defaultPlayerElore;
+  if (window.playerHatraMegyGombja === undefined)
+    window.playerHatraMegyGombja = defaultPlayerHatra;
+  if (window.playerUgroGombja === undefined)
+    window.playerUgroGombja = defaultPlayerUgro;
+  if (window.playerAttackGombja === undefined)
+    window.playerAttackGombja = defaultPlayerAttack;
+  if (window.playerInteractGombja === undefined)
+    window.playerInteractGombja = defaultPlayerInteract;
 
   if (window.mobileMode === undefined) window.mobileMode = defaultMobileMode;
 
-
   //nyelv adatok betöltése JSON-ból
-  const nyelvData = await fecthData(`http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/${nyelv}/beallitas_menu.json`);
-
+  const nyelvData = await fecthData(
+    `http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/${nyelv}/beallitas_menu.json`,
+  );
 
   let fodiv = document.createElement("div");
   fodiv.classList.add("container", "mt-5", "beallitas_menu");
@@ -181,7 +191,6 @@ async function valtasAltalanos(nyelvData) {
 
   content.appendChild(dekor_vonal_blokkal());
 
-
   //hangerő
   const hangeroLabel = document.createElement("label");
   hangeroLabel.textContent = nyelvData.hangero;
@@ -196,8 +205,8 @@ async function valtasAltalanos(nyelvData) {
 
     window.dispatchEvent(
       new CustomEvent("hangeroValtozas", {
-        detail: { volume: parseFloat(hangeroCsuszka.value) }
-      })
+        detail: { volume: parseFloat(hangeroCsuszka.value) },
+      }),
     );
   });
 
@@ -233,24 +242,46 @@ async function valtasAltalanos(nyelvData) {
     div.style.display = "flex";
     div.style.justifyContent = "space-between";
     keyContainer.appendChild(div);
-    content.appendChild(keyContainer)
+    content.appendChild(keyContainer);
   }
 
-  billenytuInputLetrehoz(nyelvData.billentyu[0], window.playerEloreMegyGombja, v => window.playerEloreMegyGombja = v);
-  billenytuInputLetrehoz(nyelvData.billentyu[1], window.playerHatraMegyGombja, v => window.playerHatraMegyGombja = v);
-  billenytuInputLetrehoz(nyelvData.billentyu[2], window.playerUgroGombja, v => window.playerUgroGombja = v);
-  billenytuInputLetrehoz(nyelvData.billentyu[3], window.playerAttackGombja, v => window.playerAttackGombja = v);
-  billenytuInputLetrehoz(nyelvData.billentyu[4], window.playerInteractGombja, v => window.playerInteractGombja = v);
+  billenytuInputLetrehoz(
+    nyelvData.billentyu[0],
+    window.playerEloreMegyGombja,
+    (v) => (window.playerEloreMegyGombja = v),
+  );
+  billenytuInputLetrehoz(
+    nyelvData.billentyu[1],
+    window.playerHatraMegyGombja,
+    (v) => (window.playerHatraMegyGombja = v),
+  );
+  billenytuInputLetrehoz(
+    nyelvData.billentyu[2],
+    window.playerUgroGombja,
+    (v) => (window.playerUgroGombja = v),
+  );
+  billenytuInputLetrehoz(
+    nyelvData.billentyu[3],
+    window.playerAttackGombja,
+    (v) => (window.playerAttackGombja = v),
+  );
+  billenytuInputLetrehoz(
+    nyelvData.billentyu[4],
+    window.playerInteractGombja,
+    (v) => (window.playerInteractGombja = v),
+  );
 
   //oldal nyelvének beállítása
   const nyelvLabel = document.createElement("label");
   nyelvLabel.textContent = nyelvData.nyelv[0];
   const nyelvValaszt = document.createElement("select");
-  [1, 2].forEach(lang => {
+  [1, 2].forEach((lang) => {
     const option = document.createElement("option");
     option.value = lang;
-    option.textContent =  nyelvData.nyelv[lang] ;
-    if (lang == window.language) {option.selected = true;}
+    option.textContent = nyelvData.nyelv[lang];
+    if (lang == window.language) {
+      option.selected = true;
+    }
     nyelvValaszt.appendChild(option);
   });
   nyelvValaszt.addEventListener("change", () => {
@@ -261,9 +292,11 @@ async function valtasAltalanos(nyelvData) {
 
     irNyelv(ujNyelv);
 
-    window.dispatchEvent(new CustomEvent("nyelvValtozas", {
-      detail: { nyelv: ujNyelv }
-    }));
+    window.dispatchEvent(
+      new CustomEvent("nyelvValtozas", {
+        detail: { nyelv: ujNyelv },
+      }),
+    );
   });
   const nyelvContainer = document.createElement("div");
   nyelvContainer.style.display = "flex";
@@ -281,7 +314,9 @@ async function valtasAltalanos(nyelvData) {
   telefonCheckbox.style.height = "20px";
   window.mobileMode = window.innerWidth <= 768;
   telefonCheckbox.checked = window.mobileMode;
-  telefonCheckbox.addEventListener("change", () => { window.mobileMode = telefonCheckbox.checked; });
+  telefonCheckbox.addEventListener("change", () => {
+    window.mobileMode = telefonCheckbox.checked;
+  });
   window.addEventListener("resize", () => {
     if (window.innerWidth <= 768) {
       window.mobileMode = true;
@@ -307,8 +342,8 @@ async function valtasAltalanos(nyelvData) {
         playerHatraMegyGombja: window.playerHatraMegyGombja,
         playerUgroGombja: window.playerUgroGombja,
         playerAttackGombja: window.playerAttackGombja,
-        playerInteractGombja: window.playerInteractGombja
-      }
+        playerInteractGombja: window.playerInteractGombja,
+      },
     };
     if (jelenlegiFelh !== 0) {
       await FelhBeallitasMentes(jelenlegiFelh, beallitasMentes);
@@ -425,7 +460,7 @@ async function valtasFiok(nyelvData) {
   mentesGombFiok.addEventListener("click", async () => {
     await mentFelhBeallitas(jelenlegiFelh, {
       username: felhInput.value,
-      user_email: emailInput.value
+      user_email: emailInput.value,
     });
     alert(nyelvData.fiokalert);
   });
@@ -444,8 +479,7 @@ async function valtasFiok(nyelvData) {
     if (confirm(nyelvData.torlesalert)) {
       await fiokTorles(jelenlegiFelh);
     }
-  }
-  );
+  });
 
   const admin_panel = document.createElement("button");
   admin_panel.textContent = nyelvData.admin;

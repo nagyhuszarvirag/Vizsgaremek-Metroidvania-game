@@ -14,7 +14,10 @@ function getUserFromStorage() {
 }
 
 function setGuestUser() {
-  localStorage.setItem("user", JSON.stringify({ id: 0, usernev: "guest", jog: 2 }));
+  localStorage.setItem(
+    "user",
+    JSON.stringify({ id: 0, usernev: "guest", jog: 2 }),
+  );
 }
 
 //kirajzolja a megfelelő gombot (bejelentkezés vagy kijelentkezés)
@@ -35,9 +38,11 @@ async function renderAuthButton(authContainer, data) {
 
       setGuestUser();
 
-      window.dispatchEvent(new CustomEvent("authChanged", {
-        detail: { loggedIn: false }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("authChanged", {
+          detail: { loggedIn: false },
+        }),
+      );
 
       renderAuthButton(authContainer, data);
     };
@@ -60,12 +65,15 @@ async function renderAuthButton(authContainer, data) {
   authContainer.appendChild(loginBtn);
 }
 
-
 export async function createMainMenu() {
   oldalTakarito();
-  const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/main_menu.json");
+  const data = await fecthData(
+    "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+      nyelv +
+      "/main_menu.json",
+  );
 
-  const VanEZene = document.getElementById('zenemarad');
+  const VanEZene = document.getElementById("zenemarad");
 
   if (!VanEZene) {
     zeneLetrehoz(data);
@@ -81,7 +89,7 @@ export async function createMainMenu() {
     zene.volume = Math.min(1, Math.max(0, vol));
   });
 
-  const zene = document.getElementById('zenemarad');
+  const zene = document.getElementById("zenemarad");
 
   const zeneGomb = document.createElement("button");
   zeneGomb.id = "zeneGomb";
@@ -92,9 +100,11 @@ export async function createMainMenu() {
     if (zene.muted) {
       zene.muted = false;
       zene.play(); //user interact ez engedélyezett böngészőkben
-      window.dispatchEvent(new CustomEvent("hangeroValtozas", {
-        detail: { volume }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("hangeroValtozas", {
+          detail: { volume },
+        }),
+      );
       zeneGomb.textContent = data.data.music[1];
     } else {
       zene.muted = true;
@@ -103,7 +113,6 @@ export async function createMainMenu() {
   });
 
   document.body.appendChild(zeneGomb);
-
 
   /*const bejelentkezesGomb = document.createElement("button");
   bejelentkezesGomb.textContent = data.data.login;
@@ -130,7 +139,6 @@ export async function createMainMenu() {
   const gombTarolo = document.createElement("div");
 
   data.data.buttons.forEach((gombText, index) => {
-
     const gomb = document.createElement("button");
     gomb.classList.add("menu-gomb", "gombok");
     gomb.textContent = data.data.buttons[index];
@@ -142,7 +150,9 @@ export async function createMainMenu() {
           break;
 
         case 1:
-          const userData = JSON.parse(localStorage.getItem('user')) || { id: 0 };
+          const userData = JSON.parse(localStorage.getItem("user")) || {
+            id: 0,
+          };
           beallitasMenuLetrehoz(userData.id);
           break;
 
@@ -191,7 +201,6 @@ function zeneLetrehoz(data) {
 
   document.body.appendChild(zene);
 }
-
 
 document.addEventListener("DOMContentLoaded", async () => {
   createMainMenu();

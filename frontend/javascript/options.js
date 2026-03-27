@@ -16,7 +16,7 @@ export {
   playerUgroGombja,
   playerAttackGombja,
   playerInteractGombja,
-  mobileMode
+  mobileMode,
 };
 
 export function irNyelv(ujNyelv) {

@@ -1,3 +1,5 @@
+import {KellEAzNPC} from "../kaboomBetolto.js";
+
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
     k.rect(k.width(), k.height()),
@@ -6,12 +8,12 @@ export function setBackgroundColor(k, hexColorCode) {
   ]);
 }
 
-export function MapColliderek(k, map, colliderek){
-    console.log("MapColliderek meghívva"); 
-    console.log("MapColliderek map: "+map);
-    console.log("MapColliderek colliderek: "+colliderek);
+export function MapColliderek(k, map, colliderek) {
+  console.log("MapColliderek meghívva");
+  console.log("MapColliderek map: " + map);
+  console.log("MapColliderek colliderek: " + colliderek);
 
-    for (const collider of colliderek) {
+  for (const collider of colliderek) {
     if (collider.polygon) {
       const coordinates = [];
       for (const point of collider.polygon) {
@@ -53,7 +55,8 @@ export function NPCCollider(k, collider, NPC) {
 
   //Note to self: Az NPC collider első koordinátája ott legyen, ahol akarom az NPC-t. A kezdőszobát ez alapján átírom
 
-  let NPC_adder = k.add([
+  if(true){
+    let NPC_adder = k.add([
     k.sprite(NPC),
     k.pos(collider[0].x, collider[0].y),
     k.anchor("center"),
@@ -62,4 +65,9 @@ export function NPCCollider(k, collider, NPC) {
     }),
     NPC,
   ]);
+
+  NPC_adder.play("idle");
+  }
+
+  
 }
