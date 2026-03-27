@@ -106,7 +106,7 @@ export async function KaboomBetolto(mentes_id) {
       idle: { from: 0, to: 7, loop: true },
       walk: { from: 72, to: 83, loop: true },
       run: { from: 24, to: 31, loop: true },
-      jump: { from: 36, to: 38, loop: true },
+      jump: { from: 36, to: 38, speed: 5 },
       run_and_jump: { from: 12, to: 14, loop: true },
       attack: { from: 24, to: 28, speed: 16 },
       hurt: { from: 60, to: 63, speed: 16 },
@@ -137,10 +137,19 @@ export async function KaboomBetolto(mentes_id) {
   }
 }
 
-export async function KellEAzNPC(user_id, achivement_id) {
+export async function KellEAzNPC(valtozo_utvonal) {
   const kell = await fecthData(
-    "http://127.0.0.1:3000/api/kelleNPC/" + user_id + "/" + achivement_id,
+    "http://127.0.0.1:3000/api/kelleNPC", "POST", {
+    "valtozo_utvonal": valtozo_utvonal,
+    "mentes_id": 1,
+    "user_id": JSON.parse(localStorage.getItem("user")).id
+  }
   );
-  console.log(kell);
-  return kell.message;
+
+  if(kell.message[0].VOLT_E_NPC==0){
+    return true;
+  }
+  else{
+    return false;
+  }
 }

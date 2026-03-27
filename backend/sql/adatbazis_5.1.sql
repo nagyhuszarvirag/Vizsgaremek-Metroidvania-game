@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS elfelejtett_jelszo_keresek (
     user_email VARCHAR(100) NOT NULL,
     keres_datum DATETIME DEFAULT CURRENT_TIMESTAMP,
     allapot VARCHAR(20) DEFAULT 'uj',
-    FOREIGN KEY (user_email) REFERENCES felhasznalo(user_email),
+    FOREIGN KEY (user_email) REFERENCES felhasznalo(user_email)
 );
 
 CREATE TABLE IF NOT EXISTS mentes (

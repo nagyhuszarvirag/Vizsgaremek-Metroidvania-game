@@ -1,4 +1,14 @@
 import { KellEAzNPC, GRAVITY } from "../kaboomBetolto.js";
+import {
+  volume,
+  nyelv,
+  playerEloreMegyGombja,
+  playerHatraMegyGombja,
+  playerUgroGombja,
+  playerAttackGombja,
+  playerInteractGombja,
+  mobileMode,
+} from "../../options.js";
 
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
@@ -28,12 +38,9 @@ export async function jatekos_betolt(k, xpos, ypos) {
     }
   });
 
-  let kelleprowl = await KellEAzNPC(
-    JSON.parse(localStorage.getItem("user")).id,
-    1,
-  );
+  let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
 
-  console.log(kelleprowl);
+  console.log("Kell-e Prowl: "+kelleprowl);
 
   player.onCollideUpdate("Prowl", () => {
     k.onKeyPress((key) => {
@@ -50,38 +57,53 @@ export async function jatekos_betolt(k, xpos, ypos) {
   //A billenytűket majd dinamikusan kell kezelni.
   //Fine tuningolni kell a sebességet
 
-  k.onKeyDown("right", () => {
+  k.onKeyDown(playerEloreMegyGombja, () => {
     player.flipX = true;
     player.move(SPEED, 0);
   });
 
-  k.onKeyDown("left", () => {
+  k.onKeyDown(playerHatraMegyGombja, () => {
     player.flipX = false;
     player.move(-SPEED, 0);
   });
 
-  k.onKeyDown("space", () => {
+  k.onKeyDown(playerUgroGombja, () => {
     if (player.isGrounded()) {
       k.setGravity(GRAVITY);
       player.jump(JUMP_FORCE);
     }
   });
 
-  ["left", "right"].forEach((key) => {
-    onKeyPress(key, () => {
-      player.play("run");
-    });
-    onKeyRelease(key, () => {
-      if (
-        !isKeyDown("left") &&
-        !isKeyDown("right") &&
-        !isKeyDown("up") &&
-        !isKeyDown("down")
-      ) {
-        player.play("idle");
-      }
-    });
-  });
+  [playerHatraMegyGombja, playerEloreMegyGombja, playerUgroGombja].forEach(
+    (key) => {
+      onKeyPress(key, () => {
+        switch (key) {
+          case playerUgroGombja:
+            player.stop();
+            player.play("jump");
+            break;
+
+          default:
+            player.stop();
+            player.play("run");
+            break;
+        }
+      });
+      onKeyRelease(key, () => {
+        if (
+          !isKeyDown(playerHatraMegyGombja) &&
+          !isKeyDown(playerEloreMegyGombja) &&
+          !isKeyDown("up") &&
+          !isKeyDown("down") &&
+          !isKeyDown(playerUgroGombja) &&
+          player.isGrounded()
+        ) {
+          player.stop();
+          player.play("idle");
+        }
+      });
+    },
+  );
 
   /*
     //Ezt majd a kötélmászásnál lesz jó, másképp le kéne tiltani a gombot, amikor nem lehet használni

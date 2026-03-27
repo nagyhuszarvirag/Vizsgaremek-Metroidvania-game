@@ -1,3 +1,5 @@
+import {KellEAzNPC} from "../kaboomBetolto.js";
+
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
     k.rect(k.width(), k.height()),
@@ -53,7 +55,8 @@ export function NPCCollider(k, collider, NPC) {
 
   //Note to self: Az NPC collider első koordinátája ott legyen, ahol akarom az NPC-t. A kezdőszobát ez alapján átírom
 
-  let NPC_adder = k.add([
+  if(true){
+    let NPC_adder = k.add([
     k.sprite(NPC),
     k.pos(collider[0].x, collider[0].y),
     k.anchor("center"),
@@ -64,4 +67,7 @@ export function NPCCollider(k, collider, NPC) {
   ]);
 
   NPC_adder.play("idle");
+  }
+
+  
 }

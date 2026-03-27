@@ -445,29 +445,22 @@ router.get("/map_data/:szoba_neve", async (req, res) => {
   }
 });
 
-// Kell-e az NPC ÁTÍRNI ???
-router.get("/kelleNPC/:user_id/:achivement_id", async (req, res) => {
+// Kell-e az NPC
+router.post("/kelleNPC", async (req, res) => {
   try {
-    const user_id = Number(req.params.user_id);
-    const achivement_id = Number(req.params.achivement_id);
-    const FINDhAchivementAdatok = await database.FINDhAchivementAdatok(
-      user_id,
-      achivement_id,
+    const { valtozo_utvonal, mentes_id, user_id } = req.body;
+
+    const FINDhAchivementAdatok = await database.FINDhAchivementAdatokFROMSAVE(
+      valtozo_utvonal,
+      mentes_id,
+      user_id
     );
 
-    if (FINDhAchivementAdatok[0].unlocked) {
-      res.json({
-        success: true,
-        message: false,
-      });
-    } else {
-      res.json({
-        success: true,
-        message: true,
-      });
-    }
+    res.json({
+      success: true,
+      message: FINDhAchivementAdatok,
+    });
   } catch (err) {
-    console.error(err);
 
     res.status(500).json({
       success: false,
