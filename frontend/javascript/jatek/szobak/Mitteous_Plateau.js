@@ -6,6 +6,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
+   console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     //háttér
     setBackgroundColor(k, "#000000");

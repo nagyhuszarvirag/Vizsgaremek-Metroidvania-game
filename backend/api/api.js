@@ -450,7 +450,7 @@ router.post("/kelleNPC", async (req, res) => {
   try {
     const { valtozo_utvonal, mentes_id, user_id } = req.body;
 
-    const FINDhAchivementAdatok = await database.FINDhAchivementAdatokFROMSAVE(
+    const npcAdat = await database.FINDhAchivementAdatokFROMSAVE(
       valtozo_utvonal,
       mentes_id,
       user_id
@@ -458,7 +458,7 @@ router.post("/kelleNPC", async (req, res) => {
 
     res.json({
       success: true,
-      message: FINDhAchivementAdatok,
+      message: npcAdat,
     });
   } catch (err) {
 
@@ -491,7 +491,7 @@ router.post("/elfelejtett-jelszo", async (req, res) => {
 
     await database.elfelejtettJelszoKeresLetrehoz(email);
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "A jelszó-visszaállítási kérés rögzítve lett",
     });
@@ -509,7 +509,7 @@ router.get("/admin/elfelejtett-jelszo-keresek", async (req, res) => {
   try {
     const rows = await database.elfelejtettJelszoKeresek();
 
-    res.json({
+    res.status(200).json({
       success: true,
       data: rows,
     });
@@ -547,7 +547,7 @@ router.patch("/admin/reset-jelszo", async (req, res) => {
 
     await database.elfelejtettJelszoKeresAllapot(keres_id, "feldolgozva");
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "A jelszó vissza lett állítva",
       tempPassword: ideiglenesJelszo,
@@ -594,7 +594,7 @@ router.patch("/user/jelszo-csere/:id", async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "A jelszó sikeresen módosítva",
     });
@@ -622,7 +622,7 @@ router.use((err, req, res, next) => {
     err.message +
     "\n";
 
-  fs.appendFile(logPath, line, () => {});
+  fs.appendFile(logPath, line, () => { });
 
   next(err);
 });
