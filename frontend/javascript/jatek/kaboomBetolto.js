@@ -14,7 +14,28 @@ export async function KaboomBetolto(mentes_id) {
   if (user.usernev === "guest") {
     console.log("Guest mentés betöltése localStorage-ból");
     console.log(localStorage.getItem("mentes_0"));
-    mentesbetolto = JSON.parse(localStorage.getItem("mentes_" + mentes_id));
+    //mentesbetolto = JSON.parse(localStorage.getItem("mentes_" + mentes_id));
+    mentesbetolto = {
+      data: {
+        mentett_adatok: {
+          savepoint: "kezdomap_1",
+          world_interactions: {
+            "mitteous-plateau_breakable-ground1": false
+          },
+          NPC_interactions: {
+            Ratchet: false,
+            Prowl: false
+          },
+          bosses: {
+            Tarn: false
+          },
+          ability_unlocked: {
+            double_jump: false,
+            dash: false
+          }
+        }
+      }
+    };
   } else {
     console.log("User mentés betöltése az adatbázis-ból");
     mentesbetolto = await fecthData(
@@ -34,13 +55,13 @@ export async function KaboomBetolto(mentes_id) {
     scale: scale,
   });
 
-  k.scene("kezdoszoba", () => {
-    Kezdoszoba(k);
+  k.scene("kezdoszoba", (adatok) => {
+    Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
-  k.scene("mitteous", () => {
-    Mitteous(k);
-  });
+  /*k.scene("mitteous", (adatok) => {
+    Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
+  });*/
 
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
   k.debug.drawArea = true;
@@ -64,7 +85,7 @@ export async function KaboomBetolto(mentes_id) {
       "SkipIntro",
     ]);
 
-  
+
     kellintro = true;
 
     k.onClick("SkipIntro", () => {
@@ -90,12 +111,12 @@ export async function KaboomBetolto(mentes_id) {
     });
   });
 
-  k.scene("Kezdoszoba", () => {
-    Kezdoszoba(k);
+  k.scene("Kezdoszoba", (adatok) => {
+    Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
-  k.scene("Mitteous_Plateau", () => {
-    Mitteous(k);
+  k.scene("Mitteous_Plateau", (adatok) => {
+    Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
@@ -134,7 +155,7 @@ export async function KaboomBetolto(mentes_id) {
   k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
 
   switch (
-    mentesbetolto.data.mentett_adatok.savepoint //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
+  mentesbetolto.data.mentett_adatok.savepoint //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
   ) {
     case "kezdomap_1":
       k.go("intro");
@@ -148,13 +169,29 @@ export async function KaboomBetolto(mentes_id) {
 }
 
 export async function KellEAzNPC(valtozo_utvonal) {
-  const kell = await fecthData(
-    "http://127.0.0.1:3000/api/kelleNPC", "POST", {
-    "valtozo_utvonal": valtozo_utvonal,
-    "mentes_id": 1,
-    "user_id": JSON.parse(localStorage.getItem("user")).id
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user.usernev === "guest") {
+    return true;
   }
+
+  const kell = await fecthData(
+    "http://127.0.0.1:3000/api/kelleNPC",
+    "POST",
+    {
+      valtozo_utvonal,
+      mentes_id: 1,
+      user_id: JSON.parse(localStorage.getItem("user")).id
+    }
   );
 
-  return kell.message[0].VOLT_E_NPC==0;
+  console.log("kelleNPC válasz:", kell);
+
+  if (!kell.success || !kell.message) {
+    return false;
+  }
+
+  const ertek = kell.message.VOLT_E_NPC;
+
+  return ertek === 0 || ertek === false || ertek === "false";
 }

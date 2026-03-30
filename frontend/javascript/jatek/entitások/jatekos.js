@@ -32,10 +32,6 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   player.onUpdate(() => {
     k.camPos(player.pos);
-
-    if (player.isGrounded()) {
-      k.setGravity(0);
-    }
   });
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
@@ -67,7 +63,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
     player.move(-SPEED, 0);
   });
 
-  k.onKeyDown(playerUgroGombja, () => {
+  k.onKeyPress(playerUgroGombja, () => {
     if (player.isGrounded()) {
       k.setGravity(GRAVITY);
       player.jump(JUMP_FORCE);
