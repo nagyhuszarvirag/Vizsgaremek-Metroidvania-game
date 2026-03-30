@@ -13,7 +13,7 @@ import {
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
     k.sprite("player"),
-    k.pos(xpos, ypos),
+    k.pos(xpos, ypos -30), //a -30 azért kell, hogy a játékos ne a lábánál legyen lerakva, hanem a közepénél
     k.anchor("center"),
     k.area({
       shape: new k.Rect(k.vec2(0, 1), 20, 30), //itt tudod állítgatni a boxát a vec2 az a box pozíciója a másik két szám pedig a szélesség magasság
@@ -24,7 +24,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   player.play("idle");
 
-  k.camPos(xpos, ypos);
+  k.camPos(xpos, ypos-30);
   k.camScale(3);
 
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt

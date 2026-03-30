@@ -4,7 +4,7 @@ import { Mitteous } from "./szobak/Mitteous_Plateau.js";
 import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
 
-const GRAVITY = 800;
+const GRAVITY = 700;
 
 export { GRAVITY };
 
@@ -48,17 +48,14 @@ export async function KaboomBetolto(mentes_id) {
   //console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
 
   k.scene("intro", () => {
-    //k.add([k.text("Intro jelenet"), k.pos(191, 566)]);
     k.add([
       k.text("Skip Intro"),
       //k.pos(window.innerWidth-50 , window.innerHeight-850),
       k.pos(191, 566),
-      //k.anchor("topright"),
       k.color(k.Color.fromHex("#000000")),
     ]);
 
     k.add([
-      //k.pos(window.innerWidth-250 , window.innerHeight-860),
       k.pos(191, 566),
       k.area({
         shape: new k.Rect(k.vec2(0), 200, 60),
@@ -66,6 +63,8 @@ export async function KaboomBetolto(mentes_id) {
       k.body({ isStatic: true }),
       "SkipIntro",
     ]);
+
+  
     kellintro = true;
 
     k.onClick("SkipIntro", () => {
@@ -75,7 +74,7 @@ export async function KaboomBetolto(mentes_id) {
         console.log("Intro átugorva");
         kellintro = false;
         k.destroyAll("SkipIntro");
-        Kezdoszoba(k);
+        k.go("kezdoszoba");
       }
     });
 
@@ -86,9 +85,17 @@ export async function KaboomBetolto(mentes_id) {
         console.log("Intro átugorva");
         kellintro = false;
         k.destroyAll("SkipIntro");
-        Kezdoszoba(k);
+        k.go("Kezdoszoba");
       }
     });
+  });
+
+  k.scene("Kezdoszoba", () => {
+    Kezdoszoba(k);
+  });
+
+  k.scene("Mitteous_Plateau", () => {
+    Mitteous(k);
   });
 
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
@@ -97,6 +104,9 @@ export async function KaboomBetolto(mentes_id) {
     "Mitteous_Plateau_Collapsing_ground",
     "../../images/maps/Mitteous_Plateau_COLLAPSE_GROUND.png",
   );
+  k.loadSprite("Mitteous_Plateau2", "../../images/maps/Mitteous_plateau_BG_2.png");
+  k.loadSprite("Mitteous_Plateau3", "../../images/maps/Mitteous_plateau_BG_3.png");
+  k.loadSprite("Mitteous_Plateau4", "../../images/maps/Mitteous_plateau_BG_4.png");
 
   k.loadSprite("player", "../../images/sprites/Main_player.png", {
     //Ez még csak definiálás, majd le kell programozni a többi cuccot
@@ -146,10 +156,5 @@ export async function KellEAzNPC(valtozo_utvonal) {
   }
   );
 
-  if(kell.message[0].VOLT_E_NPC==0){
-    return true;
-  }
-  else{
-    return false;
-  }
+  return kell.message[0].VOLT_E_NPC==0;
 }

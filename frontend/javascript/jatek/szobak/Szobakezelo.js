@@ -58,16 +58,85 @@ export function NPCCollider(k, collider, NPC) {
   if(true){
     let NPC_adder = k.add([
     k.sprite(NPC),
-    k.pos(collider[0].x, collider[0].y),
+    k.pos(collider[0].x, collider[0].y -12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
     k.anchor("center"),
     k.area({
-      shape: new k.Rect(k.vec2(0), collider[0].width, collider[0].height),
+      shape: new k.Rect(k.vec2(0), 200, 100),
     }),
     NPC,
   ]);
 
   NPC_adder.play("idle");
   }
-
   
+}
+
+export function SzobakiesesKezelo(k, map, mapW, mapH){ //láthatatlan falak 
+  //láthatatlan falak vastagsága
+
+  const T = 32;
+  //bal
+  map.add([
+    k.pos(-T, 0),
+    k.rect(T, mapH),
+    k.area(),
+    k.body({ isStatic: true }),
+    k.opacity(0),
+    "Solid",
+  ]);
+
+  //jobb
+  map.add([
+    k.pos(mapW, 0),
+    k.rect(T, mapH),
+    k.area(),
+    k.body({ isStatic: true }),
+    k.opacity(0),
+    "Solid",
+  ]);
+
+  //alsó
+  map.add([
+    k.pos(0, mapH),
+    k.rect(mapW, T),
+    k.area(),
+    k.body({ isStatic: true }),
+    k.opacity(0),
+    "Solid",
+  ]);
+
+  //felső
+  map.add([
+    k.pos(0, -T),
+    k.rect(mapW, T),
+    k.area(),
+    k.body({ isStatic: true }),
+    k.opacity(0),
+    "Solid",
+  ]);
+
+
+}
+
+export function SzobavaltozatoKezelo(k, atjaroX, atjaroY, atjaroWidth, atjaroHeight, celSzoba){
+
+  console.log("SzobavaltozatoKezelo meghívva");
+  console.log("SzobavaltozatoKezelo atjaroX: " + atjaroX);
+  console.log("SzobavaltozatoKezelo atjaroY: " + atjaroY);
+  console.log("SzobavaltozatoKezelo atjaroWidth: " + atjaroWidth);
+  console.log("SzobavaltozatoKezelo atjaroHeight: " + atjaroHeight);
+  console.log("SzobavaltozatoKezelo celSzoba: " + celSzoba);
+
+   k.add([
+    k.pos(atjaroX, atjaroY), 
+    k.rect(atjaroWidth, atjaroHeight),
+    k.area(),
+    k.opacity(0),
+    "atjaro",
+  ]);
+
+  k.onCollide("player", "atjaro", () => {
+    console.log("váltás");
+    k.go(celSzoba);
+  });
 }
