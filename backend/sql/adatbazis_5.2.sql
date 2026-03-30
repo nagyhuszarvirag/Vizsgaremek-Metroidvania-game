@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS elfelejtett_jelszo_keresek (
 );
 
 CREATE TABLE IF NOT EXISTS mentes (
-    mentes_id INT AUTO_INCREMENT PRIMARY KEY,
+    mentes_id INT,
     user_id INT,
     mentett_adatok JSON DEFAULT (
         JSON_OBJECT(
@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS mentes (
                 'dash', false
             )
         )
-    )
+    ),
+    PRIMARY KEY (mentes_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS nyelv (
@@ -177,17 +178,17 @@ BEGIN
     INSERT INTO felh_beallitasok (user_id)
     VALUES (NEW.user_id);
 
-    INSERT INTO mentes (user_id)
-    VALUES (NEW.user_id);
+    INSERT INTO mentes (mentes_id, user_id)
+    VALUES (1, NEW.user_id);
 
-    INSERT INTO mentes (user_id)
-    VALUES (NEW.user_id);
+    INSERT INTO mentes (mentes_id, user_id)
+    VALUES (2, NEW.user_id);
 
-    INSERT INTO mentes (user_id)
-    VALUES (NEW.user_id);
+    INSERT INTO mentes (mentes_id, user_id)
+    VALUES (3, NEW.user_id);
 
-    INSERT INTO mentes (user_id)
-    VALUES (NEW.user_id);
+    INSERT INTO mentes (mentes_id, user_id)
+    VALUES (4, NEW.user_id);
 
 END$$
 

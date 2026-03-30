@@ -210,7 +210,7 @@ async function FINDhAchivementAdatok(user_id, achivement_id) {
   return rows || null;
 }
 
-/*async function FINDhAchivementAdatokFROMSAVE(
+async function FINDhAchivementAdatokFROMSAVE(
   valtozo_utvonal,
   mentes_id,
   user_id
@@ -222,7 +222,7 @@ async function FINDhAchivementAdatok(user_id, achivement_id) {
   FROM mentes
   WHERE mentes_id=1 AND user_id=1;
   `;
-
+*/
   const sql = `
     SELECT 
     JSON_EXTRACT(mentett_adatok, ?) AS VOLT_E_NPC
@@ -231,8 +231,9 @@ async function FINDhAchivementAdatok(user_id, achivement_id) {
   `;
   const [rows] = await pool.execute(sql, [valtozo_utvonal, mentes_id, user_id]);
   return rows || null;
-}*/
+}
 
+/*
 async function FINDhAchivementAdatokFROMSAVE(valtozo_utvonal, mentes_slot, user_id) {
   let sql = `
     SELECT JSON_EXTRACT(mentett_adatok, ?) AS VOLT_E_NPC
@@ -261,7 +262,7 @@ async function FINDhAchivementAdatokFROMSAVE(valtozo_utvonal, mentes_slot, user_
 
   const [rows] = await pool.execute(sql, params);
   return rows[0] || null;
-}
+}*/
 
 //elfelejtett jelszó kérés mentése
 async function elfelejtettJelszoKeresLetrehoz(user_email) {
