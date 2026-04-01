@@ -55,13 +55,21 @@ export async function KaboomBetolto(mentes_id) {
     scale: scale,
   });
 
-  k.scene("kezdoszoba", (adatok) => {
+  /*k.scene("kezdoszoba", (adatok) => {
     Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
-  });
+  });*/
 
   /*k.scene("mitteous", (adatok) => {
     Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
   });*/
+
+  k.scene("Kezdoszoba", (adatok) => {
+    Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Mitteous_Plateau", (adatok) => {
+    Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
+  });
 
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
   k.debug.drawArea = true;
@@ -95,7 +103,7 @@ export async function KaboomBetolto(mentes_id) {
         console.log("Intro átugorva");
         kellintro = false;
         k.destroyAll("SkipIntro");
-        k.go("kezdoszoba");
+        k.go("Kezdoszoba");
       }
     });
 
@@ -111,13 +119,7 @@ export async function KaboomBetolto(mentes_id) {
     });
   });
 
-  k.scene("Kezdoszoba", (adatok) => {
-    Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
-  });
-
-  k.scene("Mitteous_Plateau", (adatok) => {
-    Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
-  });
+  
 
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
   k.loadSprite("Mitteous_Plateau", "../../images/maps/Mitteous_Plateau.png");
