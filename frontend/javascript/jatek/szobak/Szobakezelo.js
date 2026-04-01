@@ -118,7 +118,7 @@ export function SzobakiesesKezelo(k, map, mapW, mapH){ //láthatatlan falak
 
 }
 
-export function SzobavaltozatoKezelo(k, atjaroX, atjaroY, atjaroWidth, atjaroHeight, celSzoba, belepesiPont = null){
+/*export function SzobavaltozatoKezelo(k, atjaroX, atjaroY, atjaroWidth, atjaroHeight, celSzoba, belepesiPont = null){
 
   console.log("SzobavaltozatoKezelo meghívva");
   console.log("SzobavaltozatoKezelo atjaroX: " + atjaroX);
@@ -137,6 +137,32 @@ export function SzobavaltozatoKezelo(k, atjaroX, atjaroY, atjaroWidth, atjaroHei
 
   k.onCollide("player", "atjaro", () => {
     console.log("váltás");
+    k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
+  });
+}*/
+
+export function SzobavaltozatoKezelo(
+  k,
+  atjaroX,
+  atjaroY,
+  atjaroWidth,
+  atjaroHeight,
+  celSzoba,
+  belepesiPont = null,
+  atjaroTag = "atjaro"
+) {
+  //átjáró hitbox
+  k.add([
+    k.pos(atjaroX, atjaroY),
+    k.rect(atjaroWidth, atjaroHeight),
+    k.area(),
+    k.opacity(0),
+    atjaroTag,
+  ]);
+
+  //egyedi tag
+  k.onCollide("player", atjaroTag, () => {
+    console.log("Átjáró aktiválva:", atjaroTag);
     k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
   });
 }

@@ -22,6 +22,19 @@ export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   let xpos = kezdoszoba_data.data.layers[2].objects[0].x;
   let ypos = kezdoszoba_data.data.layers[2].objects[0].y;
 
+  if (szoba_belepesi_pont != null) {
+  switch (szoba_belepesi_pont) {
+    case "Back_From_Mitteous":
+      xpos = kezdoszoba_data.data.layers[1].objects[0].x;
+      ypos = kezdoszoba_data.data.layers[1].objects[0].y;
+      break;
+
+    default:
+      console.log("Ismeretlen belépési pont Kezdoszobába:", szoba_belepesi_pont);
+      break;
+  }
+}
+
   const szoba_layerek = kezdoszoba_data.data.layers;
   const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
@@ -31,7 +44,7 @@ export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   const player = jatekos_betolt(k, xpos, ypos);
   
   SzobakiesesKezelo(k, map, mapW, mapH);
-  SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon");
+  SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon", "atjaro_mitteous");
 
 /*
 
