@@ -166,3 +166,7 @@ export function SzobavaltozatoKezelo(
     k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
   });
 }
+
+export function   MentesLetrehozo(k, x, y, width, height, name) {
+  // Mentés létrehozása
+}

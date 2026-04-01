@@ -2,7 +2,8 @@ import {
   setBackgroundColor,
   MapColliderek,
   SzobakiesesKezelo,
-  SzobavaltozatoKezelo
+  SzobavaltozatoKezelo,
+  MentesLetrehozo
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -52,6 +53,9 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
         break;
     }
   }
+  else{
+    //mentésből betöltéskor a savepoint alapján állítja be a pozíciót
+  }
 
 
 
@@ -94,7 +98,10 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const player = jatekos_betolt(k, xpos, ypos);
 
   SzobakiesesKezelo(k, map, mapW, mapH);
-  SzobavaltozatoKezelo(k, mapData.data.layers[7].objects[0].x, mapData.data.layers[7].objects[0].y, mapData.data.layers[7].objects[0].width, mapData.data.layers[7].objects[0].height, "Mitteous_Plateau");
+
+  //Az adatoka azok a savepoint_2-é, de neki majd kell egy külön savepoint kezelő
+  MentesLetrehozo(k, mapData.data.layers[7].objects[0].x, mapData.data.layers[7].objects[0].y, mapData.data.layers[7].objects[0].width, mapData.data.layers[7].objects[0].height,mapData.data.layers[7].name);
+  
   SzobavaltozatoKezelo(
     k,
     mapData.data.layers[12].objects[0].x,
