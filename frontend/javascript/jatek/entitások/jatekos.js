@@ -13,7 +13,7 @@ import {
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
     k.sprite("player"),
-    k.pos(xpos, ypos -30), //a -30 azért kell, hogy a játékos ne a lábánál legyen lerakva, hanem a közepénél
+    k.pos(xpos, ypos - 30), //a -30 azért kell, hogy a játékos ne a lábánál legyen lerakva, hanem a közepénél
     k.anchor("center"),
     k.area({
       shape: new k.Rect(k.vec2(0, 1), 20, 30), //itt tudod állítgatni a boxát a vec2 az a box pozíciója a másik két szám pedig a szélesség magasság
@@ -24,19 +24,59 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   player.play("idle");
 
-  k.camPos(xpos, ypos-30);
+  k.camPos(xpos, ypos - 30);
   k.camScale(3);
 
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
   const JUMP_FORCE = 400;
 
-  player.onUpdate(() => {
+  /*player.onUpdate(() => {
     k.camPos(player.pos);
-  });
+  });*/
+  /*player.onUpdate(() => {
+    const cam = k.camPos();
+
+    const celX = player.pos.x;
+    const celY = player.pos.y;
+
+    let ujX = cam.x;
+    let ujY = cam.y;
+
+    // csak akkor mozduljon vízszintesen, ha már van kis eltérés
+    if (Math.abs(celX - cam.x) > 2) {
+      ujX = cam.x + (celX - cam.x) * 0.1;
+    }
+
+    // függőlegesen mehet normál simítással
+    ujY = cam.y + (celY - cam.y) * 0.1;
+
+    k.camPos(Math.round(ujX), Math.round(ujY));
+  });*/
+  player.onUpdate(() => {
+  const cam = k.camPos();
+
+  const deadZoneX = 30;
+  const deadZoneY = 10;
+
+  let ujX = cam.x;
+  let ujY = cam.y;
+
+  if (player.pos.x > cam.x + deadZoneX) {
+    ujX = cam.x + (player.pos.x - (cam.x + deadZoneX)) * 0.1;
+  } else if (player.pos.x < cam.x - deadZoneX) {
+    ujX = cam.x + (player.pos.x - (cam.x - deadZoneX)) * 0.1;
+  }
+
+  if (Math.abs(player.pos.y - cam.y) > deadZoneY) {
+    ujY = cam.y + (player.pos.y - cam.y) * 0.1;
+  }
+
+  k.camPos(Math.round(ujX), Math.round(ujY));
+});
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
 
-  console.log("Kell-e Prowl: "+kelleprowl);
+  console.log("Kell-e Prowl: " + kelleprowl);
 
   player.onCollideUpdate("Prowl", () => {
     k.onKeyPress((key) => {
@@ -104,11 +144,11 @@ export async function jatekos_betolt(k, xpos, ypos) {
   /*
     //Ezt majd a kötélmászásnál lesz jó, másképp le kéne tiltani a gombot, amikor nem lehet használni
     k.onKeyDown("up", () => { 
-	player.move(0, -SPEED)
+  player.move(0, -SPEED)
     })
 
     onKeyDown("down", () => {
-	player.move(0, SPEED)
+  player.move(0, SPEED)
     })*/
 
   return player;

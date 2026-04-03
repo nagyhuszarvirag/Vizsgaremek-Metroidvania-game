@@ -545,7 +545,7 @@ router.patch("/admin/reset-jelszo", async (req, res) => {
       });
     }
 
-    await database.elfelejtettJelszoKeresAllapot(keres_id, "feldolgozva");
+    await database.elfelejtettJelszoKeresAllapot(keres_id, 1);
 
     res.status(200).json({
       success: true,
