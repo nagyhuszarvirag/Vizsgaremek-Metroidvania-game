@@ -20,5 +20,7 @@
     "datum": "Date",
     "allapot": "Status",
     "resetPass": "Password reset",
-    "resetSuc": "Password reset."
+    "resetSuc": "Password reset.",
+    "uj": "New",
+    "resetelve": "Reseted"
 }

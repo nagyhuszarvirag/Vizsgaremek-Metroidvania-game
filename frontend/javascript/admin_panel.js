@@ -11,8 +11,8 @@ export async function adminPanelLetrehoz() {
 
   const szoveg = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
-      "/admin_panel.json",
+    nyelv +
+    "/admin_panel.json",
   );
 
   console.log(szoveg);
@@ -247,7 +247,15 @@ border-bottom:1px solid rgba(255,255,255,0.2);
       sor.appendChild(email);
 
       const datum = document.createElement("td");
-      datum.textContent = keres.keres_datum;
+      const datumElem = new Date(keres.keres_datum);
+      datum.textContent = datumElem.toLocaleString("hu-HU", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+
+      });
       datum.style.cssText = `
         padding:8px;
         border-bottom:1px solid rgba(255,255,255,0.2);
@@ -255,10 +263,11 @@ border-bottom:1px solid rgba(255,255,255,0.2);
       sor.appendChild(datum);
 
       const allapot = document.createElement("td");
-      allapot.textContent = keres.allapot;
+      allapot.textContent = Number(keres.allapot) === 1 ? szoveg.data.resetelve : szoveg.data.uj;
       allapot.style.cssText = `
         padding:8px;
         border-bottom:1px solid rgba(255,255,255,0.2);
+        color: ${Number(keres.allapot) === 1 ? "lightgreen" : "orange"};
       `;
       sor.appendChild(allapot);
 
@@ -294,8 +303,8 @@ border-bottom:1px solid rgba(255,255,255,0.2);
         if (resetData.success) {
           alert(
             szoveg.data.resetSuc +
-              "\nIdeiglenes jelszó: " +
-              resetData.tempPassword,
+            "\nIdeiglenes jelszó: " +
+            resetData.tempPassword,
           );
           renderResetRequestsPanel();
         } else {

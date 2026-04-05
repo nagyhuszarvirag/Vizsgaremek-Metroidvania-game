@@ -20,5 +20,7 @@
     "datum": "Dátum",
     "allapot": "Állapot",
     "resetPass": "Jelszó visszaállítás",
-    "resetSuc": "A jelszó visszaállítva."
+    "resetSuc": "A jelszó visszaállítva.",
+    "uj": "Új",
+    "resetelve": "Resetelve"
 }
