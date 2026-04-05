@@ -1,4 +1,4 @@
-import {KellEAzNPC} from "../kaboomBetolto.js";
+import { KellEAzNPC } from "../kaboomBetolto.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -55,23 +55,23 @@ export function NPCCollider(k, collider, NPC) {
 
   //Note to self: Az NPC collider első koordinátája ott legyen, ahol akarom az NPC-t. A kezdőszobát ez alapján átírom
 
-  if(true){
+  if (true) {
     let NPC_adder = k.add([
-    k.sprite(NPC),
-    k.pos(collider[0].x, collider[0].y -12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
-    k.anchor("center"),
-    k.area({
-      shape: new k.Rect(k.vec2(0), 200, 100),
-    }),
-    NPC,
-  ]);
+      k.sprite(NPC),
+      k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
+      k.anchor("center"),
+      k.area({
+        shape: new k.Rect(k.vec2(0), 200, 100),
+      }),
+      NPC,
+    ]);
 
-  NPC_adder.play("idle");
+    NPC_adder.play("idle");
   }
-  
+
 }
 
-export function SzobakiesesKezelo(k, map, mapW, mapH){ //láthatatlan falak 
+export function SzobakiesesKezelo(k, map, mapW, mapH) { //láthatatlan falak 
   //láthatatlan falak vastagsága
 
   const T = 32;
@@ -167,6 +167,43 @@ export function SzobavaltozatoKezelo(
   });
 }
 
-export function   MentesLetrehozo(k, x, y, width, height, name) {
-  // Mentés létrehozása
+export function MentesCollider(k, colliderObj, savepointNev) {
+  const mentesPont = k.add([
+    k.pos(colliderObj.x, colliderObj.y),
+    k.area({
+      shape: new k.Rect(k.vec2(0), colliderObj.width, colliderObj.height),
+    }),
+    k.opacity(0),
+    "mentespont",
+  ]);
+
+  mentesPont.savepointNev = savepointNev;
+  console.log("Mentéspont objektum: ", mentesPont);
+
+  return mentesPont;
+}
+
+export async function MentesLetrehozo(user_id, mentes_id, savepointNev) {
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/mentes/update-savepoint", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        mentes_id: mentes_id,
+        uj_savepoint: savepointNev,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Mentés hiba:", error);
+    return {
+      success: false,
+      message: "Mentés sikertelen",
+    };
+  }
 }

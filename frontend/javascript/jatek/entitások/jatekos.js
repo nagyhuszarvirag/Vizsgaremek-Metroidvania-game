@@ -9,6 +9,7 @@ import {
   playerInteractGombja,
   mobileMode,
 } from "../../options.js";
+import { MentesLetrehozo } from "../szobak/Szobakezelo.js";
 
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
@@ -53,32 +54,32 @@ export async function jatekos_betolt(k, xpos, ypos) {
     k.camPos(Math.round(ujX), Math.round(ujY));
   });*/
   player.onUpdate(() => {
-  const cam = k.camPos();
+    const cam = k.camPos();
 
-  const deadZoneX = 30;
-  const deadZoneY = 10;
+    const deadZoneX = 30;
+    const deadZoneY = 10;
 
-  let ujX = cam.x;
-  let ujY = cam.y;
+    let ujX = cam.x;
+    let ujY = cam.y;
 
-  if (player.pos.x > cam.x + deadZoneX) {
-    ujX = cam.x + (player.pos.x - (cam.x + deadZoneX)) * 0.1;
-  } else if (player.pos.x < cam.x - deadZoneX) {
-    ujX = cam.x + (player.pos.x - (cam.x - deadZoneX)) * 0.1;
-  }
+    if (player.pos.x > cam.x + deadZoneX) {
+      ujX = cam.x + (player.pos.x - (cam.x + deadZoneX)) * 0.1;
+    } else if (player.pos.x < cam.x - deadZoneX) {
+      ujX = cam.x + (player.pos.x - (cam.x - deadZoneX)) * 0.1;
+    }
 
-  if (Math.abs(player.pos.y - cam.y) > deadZoneY) {
-    ujY = cam.y + (player.pos.y - cam.y) * 0.1;
-  }
+    if (Math.abs(player.pos.y - cam.y) > deadZoneY) {
+      ujY = cam.y + (player.pos.y - cam.y) * 0.1;
+    }
 
-  k.camPos(Math.round(ujX), Math.round(ujY));
-});
+    k.camPos(Math.round(ujX), Math.round(ujY));
+  });
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
 
   console.log("Kell-e Prowl: " + kelleprowl);
 
-  player.onCollideUpdate("Prowl", () => {
+  /*player.onCollideUpdate("Prowl", () => {
     k.onKeyPress((key) => {
       //const check
       //Removeolni kell az első futatás után, ez az enternél is kell
@@ -88,6 +89,63 @@ export async function jatekos_betolt(k, xpos, ypos) {
         console.log(kelleprowl);
       }
     });
+  });*/
+
+  let aktivNPC = null;
+  let aktivMentesPont = null;
+
+  player.onCollideUpdate("Prowl", (obj) => {
+    if (kelleprowl) {
+      aktivNPC = obj;
+    }
+  });
+
+  player.onCollideEnd("Prowl", (obj) => {
+    if (aktivNPC === obj) {
+      aktivNPC = null;
+    }
+  });
+
+  player.onCollideUpdate("mentespont", (obj) => {
+    aktivMentesPont = obj;
+  });
+
+  player.onCollideEnd("mentespont", (obj) => {
+    if (aktivMentesPont === obj) {
+      aktivMentesPont = null;
+    }
+  });
+
+  k.onKeyPress(playerInteractGombja, async () => {
+    //NPC
+    if (aktivNPC) {
+      if (kelleprowl) {
+        console.log("A player beszél: Prowlral");
+        kelleprowl = false;
+      }
+      return;
+    }
+
+    //mentés
+    if (aktivMentesPont) {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user || user.usernev === "guest") {
+        console.log("Guestként nincs mentés");
+        return;
+      }
+
+      const savepointNev = aktivMentesPont.savepointNev;
+
+      if (!savepointNev) {
+        console.log("Nincs savepoint név a mentésponton");
+        return;
+      }
+
+      const eredmeny = await MentesLetrehozo(user.id, 1, savepointNev);
+
+      console.log("Mentés eredménye:", eredmeny);
+    }
   });
 
   //A billenytűket majd dinamikusan kell kezelni.

@@ -3,7 +3,7 @@ import {
   MapColliderek,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
-  MentesLetrehozo
+  MentesCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -51,9 +51,12 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
         xpos = mapData.data.layers[6].objects[0].x;
         ypos = mapData.data.layers[6].objects[0].y;
         break;
+      case "savepoint_2":
+        xpos = mapData.data.layers[7].objects[0].x;
+        ypos = mapData.data.layers[7].objects[0].y;
     }
   }
-  else{
+  else {
     //mentésből betöltéskor a savepoint alapján állítja be a pozíciót
   }
 
@@ -95,13 +98,18 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     collapsingGroundTrigger.destroy();
   });
 
+  const savepointObj = mapData.data.layers[7].objects[0];
+  const savepointNev = mapData.data.layers[7].name;
+  console.log("Savepoint objektum neve: ", savepointNev);
+  MentesCollider(k, savepointObj, savepointNev);
+
   const player = jatekos_betolt(k, xpos, ypos);
 
   SzobakiesesKezelo(k, map, mapW, mapH);
 
   //Az adatoka azok a savepoint_2-é, de neki majd kell egy külön savepoint kezelő
-  MentesLetrehozo(k, mapData.data.layers[7].objects[0].x, mapData.data.layers[7].objects[0].y, mapData.data.layers[7].objects[0].width, mapData.data.layers[7].objects[0].height,mapData.data.layers[7].name);
-  
+  //MentesLetrehozo(k, mapData.data.layers[7].objects[0].x, mapData.data.layers[7].objects[0].y, mapData.data.layers[7].objects[0].width, mapData.data.layers[7].objects[0].height,mapData.data.layers[7].name);
+
   SzobavaltozatoKezelo(
     k,
     mapData.data.layers[12].objects[0].x,
