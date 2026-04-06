@@ -607,6 +607,37 @@ router.patch("/user/jelszo-csere/:id", async (req, res) => {
   }
 });
 
+router.patch("/mentes/update-savepoint", async (req, res) => {
+  try {
+    const { user_id, mentes_id, uj_savepoint } = req.body;
+
+    if (!user_id || !mentes_id || !uj_savepoint) {
+      return res.status(400).json({
+        success: false,
+        message: "Hiányzó adat",
+      });
+    }
+
+    await database.UpdateMentes(
+      user_id,
+      mentes_id,
+      "$.savepoint",
+      uj_savepoint
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Savepoint elmentve",
+    });
+  } catch (err) {
+    console.error("PATCH /mentes/update-savepoint hiba:", err);
+    res.status(500).json({
+      success: false,
+      message: "Adatbázis hiba",
+    });
+  }
+});
+
 //ez alá ne írj új apit csak fölé
 router.use((err, req, res, next) => {
   const now = new Date().toLocaleString("hu-HU");

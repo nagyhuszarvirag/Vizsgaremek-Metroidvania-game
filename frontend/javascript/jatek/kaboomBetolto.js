@@ -162,7 +162,11 @@ export async function KaboomBetolto(mentes_id) {
     case "kezdomap_1":
       k.go("intro");
       break;
-
+    case "savepoint_2":
+      k.go("Mitteous_Plateau", {
+        szoba_belepesi_pont: "savepoint_2"
+      });
+      break;
     default:
       console.log(
         "Ismeretlen savepoint: " + mentesbetolto.data.mentett_adatok.savepoint,
