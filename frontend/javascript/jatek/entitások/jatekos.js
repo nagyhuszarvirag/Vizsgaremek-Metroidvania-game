@@ -26,7 +26,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
   player.play("idle");
 
   k.camPos(xpos, ypos - 30);
-  k.camScale(3);
+  k.camScale(5);
 
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
   const JUMP_FORCE = 400;
