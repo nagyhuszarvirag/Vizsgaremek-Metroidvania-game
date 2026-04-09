@@ -31,6 +31,10 @@ export async function jatekos_betolt(k, xpos, ypos) {
   const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
   const JUMP_FORCE = 400;
 
+  //ideiglenes double jump
+  const MAX_JUMPS = 2;
+  let jumpsLeft = MAX_JUMPS;
+
   /*player.onUpdate(() => {
     k.camPos(player.pos);
   });*/
@@ -73,6 +77,11 @@ export async function jatekos_betolt(k, xpos, ypos) {
     }
 
     k.camPos(Math.round(ujX), Math.round(ujY));
+
+    //ha földön van visszatöltjük a két ugrást
+    if (player.isGrounded()) {
+      jumpsLeft = MAX_JUMPS;
+    }
   });
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
@@ -162,9 +171,18 @@ export async function jatekos_betolt(k, xpos, ypos) {
   });
 
   k.onKeyPress(playerUgroGombja, () => {
+    /*if (player.isGrounded()) {
+      k.setGravity(GRAVITY);
+      player.jump(JUMP_FORCE);
+    }*/
     if (player.isGrounded()) {
       k.setGravity(GRAVITY);
       player.jump(JUMP_FORCE);
+      jumpsLeft = MAX_JUMPS - 1;
+    } else if (jumpsLeft > 0) {
+      k.setGravity(GRAVITY);
+      player.jump(JUMP_FORCE);
+      jumpsLeft--;
     }
   });
 

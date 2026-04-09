@@ -32,7 +32,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
         ypos = mapData.data.layers[3].objects[0].y;
         break;
 
-      case "Back_From_iacon_1":
+      case "Back_From_Iacon_1":
         xpos = mapData.data.layers[4].objects[0].x;
         ypos = mapData.data.layers[4].objects[0].y;
         break;
@@ -112,13 +112,67 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
 
   SzobavaltozatoKezelo(
     k,
-    mapData.data.layers[12].objects[0].x,
-    mapData.data.layers[12].objects[0].y,
-    mapData.data.layers[12].objects[0].width,
-    mapData.data.layers[12].objects[0].height,
+    mapData.data.layers[13].objects[0].x,
+    mapData.data.layers[13].objects[0].y,
+    mapData.data.layers[13].objects[0].width,
+    mapData.data.layers[13].objects[0].height,
     "Kezdoszoba",
     "Back_From_Mitteous",
     "atjaro_kezdomap"
   );
 
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[9].objects[0].x,
+    mapData.data.layers[9].objects[0].y,
+    mapData.data.layers[9].objects[0].width,
+    mapData.data.layers[9].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_1_and_Medical_Bay",
+    "atjaro_iacon_1"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[10].objects[0].x,
+    mapData.data.layers[10].objects[0].y,
+    mapData.data.layers[10].objects[0].width,
+    mapData.data.layers[10].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_2",
+    "atjaro_iacon_2"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[11].objects[0].x,
+    mapData.data.layers[11].objects[0].y,
+    mapData.data.layers[11].objects[0].width,
+    mapData.data.layers[11].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_3",
+    "atjaro_iacon_3"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[12].objects[0].x,
+    mapData.data.layers[12].objects[0].y,
+    mapData.data.layers[12].objects[0].width,
+    mapData.data.layers[12].objects[0].height,
+    "Iacon",
+    "Falling_from_Mitteous_4",
+    "atjaro_iacon_4"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[14].objects[0].x,
+    mapData.data.layers[14].objects[0].y,
+    mapData.data.layers[14].objects[0].width,
+    mapData.data.layers[14].objects[0].height,
+    "End_map",
+    "Back_from_Mitteous",
+    "atjaro_end_map"
+  );
 }
