@@ -1,6 +1,11 @@
 import kaboom from "../../libraries/kaboom.mjs";
 import { Kezdoszoba } from "./szobak/Kezdoszoba.js";
 import { Mitteous } from "./szobak/Mitteous_Plateau.js";
+import { Iacon } from "./szobak/Iacon.js";
+import { Medbay } from "./szobak/Medbay.js";
+import { Leesos_hely } from "./szobak/Leesos_hely.js";
+import { Smelting_Pits } from "./szobak/Smelting_Pits.js";
+import { End_map } from "./szobak/End_map.js";
 import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
 
@@ -71,6 +76,26 @@ export async function KaboomBetolto(mentes_id) {
     Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
+  k.scene("Iacon", (adatok) => {
+    Iacon(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Medbay", (adatok) => {
+    Medbay(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Leesos_hely", (adatok) => {
+    Leesos_hely(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Smelting_Pits", (adatok) => {
+    Smelting_Pits(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("End_map", (adatok) => {
+    End_map(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
   k.debug.drawArea = true;
 
@@ -119,9 +144,11 @@ export async function KaboomBetolto(mentes_id) {
     });
   });
 
-  
 
+  //kezdőmap sprite
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
+
+  //Mitteous map sprite
   k.loadSprite("Mitteous_Plateau", "../../images/maps/Mitteous_Plateau.png");
   k.loadSprite(
     "Mitteous_Plateau_Collapsing_ground",
@@ -130,6 +157,37 @@ export async function KaboomBetolto(mentes_id) {
   k.loadSprite("Mitteous_Plateau2", "../../images/maps/Mitteous_plateau_BG_2.png");
   k.loadSprite("Mitteous_Plateau3", "../../images/maps/Mitteous_plateau_BG_3.png");
   k.loadSprite("Mitteous_Plateau4", "../../images/maps/Mitteous_plateau_BG_4.png");
+
+  //Iacon map sprite
+  k.loadSprite("Iacon", "../../images/maps/Iacon_city_fo_layer.png");
+  k.loadSprite("Iacon_Breakable_wall_1", "../../images/maps/Iacon_city_breakable_wall1.png");
+  k.loadSprite("Iacon_Breakable_wall_2", "../../images/maps/Iacon_city_breakable_wall2.png");
+  k.loadSprite("Iacon_Collapsing_ground_1", "../../images/maps/Iacon_city_collapsing_ground_1.png");
+  k.loadSprite("Iacon_Collapsing_ground_2", "../../images/maps/Iacon_city_collapsing_ground_2.png");
+  k.loadSprite("Iacon_Hidden_wall", "../../images/maps/Iacon_city_hidden_breakable_wall.png");
+
+  //Medbay map sprite
+  k.loadSprite("Medbay", "../../images/maps/Medbay.png");
+
+  //Leesos_hely map sprite
+  k.loadSprite("Leesos_hely", "../../images/maps/leesos_hely_solid.png");
+  k.loadSprite("Leesos_hely_heart", "../../images/maps/leesos_hely_heart.png");
+
+  //Smelting Pits map sprite
+  k.loadSprite("Smelting_Pits", "../../images/maps/Smelting pits.png");
+  k.loadSprite("Smelting_Pits_BG_1", "../../images/maps/Smelting pits_BG_1.png");
+  k.loadSprite(
+    "Smelting_Pits_Breakable_wall",
+    "../../images/maps/Smelting pits_Breakable_wall.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground",
+    "../../images/maps/Smelting pits_collapsing_ground.png",
+  );
+
+  //End map sprite
+  k.loadSprite("End_map", "../../images/maps/end_map.png");
+  k.loadSprite("End_map_kovek", "../../images/maps/end_map_kovek.png");
 
   k.loadSprite("player", "../../images/sprites/Main_player.png", {
     //Ez még csak definiálás, majd le kell programozni a többi cuccot
@@ -165,6 +223,16 @@ export async function KaboomBetolto(mentes_id) {
     case "savepoint_2":
       k.go("Mitteous_Plateau", {
         szoba_belepesi_pont: "savepoint_2"
+      });
+      break;
+    case "savepoint_3":
+      k.go("Iacon", {
+        szoba_belepesi_pont: "savepoint_3"
+      });
+      break;
+    case "Savepoint_4":
+      k.go("Medbay", {
+        szoba_belepesi_pont: "Savepoint_4"
       });
       break;
     default:

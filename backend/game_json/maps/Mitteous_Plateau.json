@@ -210,29 +210,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":18,
-         "name":"Ratchet_Chromedome_NPC",
-         "objects":[
-                {
-                 "height":0,
-                 "id":22,
-                 "name":"",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1312,
-                 "y":1273
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":13,
          "name":"Back_From_iacon_1",
          "objects":[
@@ -580,6 +557,29 @@
                  "width":195,
                  "x":1534,
                  "y":1280
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":18,
+         "name":"Ratchet_Chromedome_NPC",
+         "objects":[
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1312,
+                 "y":1273
                 }],
          "opacity":1,
          "type":"objectgroup",

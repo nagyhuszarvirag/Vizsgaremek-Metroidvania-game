@@ -22,38 +22,38 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     "http://127.0.0.1:3000/api/map_data/Mitteous_Plateau.json",
   );
 
-  let xpos = mapData.data.layers[7].objects[0].x;
-  let ypos = mapData.data.layers[7].objects[0].y;
+  let xpos = mapData.data.layers[8].objects[0].x;
+  let ypos = mapData.data.layers[8].objects[0].y;
 
   if (szoba_belepesi_pont != null) {
     switch (szoba_belepesi_pont) {
       case "Back_From_kezdomap_and_Iacon":
-        xpos = mapData.data.layers[2].objects[0].x;
-        ypos = mapData.data.layers[2].objects[0].y;
-        break;
-
-      case "Back_From_iacon_1":
         xpos = mapData.data.layers[3].objects[0].x;
         ypos = mapData.data.layers[3].objects[0].y;
         break;
 
-      case "Back_From_Iacon_2":
+      case "Back_From_Iacon_1":
         xpos = mapData.data.layers[4].objects[0].x;
         ypos = mapData.data.layers[4].objects[0].y;
         break;
 
-      case "Back_From_Iacon_3":
+      case "Back_From_Iacon_2":
         xpos = mapData.data.layers[5].objects[0].x;
         ypos = mapData.data.layers[5].objects[0].y;
         break;
 
-      case "Back_From_End_Map":
+      case "Back_From_Iacon_3":
         xpos = mapData.data.layers[6].objects[0].x;
         ypos = mapData.data.layers[6].objects[0].y;
         break;
-      case "savepoint_2":
+
+      case "Back_From_End_Map":
         xpos = mapData.data.layers[7].objects[0].x;
         ypos = mapData.data.layers[7].objects[0].y;
+        break;
+      case "savepoint_2":
+        xpos = mapData.data.layers[8].objects[0].x;
+        ypos = mapData.data.layers[8].objects[0].y;
     }
   }
   else {
@@ -74,9 +74,9 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   ]);
 
 
-  MapColliderek(k, map, szoba_layerek[14].objects);
+  MapColliderek(k, map, szoba_layerek[15].objects);
   //Collapsing_Ground_logic helye:szoba_layerek[15].objects
-  const collapseZone = mapData.data.layers[15].objects[0];
+  const collapseZone = mapData.data.layers[16].objects[0];
 
   const collapsingGroundTrigger = k.add([
     k.pos(collapseZone.x, collapseZone.y),
@@ -98,8 +98,8 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     collapsingGroundTrigger.destroy();
   });
 
-  const savepointObj = mapData.data.layers[7].objects[0];
-  const savepointNev = mapData.data.layers[7].name;
+  const savepointObj = mapData.data.layers[8].objects[0];
+  const savepointNev = mapData.data.layers[8].name;
   console.log("Savepoint objektum neve: ", savepointNev);
   MentesCollider(k, savepointObj, savepointNev);
 
@@ -112,13 +112,67 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
 
   SzobavaltozatoKezelo(
     k,
-    mapData.data.layers[12].objects[0].x,
-    mapData.data.layers[12].objects[0].y,
-    mapData.data.layers[12].objects[0].width,
-    mapData.data.layers[12].objects[0].height,
+    mapData.data.layers[13].objects[0].x,
+    mapData.data.layers[13].objects[0].y,
+    mapData.data.layers[13].objects[0].width,
+    mapData.data.layers[13].objects[0].height,
     "Kezdoszoba",
     "Back_From_Mitteous",
     "atjaro_kezdomap"
   );
 
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[9].objects[0].x,
+    mapData.data.layers[9].objects[0].y,
+    mapData.data.layers[9].objects[0].width,
+    mapData.data.layers[9].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_1_and_Medical_Bay",
+    "atjaro_iacon_1"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[10].objects[0].x,
+    mapData.data.layers[10].objects[0].y,
+    mapData.data.layers[10].objects[0].width,
+    mapData.data.layers[10].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_2",
+    "atjaro_iacon_2"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[11].objects[0].x,
+    mapData.data.layers[11].objects[0].y,
+    mapData.data.layers[11].objects[0].width,
+    mapData.data.layers[11].objects[0].height,
+    "Iacon",
+    "Back_from_Mitteous_3",
+    "atjaro_iacon_3"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[12].objects[0].x,
+    mapData.data.layers[12].objects[0].y,
+    mapData.data.layers[12].objects[0].width,
+    mapData.data.layers[12].objects[0].height,
+    "Iacon",
+    "Falling_from_Mitteous_4",
+    "atjaro_iacon_4"
+  );
+
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[14].objects[0].x,
+    mapData.data.layers[14].objects[0].y,
+    mapData.data.layers[14].objects[0].width,
+    mapData.data.layers[14].objects[0].height,
+    "End_map",
+    "Back_from_Mitteous",
+    "atjaro_end_map"
+  );
 }
