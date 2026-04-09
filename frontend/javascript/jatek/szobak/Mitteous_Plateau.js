@@ -22,38 +22,38 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     "http://127.0.0.1:3000/api/map_data/Mitteous_Plateau.json",
   );
 
-  let xpos = mapData.data.layers[7].objects[0].x;
-  let ypos = mapData.data.layers[7].objects[0].y;
+  let xpos = mapData.data.layers[8].objects[0].x;
+  let ypos = mapData.data.layers[8].objects[0].y;
 
   if (szoba_belepesi_pont != null) {
     switch (szoba_belepesi_pont) {
       case "Back_From_kezdomap_and_Iacon":
-        xpos = mapData.data.layers[2].objects[0].x;
-        ypos = mapData.data.layers[2].objects[0].y;
-        break;
-
-      case "Back_From_iacon_1":
         xpos = mapData.data.layers[3].objects[0].x;
         ypos = mapData.data.layers[3].objects[0].y;
         break;
 
-      case "Back_From_Iacon_2":
+      case "Back_From_iacon_1":
         xpos = mapData.data.layers[4].objects[0].x;
         ypos = mapData.data.layers[4].objects[0].y;
         break;
 
-      case "Back_From_Iacon_3":
+      case "Back_From_Iacon_2":
         xpos = mapData.data.layers[5].objects[0].x;
         ypos = mapData.data.layers[5].objects[0].y;
         break;
 
-      case "Back_From_End_Map":
+      case "Back_From_Iacon_3":
         xpos = mapData.data.layers[6].objects[0].x;
         ypos = mapData.data.layers[6].objects[0].y;
         break;
-      case "savepoint_2":
+
+      case "Back_From_End_Map":
         xpos = mapData.data.layers[7].objects[0].x;
         ypos = mapData.data.layers[7].objects[0].y;
+        break;
+      case "savepoint_2":
+        xpos = mapData.data.layers[8].objects[0].x;
+        ypos = mapData.data.layers[8].objects[0].y;
     }
   }
   else {
@@ -74,9 +74,9 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   ]);
 
 
-  MapColliderek(k, map, szoba_layerek[14].objects);
+  MapColliderek(k, map, szoba_layerek[15].objects);
   //Collapsing_Ground_logic helye:szoba_layerek[15].objects
-  const collapseZone = mapData.data.layers[15].objects[0];
+  const collapseZone = mapData.data.layers[16].objects[0];
 
   const collapsingGroundTrigger = k.add([
     k.pos(collapseZone.x, collapseZone.y),
@@ -98,8 +98,8 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     collapsingGroundTrigger.destroy();
   });
 
-  const savepointObj = mapData.data.layers[7].objects[0];
-  const savepointNev = mapData.data.layers[7].name;
+  const savepointObj = mapData.data.layers[8].objects[0];
+  const savepointNev = mapData.data.layers[8].name;
   console.log("Savepoint objektum neve: ", savepointNev);
   MentesCollider(k, savepointObj, savepointNev);
 
