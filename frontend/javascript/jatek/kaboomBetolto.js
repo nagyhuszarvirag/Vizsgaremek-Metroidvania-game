@@ -14,8 +14,11 @@ import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
 
 const GRAVITY = 700;
+const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
+const JUMP_FORCE = 400;
 
-export { GRAVITY };
+
+export { GRAVITY, SPEED, JUMP_FORCE };
 
 export async function KaboomBetolto(mentes_id) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -233,14 +236,14 @@ export async function KaboomBetolto(mentes_id) {
       idle: { from: 0, to: 7, loop: true },
       walk: { from: 72, to: 83, loop: true },
       run: { from: 24, to: 31, loop: true },
-      jump: { from: 36, to: 38, speed: 5 },
+      jump: { from: 36, to: 38, speed: 2.5 },
       run_and_jump: { from: 12, to: 14, loop: true },
       attack: { from: 24, to: 28, speed: 16 },
       hurt: { from: 60, to: 63, speed: 16 },
     },
   });
 
-  k.loadSprite("Prowl", "../../images/sprites/Prowl.png", {
+  k.loadSprite("Prowl", "../../images/sprites/NPC/Prowl.png", {
     sliceX: 8,
     sliceY: 1,
     anims: {
