@@ -16,7 +16,7 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     const mapH = 32 * 50;
 
     const mapData = await fecthData(
-        "http://127.0.0.1:3000/api/map_data/Smelting_Pits.json",
+        "http://127.0.0.1:3000/api/map_data/Smelting_pits.json",
     );
 
     let xpos = mapData.data.layers[8].objects[0].x;
@@ -91,8 +91,8 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         mapData.data.layers[9].objects[0].y,
         mapData.data.layers[9].objects[0].width,
         mapData.data.layers[9].objects[0].height,
-        "Kaon_1",
-        "Back_from_Smelting_Pits_1",
+        "Kaon",
+        "Back_from_the_smelting_pits_to_Kaon_1",
         "atjaro_kaon_1",
     );
 
@@ -102,8 +102,8 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         mapData.data.layers[11].objects[0].y,
         mapData.data.layers[11].objects[0].width,
         mapData.data.layers[11].objects[0].height,
-        "Kaon_2",
-        "Back_from_Smelting_Pits_2",
+        "Kaon",
+        "Back_from_the_smelting_pits_to_Kaon_2",
         "atjaro_kaon_2",
     );
 
@@ -114,7 +114,7 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         mapData.data.layers[13].objects[0].width,
         mapData.data.layers[13].objects[0].height,
         "Hidden_room",
-        "Back_from_Smelting_Pits",
+        "Back_from_smelting_pits",
         "atjaro_hidden_room",
     );
 }

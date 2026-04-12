@@ -32,19 +32,19 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
         ypos = mapData.data.layers[3].objects[0].y;
         break;
 
-      case "Back_From_Iacon_1":
+      case "Back_From_iacon_1":
+        xpos = mapData.data.layers[3].objects[0].x;
+        ypos = mapData.data.layers[3].objects[0].y;
+        break;
+
+      case "Back_From_Iacon_2":
         xpos = mapData.data.layers[4].objects[0].x;
         ypos = mapData.data.layers[4].objects[0].y;
         break;
 
-      case "Back_From_Iacon_2":
+      case "Back_From_Iacon_3":
         xpos = mapData.data.layers[5].objects[0].x;
         ypos = mapData.data.layers[5].objects[0].y;
-        break;
-
-      case "Back_From_Iacon_3":
-        xpos = mapData.data.layers[6].objects[0].x;
-        ypos = mapData.data.layers[6].objects[0].y;
         break;
 
       case "Back_From_End_Map":
