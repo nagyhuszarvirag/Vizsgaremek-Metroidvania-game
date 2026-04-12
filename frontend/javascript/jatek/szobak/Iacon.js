@@ -30,12 +30,12 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
                 ypos = mapData.data.layers[28].objects[0].y;
                 break;
 
-            case "Back_from_iacon_2":
+            case "Back_from_Mitteous_2":
                 xpos = mapData.data.layers[29].objects[0].x;
                 ypos = mapData.data.layers[29].objects[0].y;
                 break;
 
-            case "Back_from_iacon_3":
+            case "Back_from_Mitteous_3":
                 xpos = mapData.data.layers[30].objects[0].x;
                 ypos = mapData.data.layers[30].objects[0].y;
                 break;
@@ -134,7 +134,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         mapData.data.layers[24].objects[0].width,
         mapData.data.layers[24].objects[0].height,
         "Medbay",
-        "Back_From_Iacon",
+        "Back_from_Iacon",
         "atjaro_medbay"
     );
 
@@ -145,7 +145,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         mapData.data.layers[25].objects[0].width,
         mapData.data.layers[25].objects[0].height,
         "Mitteous_Plateau",
-        "Back_From_Iacon_1",
+        "Back_From_iacon_1",
         "atjaro_mitteous_1"
     );
 

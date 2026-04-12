@@ -6,6 +6,10 @@ import { Medbay } from "./szobak/Medbay.js";
 import { Leesos_hely } from "./szobak/Leesos_hely.js";
 import { Smelting_Pits } from "./szobak/Smelting_Pits.js";
 import { End_map } from "./szobak/End_map.js";
+import { Crystal_City } from "./szobak/Crystal_city.js";
+import { Kaon } from "./szobak/Kaon.js";
+import { Cemetery } from "./szobak/Cemetery.js";
+import { Hidden_Room } from "./szobak/Hidden_room.js";
 import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
 
@@ -94,6 +98,22 @@ export async function KaboomBetolto(mentes_id) {
 
   k.scene("End_map", (adatok) => {
     End_map(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Crystal_city", (adatok) => {
+    Crystal_City(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Kaon", (adatok) => {
+    Kaon(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Cemetery", (adatok) => {
+    Cemetery(k, adatok?.szoba_belepesi_pont ?? null);
+  });
+
+  k.scene("Hidden_room", (adatok) => {
+    Hidden_Room(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
@@ -189,6 +209,22 @@ export async function KaboomBetolto(mentes_id) {
   k.loadSprite("End_map", "../../images/maps/end_map.png");
   k.loadSprite("End_map_kovek", "../../images/maps/end_map_kovek.png");
 
+  //Crystal_city map sprite
+  k.loadSprite("Crystal_City", "../../images/maps/Crystal_city.png");
+  k.loadSprite("Crystal_City_Gate", "../../images/maps/Crystal_city_Locked_place.png");
+  k.loadSprite("Crystal_City_heart", "../../images/maps/Crystal_city_heart.png");
+
+  //Kaon map sprite
+  k.loadSprite("City_of_Kaon", "../../images/maps/City_of_Kaon.png");
+  k.loadSprite("City_of_Kaon_heart", "../../images/maps/City_of_Kaon_heart.png");
+
+  //Cemetery map sprite
+  k.loadSprite("The_cemetery", "../../images/maps/The_cemetery.png");
+
+  //Hidden room map sprite
+  k.loadSprite("hidden_room_solid", "../../images/maps/hidden_room_solid.png");
+  k.loadSprite("hidden_room_heart", "../../images/maps/hidden_room_heart.png");
+
   k.loadSprite("player", "../../images/sprites/Main_player.png", {
     //Ez még csak definiálás, majd le kell programozni a többi cuccot
     sliceX: 12,
@@ -233,6 +269,11 @@ export async function KaboomBetolto(mentes_id) {
     case "Savepoint_4":
       k.go("Medbay", {
         szoba_belepesi_pont: "Savepoint_4"
+      });
+      break;
+    case "Savepoint_5":
+      k.go("Kaon", {
+        szoba_belepesi_pont: "Savepoint_5"
       });
       break;
     default:

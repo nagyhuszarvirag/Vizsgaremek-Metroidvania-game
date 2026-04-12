@@ -57,28 +57,73 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
     k.camPos(Math.round(ujX), Math.round(ujY));
   });*/
+  /*player.onUpdate(() => {
+  const cam = k.camPos();
+
+  const deadZoneX = 30;
+  const deadZoneY = 10;
+  const followSpeed = 0.12;
+
+  let targetX = cam.x;
+  let targetY = cam.y;
+
+  if (player.pos.x > cam.x + deadZoneX) {
+    targetX = player.pos.x - deadZoneX;
+  } else if (player.pos.x < cam.x - deadZoneX) {
+    targetX = player.pos.x + deadZoneX;
+  }
+
+  if (player.pos.y > cam.y + deadZoneY) {
+    targetY = player.pos.y - deadZoneY;
+  } else if (player.pos.y < cam.y - deadZoneY) {
+    targetY = player.pos.y + deadZoneY;
+  }
+
+  const ujX = cam.x + (targetX - cam.x) * followSpeed;
+  const ujY = cam.y + (targetY - cam.y) * followSpeed;
+
+  k.camPos(ujX, ujY);
+
+  if (player.isGrounded()) {
+    jumpsLeft = MAX_JUMPS;
+  }
+});*/
+
+
+  //láthatatlan kamera célpont
+  const cameraTarget = k.add([
+    k.pos(xpos, ypos - 30),
+  ]);
+
+  let lookAhead = 0;
+
   player.onUpdate(() => {
-    const cam = k.camPos();
+    const followSpeed = 0.08;
+    const lookSpeed = 0.1;
+    const maxLook = 60;
 
-    const deadZoneX = 30;
-    const deadZoneY = 10;
+    //irány alapján cél offset
+    let targetLook = 0;
 
-    let ujX = cam.x;
-    let ujY = cam.y;
-
-    if (player.pos.x > cam.x + deadZoneX) {
-      ujX = cam.x + (player.pos.x - (cam.x + deadZoneX)) * 0.1;
-    } else if (player.pos.x < cam.x - deadZoneX) {
-      ujX = cam.x + (player.pos.x - (cam.x - deadZoneX)) * 0.1;
+    if (k.isKeyDown(playerEloreMegyGombja)) {
+      targetLook = maxLook;
+    } else if (k.isKeyDown(playerHatraMegyGombja)) {
+      targetLook = -maxLook;
     }
 
-    if (Math.abs(player.pos.y - cam.y) > deadZoneY) {
-      ujY = cam.y + (player.pos.y - cam.y) * 0.1;
-    }
+    //lookahead simítás (EZ A VIDEÓ LÉNYEGE)
+    lookAhead += (targetLook - lookAhead) * lookSpeed;
 
-    k.camPos(Math.round(ujX), Math.round(ujY));
+    //cél pozíció
+    const targetX = player.pos.x + lookAhead;
+    const targetY = player.pos.y;
 
-    //ha földön van visszatöltjük a két ugrást
+    //kamera target mozgatása (lassú követés)
+    cameraTarget.pos.x += (targetX - cameraTarget.pos.x) * followSpeed;
+    cameraTarget.pos.y += (targetY - cameraTarget.pos.y) * followSpeed;
+
+    k.camPos(cameraTarget.pos.x, cameraTarget.pos.y);
+
     if (player.isGrounded()) {
       jumpsLeft = MAX_JUMPS;
     }
