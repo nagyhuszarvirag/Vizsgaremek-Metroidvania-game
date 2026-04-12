@@ -88,6 +88,51 @@
         }, 
         {
          "draworder":"topdown",
+         "id":5,
+         "name":"Back_from_smelting_pits",
+         "objects":[
+                {
+                 "height":0,
+                 "id":38,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":511.607085758138,
+                 "y":602.468504188783
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"To_smelting_pits",
+         "objects":[
+                {
+                 "height":191.545692907847,
+                 "id":39,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64.6671356398286,
+                 "x":577.09279273518,
+                 "y":415.015667967001
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":4,
          "name":"Solid",
          "objects":[
@@ -395,8 +440,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":38,
+ "nextlayerid":7,
+ "nextobjectid":40,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
