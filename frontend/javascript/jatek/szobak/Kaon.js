@@ -53,6 +53,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     const savepointLayer = layerKereses("Savepoint_5");
 
+    const bossArenaLayer = layerKereses("Boss_arena");
+
     let xpos = backFromCrystalLayer.objects[0].x;
     let ypos = backFromCrystalLayer.objects[0].y;
 
@@ -112,9 +114,23 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         MapColliderek(k, map, solidLayer.objects);
     }
 
+    let bossArenaZone = null;
+
+    if (bossArenaLayer && bossArenaLayer.objects && bossArenaLayer.objects[0]) {
+        const arena = bossArenaLayer.objects[0];
+
+        bossArenaZone = k.add([
+            k.pos(arena.x, arena.y),
+            k.rect(arena.width, arena.height),
+            k.area(),
+            k.opacity(0),
+            "boss_arena_zone",
+        ]);
+    }
+
     const player = await jatekos_betolt(k, xpos, ypos);
 
-    Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
+    Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
 
     const savepointObj = savepointLayer.objects[0];
     const savepointNev = savepointLayer.name;

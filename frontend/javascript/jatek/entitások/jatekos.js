@@ -10,7 +10,7 @@ import {
   mobileMode,
 } from "../../options.js";
 import { MentesLetrehozo } from "../szobak/Szobakezelo.js";
-import { Kamera_kezelo } from "./kamera.js";
+import { hpRendszerBeallitas } from "./hp_kezelo.js";
 
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
@@ -23,6 +23,8 @@ export async function jatekos_betolt(k, xpos, ypos) {
     k.body(),
     "player",
   ]);
+
+  hpRendszerBeallitas(player, 5);
 
   player.play("idle");
 

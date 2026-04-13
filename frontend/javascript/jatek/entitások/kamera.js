@@ -9,7 +9,7 @@ import {
   mobileMode,
 } from "../../options.js";
 
-export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH) {
+export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaObj = null) {
 
   k.camPos(xpos, ypos - 30);
   k.camScale(4);
@@ -24,6 +24,18 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH) {
 
   let prevY = player.pos.y;
   let velocityY = 0;
+
+  let bossArenaAktiv = false;
+
+  if (bossArenaObj) {
+    player.onCollideUpdate("boss_arena_zone", () => {
+      bossArenaAktiv = true;
+    });
+
+    player.onCollideEnd("boss_arena_zone", () => {
+      bossArenaAktiv = false;
+    });
+  }
 
   player.onUpdate(() => {
     const followSpeed = 0.08;
@@ -62,29 +74,62 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH) {
     verticalLook += (targetVertical - verticalLook) * verticalLookSpeed;
 
     //cél pozíció
-    const targetX = player.pos.x + lookAhead;
-    const targetY = player.pos.y + verticalLook;
+    let targetX = player.pos.x + lookAhead;
+    let targetY = player.pos.y + verticalLook;
+
+    //k.camPos(cameraTarget.pos.x, cameraTarget.pos.y);
+
+    //kamera méret számítás
+    const halfW = k.width() / 2 / k.camScale().x;
+    const halfH = k.height() / 2 / k.camScale().y;
+
+    /*if (bossArenaAktiv && bossArenaObj) {
+      //boss aréna közepére húzzuk a kamerát
+      const arenaCenterX = bossArenaObj.x + bossArenaObj.width / 2;
+      const arenaCenterY = bossArenaObj.y + bossArenaObj.height / 2;
+
+      targetX = arenaCenterX;
+      targetY = arenaCenterY;
+    }*/
 
     //kamera target mozgatása (lassú követés)
     cameraTarget.pos.x += (targetX - cameraTarget.pos.x) * followSpeed;
     cameraTarget.pos.y += (targetY - cameraTarget.pos.y) * followSpeed;
 
-    //k.camPos(cameraTarget.pos.x, cameraTarget.pos.y);
-
-    // kamera méret számítás
-    const halfW = k.width() / 2 / k.camScale().x;
-    const halfH = k.height() / 2 / k.camScale().y;
 
     let camX = cameraTarget.pos.x;
     let camY = cameraTarget.pos.y;
 
-    camX = Math.max(halfW, camX);
-    camX = Math.min(mapW - halfW, camX);
+    if (bossArenaAktiv && bossArenaObj) {
+      //boss arénán belüli clamp
+      const arenaMinX = bossArenaObj.x + halfW;
+      const arenaMaxX = bossArenaObj.x + bossArenaObj.width - halfW;
+      const arenaMinY = bossArenaObj.y + halfH;
+      const arenaMaxY = bossArenaObj.y + bossArenaObj.height - halfH;
 
-    camY = Math.max(halfH, camY);
-    camY = Math.min(mapH - halfH, camY);
+      if (arenaMaxX >= arenaMinX) {
+        camX = Math.max(arenaMinX, camX);
+        camX = Math.min(arenaMaxX, camX);
+      } else {
+        camX = bossArenaObj.x + bossArenaObj.width / 2;
+      }
 
-    k.camPos(camX, camY);
+      if (arenaMaxY >= arenaMinY) {
+        camY = Math.max(arenaMinY, camY);
+        camY = Math.min(arenaMaxY, camY);
+      } else {
+        camY = bossArenaObj.y + bossArenaObj.height / 2;
+      }
+    } else {
+      //normál map clamp
+      camX = Math.max(halfW, camX);
+      camX = Math.min(mapW - halfW, camX);
 
-  });
+      camY = Math.max(halfH, camY);
+      camY = Math.min(mapH - halfH, camY);
+    }
+
+      k.camPos(camX, camY);
+
+    });
 }
