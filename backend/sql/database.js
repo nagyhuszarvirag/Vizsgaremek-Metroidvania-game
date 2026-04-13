@@ -97,7 +97,8 @@ async function felhAchivementAdatok(userId, usernyelv) {
   const sql = `
     SELECT a.achievement_title, a.achievement_text, p.unlocked
     FROM achievements a
-    INNER JOIN player_achievements p ON a.id=p.achievement_id
+    INNER JOIN achievement_definitions a_def ON a_def.id=a.definition_id
+    INNER JOIN player_achievements p ON a_def.id=p.achievement_id
     WHERE p.account_id = ? AND a.nyelv_id=?;
   `;
   const [rows] = await pool.execute(sql, [userId, usernyelv]);

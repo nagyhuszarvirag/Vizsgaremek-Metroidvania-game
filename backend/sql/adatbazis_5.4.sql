@@ -113,7 +113,15 @@ CREATE TABLE player_achievements (
 
 INSERT INTO achievement_definitions (id, key_name) VALUES 
 (1, 'prowl_table_throw'),
-(2, 'ratchet_fail_save');
+(2, 'ratchet_fail_save'),
+(3, 'Swindle_buy_something'),
+(4, 'The_cemetery'),
+(5, 'Sparkeater_killed'),
+(6, 'To_the_pits'),
+(7, 'Tarn_defeat'),
+(8, 'IM_LATE'),
+(9, 'sky_idiots'),
+(10, 'The_Lost_light');
 
 INSERT INTO achievements (nyelv_id, definition_id, achievement_title, achievement_text)
 VALUES 
@@ -140,6 +148,102 @@ VALUES
     2,
     "I'm too old for this!",
     'Watch as Ratchet fails to save someone'
+),
+(
+    1,
+    3,
+    'Swindle',
+    'Vásárolj halálfelvételeket a Swindle-től.'
+),
+(
+    2,
+    3,
+    "Swindle",
+    'Purchase some death footages from Swindle'
+),
+(
+    1,
+    4,
+    'A temető?',
+    'Találd meg az "Eltűntek tiszteletére" feliratú monolitot'
+),
+(
+    2,
+    4,
+    "The cemetery?",
+    'Witness the monolith labelled "In Honor of the Dissappeared"'
+),
+(
+    1,
+    5,
+    'Sparkeater',
+    'Győz le egy Sparkeater-t.'
+),
+(
+    2,
+    5,
+    "Sparkeater",
+    'Defeat a Sparkeater'
+),
+(
+    1,
+    6,
+    'Az olvasztó gödrökhöz!',
+    'Fogadd el a kristály szív védelmét a láva ellen.'
+),
+(
+    2,
+    6,
+    "To the smelting pits!",
+    "Receive the crystal heart's protection against lava"
+),
+(
+    1,
+    7,
+    'Tarn',
+    'Győzd le Tarn-t.'
+),
+(
+    2,
+    7,
+    "Tarn",
+    'Defeat Tarn'
+),
+(
+    1,
+    8,
+    'ELKÉSEK!',
+    'Találd meg Tailgatet, aki a...Lost Light-hoz megy?'
+),
+(
+    2,
+    8,
+    "I'M LATE!",
+    'Find Tailgate, who is going to the...Lost Light?'
+),
+(
+    1,
+    9,
+    'Égbolti idióták',
+    'Legyél tanúja egy balesetnek és egy határeseti gyilkosságnak.'
+),
+(
+    2,
+    9,
+    "Sky idiots",
+    'Witness an accident and borderline murder'
+),
+(
+    1,
+    10,
+    'The Lost Light',
+    'Érd el a Lost Light-ot és kezdd meg az utazást.'
+),
+(
+    2,
+    10,
+    "The Lost Light",
+    'Reach the Lost Light and start the voyage.'
 );
 
 
