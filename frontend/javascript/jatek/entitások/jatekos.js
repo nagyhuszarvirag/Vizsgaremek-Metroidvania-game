@@ -26,10 +26,10 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
   player.play("idle");
 
-  k.camPos(xpos, ypos - 30);
+  /*k.camPos(xpos, ypos - 30);
   k.camScale(4);
 
-  Kamera_kezelo(k, xpos, ypos, player);
+  Kamera_kezelo(k, xpos, ypos, player);*/
 
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");

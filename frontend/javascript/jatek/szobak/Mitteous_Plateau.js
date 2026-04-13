@@ -7,6 +7,7 @@ import {
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
+import { Kamera_kezelo } from "../entitások/kamera.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -103,7 +104,9 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Savepoint objektum neve: ", savepointNev);
   MentesCollider(k, savepointObj, savepointNev);
 
-  const player = jatekos_betolt(k, xpos, ypos);
+  const player = await jatekos_betolt(k, xpos, ypos);
+
+  Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 
   SzobakiesesKezelo(k, map, mapW, mapH);
 
