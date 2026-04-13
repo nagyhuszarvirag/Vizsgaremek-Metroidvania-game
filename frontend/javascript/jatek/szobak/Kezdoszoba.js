@@ -7,6 +7,7 @@ import {
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
+import { Kamera_kezelo } from "../entitások/kamera.js";
 
 export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   setBackgroundColor(k, "#00001b");
@@ -41,7 +42,9 @@ export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   MapColliderek(k, map, szoba_layerek[3].objects);
   NPCCollider(k, szoba_layerek[4].objects, "Prowl");
 
-  const player = jatekos_betolt(k, xpos, ypos);
+  const player = await jatekos_betolt(k, xpos, ypos);
+
+  Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
   
   SzobakiesesKezelo(k, map, mapW, mapH);
   SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon", "atjaro_mitteous");
