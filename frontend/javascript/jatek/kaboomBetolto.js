@@ -204,8 +204,92 @@ export async function KaboomBetolto(mentes_id) {
     "../../images/maps/Smelting pits_Breakable_wall.png",
   );
   k.loadSprite(
-    "Smelting_Pits_Collapsing_ground",
-    "../../images/maps/Smelting pits_collapsing_ground.png",
+    "Smelting_Pits_Collapsing_ground_1",
+    "../../images/maps/Smelting pits_collapsing_ground_1.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_2",
+    "../../images/maps/Smelting pits_collapsing_ground_2.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_3",
+    "../../images/maps/Smelting pits_collapsing_ground_3.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_4",
+    "../../images/maps/Smelting pits_collapsing_ground_4.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_5",
+    "../../images/maps/Smelting pits_collapsing_ground_5.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_6",
+    "../../images/maps/Smelting pits_collapsing_ground_6.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_7",
+    "../../images/maps/Smelting pits_collapsing_ground_7.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_8",
+    "../../images/maps/Smelting pits_collapsing_ground_8.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_9",
+    "../../images/maps/Smelting pits_collapsing_ground_9.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_10",
+    "../../images/maps/Smelting pits_collapsing_ground_10.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_11",
+    "../../images/maps/Smelting pits_collapsing_ground_11.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_12",
+    "../../images/maps/Smelting pits_collapsing_ground_12.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_13",
+    "../../images/maps/Smelting pits_collapsing_ground_13.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_14",
+    "../../images/maps/Smelting pits_collapsing_ground_14.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_15",
+    "../../images/maps/Smelting pits_collapsing_ground_15.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_16",
+    "../../images/maps/Smelting pits_collapsing_ground_16.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_17",
+    "../../images/maps/Smelting pits_collapsing_ground_17.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_18",
+    "../../images/maps/Smelting pits_collapsing_ground_18.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_19",
+    "../../images/maps/Smelting pits_collapsing_ground_19.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_20",
+    "../../images/maps/Smelting pits_collapsing_ground_20.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_21",
+    "../../images/maps/Smelting pits_collapsing_ground_21.png",
+  );
+  k.loadSprite(
+    "Smelting_Pits_Collapsing_ground_22",
+    "../../images/maps/Smelting pits_collapsing_ground_22.png",
   );
 
   //End map sprite

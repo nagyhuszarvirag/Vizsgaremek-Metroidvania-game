@@ -64,21 +64,28 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         k.sprite("Smelting_Pits_Breakable_wall"),
     ]);
 
-    const collapsingGroundLayer = k.add([
+    /*const collapsingGroundLayer = k.add([
         k.pos(0, 0),
         k.sprite("Smelting_Pits_Collapsing_ground"),
+    ]);*/
+
+    const collapsingGroundLayer = [];
+    
+    for (let i = 1; i < 23; i++) {
+    const g =  k.add([
+        k.pos(0, 0),
+        k.sprite(`Smelting_Pits_Collapsing_ground_${i}`)
     ]);
+    collapsingGroundLayer.push(g);
+    }
 
     MapColliderek(k, map, szoba_layerek[4].objects);
 
     MapColliderek(k, map, szoba_layerek[5].objects, "Breakable_wall_object");
 
-    MapColliderek(
-        k,
-        map,
-        szoba_layerek[6].objects,
-        "Collapsing_ground_object_kesobb_valtozik",
-    );
+    for(let i=0; i<22; i++){
+        MapColliderek(k, map, szoba_layerek[17 + i].objects);
+    }
 
     MapColliderek(k, map, szoba_layerek[7].objects, "Lava_object");
 
