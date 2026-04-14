@@ -3,6 +3,7 @@ import {
   MapColliderek,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
+  Eso
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -10,6 +11,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
+
 
   setBackgroundColor(k, "#000000");
 
@@ -123,4 +125,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       console.log("Világítótorony trigger aktiválva");
     });
   }
+
+  Eso();
 }

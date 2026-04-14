@@ -21,6 +21,7 @@ const JUMP_FORCE = 400;
 export { GRAVITY, SPEED, JUMP_FORCE };
 
 export async function KaboomBetolto(mentes_id) {
+  specialeffektdoboz();
   const user = JSON.parse(localStorage.getItem("user"));
   let mentesbetolto;
   if (user.usernev === "guest") {
@@ -396,4 +397,12 @@ export async function KellEAzNPC(valtozo_utvonal) {
   const ertek = kell.message.VOLT_E_NPC;
 
   return ertek === 0 || ertek === false || ertek === "false";
+}
+
+async function specialeffektdoboz() {
+  const container = document.querySelector("body");
+
+  let specieffekdoboz = document.createElement("div");
+  specieffekdoboz.id = "specieffektdoboz";
+  container.appendChild(specieffekdoboz);
 }
