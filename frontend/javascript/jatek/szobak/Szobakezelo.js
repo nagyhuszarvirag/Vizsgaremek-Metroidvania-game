@@ -165,7 +165,7 @@ export function SzobavaltozatoKezelo(
     //console.log("Átjáró aktiválva:", atjaroTag);
     const container = document.querySelector("body");
     container.className = ''
-    const kodkezelo=await Kod();
+    const kodkezelo = await Kod();
     kodkezelo.stop();
     k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
   });
@@ -212,43 +212,71 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) {
   }
 }
 
-export async function Eso() {
-  const container = document.querySelector("body");
+export function Eso() {
+  const container = document.body;
+
+  let intervalId = null;
 
   function rainEffect() {
-    let rainDrops = document.createElement("span");
+    const rainDrops = document.createElement("span");
     rainDrops.classList.add("rain");
-    container.appendChild(rainDrops);
+
     rainDrops.style.left = Math.random() * 120 + "%";
 
-    setTimeout(function rainEffect() {
+    container.appendChild(rainDrops);
+
+    setTimeout(() => {
       rainDrops.remove();
-    }, 5000);
-  }
-
-  setInterval(rainEffect, 50);
-}
-
-export async function Kod(camScale = 4, camX = 0, camY = 0) { //A fog nem jelenik meg, no idea why. Törölni, ha nem tudjuk megoldani
-  const container = document.getElementById("specieffektdoboz");
-
-  function updateFogScale() {
-    const fogLayers = ["foglayer_01", "foglayer_02", "foglayer_03"];
-    fogLayers.forEach(id => {
-      const fog = document.getElementById(id);
-      if (fog) {
-        fog.style.transform = `scale(${1 / camScale}) translate(${-camX}px, ${-camY}px)`;
-      }
-    });
+    }, 3000);
   }
 
   function start() {
-    // Check if fog already exists
+    if (intervalId) return; // ne induljon el többször
+
+    intervalId = setInterval(rainEffect, 50);
+  }
+
+  function stop() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    // maradék eső eltakarítása
+    const rains = document.querySelectorAll(".rain");
+    rains.forEach(r => r.remove());
+  }
+
+  return { start, stop };
+}
+
+export async function Kod() { //A fog nem jelenik meg, no idea why. Törölni, ha nem tudjuk megoldani
+  const container = document.getElementById("specieffektdoboz");
+
+  function feltoltFogLayert(fogLayer) {
+    for (let i = 0; i < 2; i++) {
+      const image1 = document.createElement("div");
+      const image2 = document.createElement("div");
+
+      image1.classList.add("image01");
+      image2.classList.add("image02");
+
+      fogLayer.appendChild(image1);
+      fogLayer.appendChild(image2);
+    }
+  }
+
+  function start() {
+    if (!container) {
+      console.error("Nincs specieffektdoboz");
+      return;
+    }
+
     if (document.getElementById("foglayer_01")) return;
-    
-    let fog1 = document.createElement("div");
-    let fog2 = document.createElement("div");
-    let fog3 = document.createElement("div");
+
+    const fog1 = document.createElement("div");
+    const fog2 = document.createElement("div");
+    const fog3 = document.createElement("div");
 
     fog1.classList.add("fog");
     fog2.classList.add("fog");
@@ -258,56 +286,28 @@ export async function Kod(camScale = 4, camX = 0, camY = 0) { //A fog nem jeleni
     fog2.id = "foglayer_02";
     fog3.id = "foglayer_03";
 
-    // Make fog cover the visible area
-    const viewWidth = window.innerWidth / camScale;
-    const viewHeight = window.innerHeight / camScale;
-    
-    [fog1, fog2, fog3].forEach(fog => {
+    [fog1, fog2, fog3].forEach((fog) => {
       fog.style.position = "fixed";
       fog.style.top = "0";
       fog.style.left = "0";
-      fog.style.width = `${viewWidth * 2}px`;
-      fog.style.height = `${viewHeight}px`;
+      fog.style.width = "200vw";
+      fog.style.height = "100vh";
       fog.style.pointerEvents = "none";
+      fog.style.zIndex = "10000";
+      fog.style.overflow = "hidden";
     });
 
-    let image1 = document.createElement("div");
-    let image2 = document.createElement("div");
-
-    image1.classList.add("image01");
-    image2.classList.add("image02");
-
-    fog1.appendChild(image1);
-    fog1.appendChild(image2);
-
-    image1 = document.createElement("div");
-    image2 = document.createElement("div");
-
-    image1.classList.add("image01");
-    image2.classList.add("image02");
-
-    fog2.appendChild(image1);
-    fog2.appendChild(image2);
-
-    image1 = document.createElement("div");
-    image2 = document.createElement("div");
-
-    image1.classList.add("image01");
-    image2.classList.add("image02");
-
-    fog3.appendChild(image1);
-    fog3.appendChild(image2);
+    feltoltFogLayert(fog1);
+    feltoltFogLayert(fog2);
+    feltoltFogLayert(fog3);
 
     container.appendChild(fog1);
     container.appendChild(fog2);
     container.appendChild(fog3);
-    
-    updateFogScale();
   }
 
   function stop() {
-    const fogIds = ["foglayer_01", "foglayer_02", "foglayer_03"];
-    fogIds.forEach(id => {
+    ["foglayer_01", "foglayer_02", "foglayer_03"].forEach((id) => {
       const fog = document.getElementById(id);
       if (fog && fog.parentNode === container) {
         container.removeChild(fog);
@@ -315,13 +315,206 @@ export async function Kod(camScale = 4, camX = 0, camY = 0) { //A fog nem jeleni
     });
   }
 
-  // Update fog position when camera moves
-  function update(cameraScale, cameraX, cameraY) {
-    camScale = cameraScale;
-    camX = cameraX;
-    camY = cameraY;
-    updateFogScale();
+  return { start, stop };
+}
+
+export function Hamu() {
+  let container = document.getElementById("specieffektdoboz");
+  let canvas = null;
+  let ctx = null;
+  let animationId = null;
+
+  let ashParticles = [];
+  let emberParticles = [];
+
+  const ASH_COUNT = 140;
+  const EMBER_COUNT = 35;
+
+  function createAsh(width, height) {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 3.2 + 1.2,
+      vy: Math.random() * 0.7 + 0.25,
+      vx: (Math.random() - 0.5) * 0.35,
+      alpha: Math.random() * 0.30 + 0.22,
+    };
   }
 
-  return { start, stop, update };
+  function createEmber(width, height) {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 2.8 + 1.4,
+      vy: Math.random() * 0.45 + 0.08,
+      vx: (Math.random() - 0.5) * 0.5,
+      alpha: Math.random() * 0.35 + 0.55,
+      glow: Math.random() * 1.4 + 1.2,
+      flicker: Math.random() * Math.PI * 2,
+    };
+  }
+
+  function resetAsh(p, width) {
+    p.x = Math.random() * width;
+    p.y = -10;
+    p.r = Math.random() * 3.2 + 1.2;
+    p.vy = Math.random() * 0.7 + 0.25;
+    p.vx = (Math.random() - 0.5) * 0.35;
+    p.alpha = Math.random() * 0.30 + 0.22;
+  }
+
+  function resetEmber(p, width) {
+    p.x = Math.random() * width;
+    p.y = -10;
+    p.r = Math.random() * 2.8 + 1.4;
+    p.vy = Math.random() * 0.45 + 0.08;
+    p.vx = (Math.random() - 0.5) * 0.5;
+    p.alpha = Math.random() * 0.35 + 0.55;
+    p.glow = Math.random() * 1.4 + 1.2;
+    p.flicker = Math.random() * Math.PI * 2;
+  }
+
+  function resize() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function drawAsh(p) {
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawEmber(p, time) {
+    const pulse = 0.75 + Math.sin(time * 0.005 + p.flicker) * 0.25;
+    const alpha = p.alpha * pulse;
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 110, 20, ${alpha})`;
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 180, 80, ${alpha * 0.75})`;
+    ctx.arc(p.x, p.y, p.r * p.glow, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 230, 140, ${alpha * 0.35})`;
+    ctx.arc(p.x, p.y, p.r * p.glow * 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw(time = 0) {
+    if (!canvas || !ctx) return;
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+
+    for (const p of ashParticles) {
+      p.x += p.vx + Math.sin((p.y + p.x) * 0.002) * 0.12;
+      p.y += p.vy;
+
+      if (p.y > h + 15 || p.x < -20 || p.x > w + 20) {
+        resetAsh(p, w);
+      }
+
+      drawAsh(p);
+    }
+
+    for (const p of emberParticles) {
+      p.x += p.vx + Math.sin((p.y + time * 0.02) * 0.01) * 0.18;
+      p.y += p.vy;
+
+      if (p.y > h + 15 || p.x < -30 || p.x > w + 30) {
+        resetEmber(p, w);
+      }
+
+      drawEmber(p, time);
+    }
+
+    animationId = requestAnimationFrame(draw);
+  }
+
+  function start() {
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "specieffektdoboz";
+      container.style.position = "fixed";
+      container.style.inset = "0";
+      container.style.pointerEvents = "none";
+      container.style.zIndex = "9999";
+      document.body.appendChild(container);
+    }
+
+    if (document.getElementById("hamu_canvas")) return;
+
+    canvas = document.createElement("canvas");
+    canvas.id = "hamu_canvas";
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = "10001";
+
+    container.appendChild(canvas);
+    ctx = canvas.getContext("2d");
+
+    resize();
+    ashParticles = [];
+    emberParticles = [];
+
+    for (let i = 0; i < ASH_COUNT; i++) {
+      ashParticles.push(createAsh(canvas.width, canvas.height));
+    }
+
+    for (let i = 0; i < EMBER_COUNT; i++) {
+      emberParticles.push(createEmber(canvas.width, canvas.height));
+    }
+
+    window.addEventListener("resize", resize);
+    draw();
+  }
+
+  function stop() {
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+
+    window.removeEventListener("resize", resize);
+
+    const existing = document.getElementById("hamu_canvas");
+    if (existing) existing.remove();
+
+    canvas = null;
+    ctx = null;
+    ashParticles = [];
+    emberParticles = [];
+  }
+
+  return { start, stop };
+}
+
+export function EffektTorles() {
+  if (window.kodkezelo) {
+    window.kodkezelo.stop();
+    window.kodkezelo = null;
+  }
+
+  if (window.hamukezelo) {
+    window.hamukezelo.stop();
+    window.hamukezelo = null;
+  }
+
+  if (window.esokezelo) {
+    window.esokezelo.stop();
+    window.esokezelo = null;
+  }
 }

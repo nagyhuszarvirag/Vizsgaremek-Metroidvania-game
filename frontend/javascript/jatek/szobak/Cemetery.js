@@ -3,7 +3,8 @@ import {
   MapColliderek,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
-  Eso
+  Eso,
+  EffektTorles
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -12,6 +13,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
+  EffektTorles();
 
   setBackgroundColor(k, "#000000");
 
@@ -126,5 +128,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     });
   }
 
-  Eso();
+  const esokezelo = Eso();
+  window.esokezelo = esokezelo;
+  esokezelo.start();
 }

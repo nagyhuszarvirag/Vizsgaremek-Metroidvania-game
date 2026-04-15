@@ -3,13 +3,17 @@ import {
   MapColliderek,
   NPCCollider,
   SzobakiesesKezelo,
-  SzobavaltozatoKezelo
+  SzobavaltozatoKezelo,
+  EffektTorles
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 
 export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
+
+  EffektTorles();
+
   setBackgroundColor(k, "#00001b");
 
   //map méret pixelben
