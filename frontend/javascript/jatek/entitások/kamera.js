@@ -8,6 +8,7 @@ import {
   playerInteractGombja,
   mobileMode,
 } from "../../options.js";
+import { Kod } from "../szobak/Szobakezelo.js";
 
 export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaObj = null) {
 
@@ -37,7 +38,7 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
     });
   }
 
-  player.onUpdate(() => {
+  player.onUpdate(async () => {
     const followSpeed = 0.08;
     const lookSpeed = 0.1;
     const maxLook = 60;
@@ -131,5 +132,10 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
 
       k.camPos(camX, camY);
 
+
+      if(true){
+        const kodkezelo = await Kod();
+        kodkezelo.update(4, camX, camY);
+      }
     });
 }

@@ -3,7 +3,8 @@ import {
   MapColliderek,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
-  MentesCollider
+  MentesCollider,
+  Kod
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -178,4 +179,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     "Back_from_Mitteous",
     "atjaro_end_map"
   );
+
+  const kodkezelo=await Kod();
+  kodkezelo.start();
 }

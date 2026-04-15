@@ -161,8 +161,12 @@ export function SzobavaltozatoKezelo(
   ]);
 
   //egyedi tag
-  k.onCollide("player", atjaroTag, () => {
-    console.log("Átjáró aktiválva:", atjaroTag);
+  k.onCollide("player", atjaroTag, async () => {
+    //console.log("Átjáró aktiválva:", atjaroTag);
+    const container = document.querySelector("body");
+    container.className = ''
+    const kodkezelo=await Kod();
+    kodkezelo.stop();
     k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
   });
 }
@@ -206,4 +210,118 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) {
       message: "Mentés sikertelen",
     };
   }
+}
+
+export async function Eso() {
+  const container = document.querySelector("body");
+
+  function rainEffect() {
+    let rainDrops = document.createElement("span");
+    rainDrops.classList.add("rain");
+    container.appendChild(rainDrops);
+    rainDrops.style.left = Math.random() * 120 + "%";
+
+    setTimeout(function rainEffect() {
+      rainDrops.remove();
+    }, 5000);
+  }
+
+  setInterval(rainEffect, 50);
+}
+
+export async function Kod(camScale = 4, camX = 0, camY = 0) { //A fog nem jelenik meg, no idea why. Törölni, ha nem tudjuk megoldani
+  const container = document.getElementById("specieffektdoboz");
+
+  function updateFogScale() {
+    const fogLayers = ["foglayer_01", "foglayer_02", "foglayer_03"];
+    fogLayers.forEach(id => {
+      const fog = document.getElementById(id);
+      if (fog) {
+        fog.style.transform = `scale(${1 / camScale}) translate(${-camX}px, ${-camY}px)`;
+      }
+    });
+  }
+
+  function start() {
+    // Check if fog already exists
+    if (document.getElementById("foglayer_01")) return;
+    
+    let fog1 = document.createElement("div");
+    let fog2 = document.createElement("div");
+    let fog3 = document.createElement("div");
+
+    fog1.classList.add("fog");
+    fog2.classList.add("fog");
+    fog3.classList.add("fog");
+
+    fog1.id = "foglayer_01";
+    fog2.id = "foglayer_02";
+    fog3.id = "foglayer_03";
+
+    // Make fog cover the visible area
+    const viewWidth = window.innerWidth / camScale;
+    const viewHeight = window.innerHeight / camScale;
+    
+    [fog1, fog2, fog3].forEach(fog => {
+      fog.style.position = "fixed";
+      fog.style.top = "0";
+      fog.style.left = "0";
+      fog.style.width = `${viewWidth * 2}px`;
+      fog.style.height = `${viewHeight}px`;
+      fog.style.pointerEvents = "none";
+    });
+
+    let image1 = document.createElement("div");
+    let image2 = document.createElement("div");
+
+    image1.classList.add("image01");
+    image2.classList.add("image02");
+
+    fog1.appendChild(image1);
+    fog1.appendChild(image2);
+
+    image1 = document.createElement("div");
+    image2 = document.createElement("div");
+
+    image1.classList.add("image01");
+    image2.classList.add("image02");
+
+    fog2.appendChild(image1);
+    fog2.appendChild(image2);
+
+    image1 = document.createElement("div");
+    image2 = document.createElement("div");
+
+    image1.classList.add("image01");
+    image2.classList.add("image02");
+
+    fog3.appendChild(image1);
+    fog3.appendChild(image2);
+
+    container.appendChild(fog1);
+    container.appendChild(fog2);
+    container.appendChild(fog3);
+    
+    updateFogScale();
+  }
+
+  function stop() {
+    const fogIds = ["foglayer_01", "foglayer_02", "foglayer_03"];
+    fogIds.forEach(id => {
+      const fog = document.getElementById(id);
+      if (fog && fog.parentNode === container) {
+        container.removeChild(fog);
+      }
+    });
+  }
+
+  // Update fog position when camera moves
+  function update(cameraScale, cameraX, cameraY) {
+    camScale = cameraScale;
+    camX = cameraX;
+    camY = cameraY;
+    updateFogScale();
+  }
+
+  return { start, stop, update };
 }
