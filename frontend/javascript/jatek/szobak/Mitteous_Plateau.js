@@ -4,7 +4,8 @@ import {
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
   MentesCollider,
-  Kod
+  Kod,
+  EffektTorles
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -12,6 +13,9 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
+  console.log("Mitteous map betöltve");
+
+  EffektTorles();
 
   //háttér
   setBackgroundColor(k, "#000000");
@@ -180,6 +184,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
     "atjaro_end_map"
   );
 
-  const kodkezelo=await Kod();
+  const kodkezelo = await Kod();
+  window.kodkezelo = kodkezelo;
   kodkezelo.start();
 }
