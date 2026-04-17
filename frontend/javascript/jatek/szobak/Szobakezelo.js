@@ -518,3 +518,216 @@ export function EffektTorles() {
     window.esokezelo = null;
   }
 }
+
+export function CollapsingPlatform(k, obj, spriteObj) {
+  let playerOn = false;
+  let collapsed = false;
+  let shaking = false;
+  let timer = 0;
+
+  let platform = letrehozCollider();
+
+  function letrehozCollider() {
+    const p = k.add([
+      k.pos(obj.x, obj.y),
+      k.rect(obj.width, obj.height),
+      k.area(),
+      k.body({ isStatic: true }),
+      k.opacity(0),
+      "collapsing_platform",
+    ]);
+
+    p.onCollide("player", () => {
+      if (!collapsed) {
+        playerOn = true;
+      }
+    });
+
+    p.onCollideEnd("player", () => {
+      if (!collapsed) {
+        playerOn = false;
+        timer = 0;
+        shaking = false;
+
+        if (spriteObj) {
+          spriteObj.pos.x = spriteObj.originalX;
+          spriteObj.pos.y = spriteObj.originalY;
+        }
+      }
+    });
+
+    p.onUpdate(() => {
+      if (collapsed) return;
+
+      if (playerOn) {
+        timer += k.dt();
+
+        //3 mp után remegjen
+        if (timer >= 3 && timer < 5) {
+          shaking = true;
+        }
+
+        if (shaking && spriteObj) {
+          spriteObj.pos.x = spriteObj.originalX + (Math.random() * 4 - 2);
+          spriteObj.pos.y = spriteObj.originalY + (Math.random() * 4 - 2);
+        }
+
+        //5 mp után tűnjön el
+        if (timer >= 5) {
+          collapsed = true;
+          playerOn = false;
+          shaking = false;
+          timer = 0;
+
+          if (spriteObj) {
+            spriteObj.opacity = 0;
+            spriteObj.pos.x = spriteObj.originalX;
+            spriteObj.pos.y = spriteObj.originalY;
+          }
+
+          p.destroy();
+
+          k.wait(3, () => {
+            collapsed = false;
+
+            if (spriteObj) {
+              spriteObj.opacity = 1;
+            }
+
+            platform = letrehozCollider();
+          });
+        }
+      }
+    });
+
+    return p;
+  }
+
+  return platform;
+}
+
+export function LetraCollider(k, letraObj, player, interactKey, jumpKey, upKey = "w", downKey = "s") {
+  const letra = k.add([
+    k.pos(letraObj.x, letraObj.y),
+    k.rect(letraObj.width, letraObj.height),
+    k.area(),
+    k.opacity(0),
+    "letra",
+  ]);
+
+  letra.letraWidth = letraObj.width;
+  letra.letraHeight = letraObj.height;
+
+  player.onCollideUpdate("letra", (obj) => {
+    if (obj === letra) {
+      player.aktivLetra = letra;
+    }
+  });
+
+  player.onCollideEnd("letra", (obj) => {
+    if (obj === letra && player.aktivLetra === letra) {
+      player.aktivLetra = null;
+    }
+  });
+
+  k.onKeyPress(interactKey, () => {
+    if (player.aktivLetra === letra && !player.letaranVan) {
+      player.letaranVan = true;
+
+      player.pos.x = letra.pos.x + letra.letraWidth / 2;
+
+      if (player.vel) {
+        player.vel.x = 0;
+        player.vel.y = 0;
+      }
+    }
+  });
+
+  k.onKeyPress(jumpKey, () => {
+    if (player.letaranVan) {
+      player.letaranVan = false;
+
+      if (player.vel) {
+        player.vel.x = 0;
+        player.vel.y = 0;
+      }
+
+      player.jump(350);
+    }
+  });
+
+  return letra;
+}
+
+export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag = "breakable_wall") {
+  let currentHp = hp;
+  let serulhet = true;
+  let torott = false;
+
+  const falCollider = k.add([
+    k.pos(falObj.x, falObj.y),
+    k.rect(falObj.width, falObj.height),
+    k.area(),
+    k.body({ isStatic: true }),
+    k.opacity(0),
+    tag,
+  ]);
+
+  if (falSprite) {
+    falSprite.originalX = falSprite.pos.x;
+    falSprite.originalY = falSprite.pos.y;
+  }
+
+  k.onCollide("player_attack_hitbox", tag, (hitbox, wall) => {
+    if (torott) return;
+    if (!serulhet) return;
+
+    serulhet = false;
+    currentHp--;
+
+    console.log(`${tag} megütve. Maradék HP: ${currentHp}`);
+
+    if (remegjen && falSprite) {
+      let razasIdo = 0.18;
+
+      const razas = k.onUpdate(() => {
+        if (!falSprite.exists()) {
+          razas.cancel();
+          return;
+        }
+
+        falSprite.pos.x = falSprite.originalX + (Math.random() * 8 - 4);
+
+        razasIdo -= k.dt();
+        if (razasIdo <= 0) {
+          falSprite.pos.x = falSprite.originalX;
+          razas.cancel();
+        }
+      });
+    }
+
+    if (currentHp <= 0) {
+      torott = true;
+
+      if (falSprite && falSprite.exists()) {
+        falSprite.destroy();
+      }
+
+      if (wall.exists()) {
+        wall.destroy();
+      }
+
+      if (hitbox.exists()) {
+        hitbox.destroy();
+      }
+
+      return;
+    }
+
+    k.wait(0.2, () => {
+      serulhet = true;
+    });
+  });
+
+  return falCollider;
+}

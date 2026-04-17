@@ -323,8 +323,8 @@ export async function KaboomBetolto(mentes_id) {
       run: { from: 24, to: 31, loop: true },
       jump: { from: 36, to: 38, speed: 2.5 },
       run_and_jump: { from: 12, to: 14, loop: true },
-      attack: { from: 24, to: 28, speed: 16 },
-      hurt: { from: 60, to: 63, speed: 16 },
+      attack: { from: 60, to: 67, speed: 16 },
+      hurt: { from: 48, to: 51, speed: 16 },
     },
   });
 

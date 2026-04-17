@@ -3,11 +3,13 @@ import {
     MapColliderek,
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
-    EffektTorles
+    EffektTorles,
+    LetraCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -43,6 +45,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     const backFromKaonLayer = layerKereses("Back_from_Kaon_to_Crystal_city");
     const toKaonLayer = layerKereses("To_Kaon_from_Crystal");
     const lavaProtectAbilityObjectLayer = layerKereses("Lava_protect_ability_object");
+    const ladderLayer = layerKereses("Ladder");
 
     let xpos = backFromIaconLayer.objects[0].x;
     let ypos = backFromIaconLayer.objects[0].y;
@@ -86,6 +89,12 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     const player = await jatekos_betolt(k, xpos, ypos);
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
+
+    if (ladderLayer && ladderLayer.objects) {
+        ladderLayer.objects.forEach((obj) => {
+            LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+        });
+    }
 
     SzobakiesesKezelo(k, map, mapW, mapH);
 

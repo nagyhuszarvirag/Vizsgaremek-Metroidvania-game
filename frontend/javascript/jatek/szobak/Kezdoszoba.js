@@ -4,13 +4,15 @@ import {
   NPCCollider,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
-  EffektTorles
+  EffektTorles,
+  LetraCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 
-export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
+export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
   EffektTorles();
 
@@ -28,19 +30,31 @@ export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   let ypos = kezdoszoba_data.data.layers[2].objects[0].y;
 
   if (szoba_belepesi_pont != null) {
-  switch (szoba_belepesi_pont) {
-    case "Back_From_Mitteous":
-      xpos = kezdoszoba_data.data.layers[1].objects[0].x;
-      ypos = kezdoszoba_data.data.layers[1].objects[0].y;
-      break;
+    switch (szoba_belepesi_pont) {
+      case "Back_From_Mitteous":
+        xpos = kezdoszoba_data.data.layers[1].objects[0].x;
+        ypos = kezdoszoba_data.data.layers[1].objects[0].y;
+        break;
 
-    default:
-      console.log("Ismeretlen belépési pont Kezdoszobába:", szoba_belepesi_pont);
-      break;
+      default:
+        console.log("Ismeretlen belépési pont Kezdoszobába:", szoba_belepesi_pont);
+        break;
+    }
   }
-}
 
   const szoba_layerek = kezdoszoba_data.data.layers;
+
+  function layerKereses(nev) {
+    const layer = szoba_layerek.find((l) => l.name === nev);
+    if (!layer) {
+      console.error(`Hiányzó layer: ${nev}`);
+    }
+    return layer;
+  }
+
+  const ladderLayer = layerKereses("Ladder");
+
+
   const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
   MapColliderek(k, map, szoba_layerek[3].objects);
@@ -49,23 +63,29 @@ export async function Kezdoszoba(k,  szoba_belepesi_pont = null) {
   const player = await jatekos_betolt(k, xpos, ypos);
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
-  
+
+  if (ladderLayer && ladderLayer.objects) {
+    ladderLayer.objects.forEach((obj) => {
+      LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+    });
+  }
+
   SzobakiesesKezelo(k, map, mapW, mapH);
   SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon", "atjaro_mitteous");
 
-/*
-
-  //átjáró zóna
-  k.add([
-    k.pos(930, 480), //ez nem biztos hogy jó helyen van
-    k.rect(50, 120),
-    k.area(),
-    k.opacity(0),
-    "atjaro",
-  ]);
-
-  k.onCollide("player", "atjaro", () => {
-    console.log("váltás");
-    k.go("mitteous");
-  });*/
+  /*
+  
+    //átjáró zóna
+    k.add([
+      k.pos(930, 480), //ez nem biztos hogy jó helyen van
+      k.rect(50, 120),
+      k.area(),
+      k.opacity(0),
+      "atjaro",
+    ]);
+  
+    k.onCollide("player", "atjaro", () => {
+      console.log("váltás");
+      k.go("mitteous");
+    });*/
 }

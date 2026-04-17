@@ -4,11 +4,13 @@ import {
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
   Eso,
-  EffektTorles
+  EffektTorles,
+  LetraCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -67,6 +69,12 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 
   SzobakiesesKezelo(k, map, mapW, mapH);
+
+  if (ladderLayer && ladderLayer.objects) {
+    ladderLayer.objects.forEach((obj) => {
+      LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+    });
+  }
 
   if (toKaonLayer && toKaonLayer.objects && toKaonLayer.objects[0]) {
     SzobavaltozatoKezelo(
