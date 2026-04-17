@@ -4,11 +4,14 @@ import {
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
     MentesCollider,
-    EffektTorles
+    EffektTorles,
+    LetraCollider,
+    BreakableFal
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -73,6 +76,29 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
 
     const szoba_layerek = mapData.data.layers;
 
+    function layerKereses(nev) {
+        const layer = szoba_layerek.find((l) => l.name === nev);
+        if (!layer) {
+            console.error(`Hiányzó layer: ${nev}`);
+        }
+        return layer;
+    }
+
+    function objectLayerKereses(nev) {
+        const layer = szoba_layerek.find(
+            (l) => l.name === nev && l.type === "objectgroup"
+        );
+        if (!layer) {
+            console.error(`Hiányzó object layer: ${nev}`);
+        }
+        return layer;
+    }
+
+    const ladderLayer = layerKereses("Ladder");
+    const breakableWall1Layer = objectLayerKereses("Breakable_wall_1");
+    const breakableWall2Layer = objectLayerKereses("Breakable_wall_2");
+    const breakableWall3Layer = objectLayerKereses("Breakable_wall_3");
+
     const hiddenBreakableWall = k.add([k.pos(0, 0), k.sprite("Iacon_Hidden_wall")]);
     const breakableWall1 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_1")]);
     const breakableWall2 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_2")]);
@@ -130,6 +156,24 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const player = await jatekos_betolt(k, xpos, ypos);
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
+
+    if (ladderLayer && ladderLayer.objects) {
+        ladderLayer.objects.forEach((obj) => {
+            LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+        });
+    }
+
+    if (breakableWall1Layer && breakableWall1Layer.objects && breakableWall1Layer.objects[0]) {
+        BreakableFal(k, breakableWall1Layer.objects[0], breakableWall1, 2, true, "breakable_wall_1");
+    }
+
+    if (breakableWall2Layer && breakableWall2Layer.objects && breakableWall2Layer.objects[0]) {
+        BreakableFal(k, breakableWall2Layer.objects[0], breakableWall2, 2, true, "breakable_wall_2");
+    }
+
+    if (breakableWall3Layer && breakableWall3Layer.objects && breakableWall3Layer.objects[0]) {
+        BreakableFal(k, breakableWall3Layer.objects[0], hiddenBreakableWall, 3, false, "hidden_breakable_wall");
+    }
 
     SzobakiesesKezelo(k, map, mapW, mapH);
 

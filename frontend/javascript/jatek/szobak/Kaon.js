@@ -4,11 +4,13 @@ import {
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
     MentesCollider,
-    EffektTorles
+    EffektTorles,
+    LetraCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -55,6 +57,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
     const backFromSmelting2Layer = layerKereses("Back_from_the_smelting_pits_to_Kaon_2");
 
     const savepointLayer = layerKereses("Savepoint_5");
+
+    const ladderLayer = layerKereses("Ladder");
 
     const bossArenaLayer = layerKereses("Boss_arena");
 
@@ -134,6 +138,12 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
     const player = await jatekos_betolt(k, xpos, ypos);
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
+
+    if (ladderLayer && ladderLayer.objects) {
+        ladderLayer.objects.forEach((obj) => {
+            LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+        });
+    }
 
     const savepointObj = savepointLayer.objects[0];
     const savepointNev = savepointLayer.name;

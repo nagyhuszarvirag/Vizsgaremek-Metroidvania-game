@@ -4,7 +4,9 @@ import {
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
     Hamu,
-    EffektTorles
+    EffektTorles,
+    CollapsingPlatform,
+    BreakableFal
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -89,10 +91,16 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
 
     MapColliderek(k, map, szoba_layerek[4].objects);
 
-    MapColliderek(k, map, szoba_layerek[5].objects, "Breakable_wall_object");
+
 
     for (let i = 0; i < 22; i++) {
-        MapColliderek(k, map, szoba_layerek[17 + i].objects);
+        const obj = szoba_layerek[17 + i].objects[0];
+        const sprite = collapsingGroundLayer[i];
+
+        sprite.originalX = sprite.pos.x;
+        sprite.originalY = sprite.pos.y;
+
+        CollapsingPlatform(k, obj, sprite);
     }
 
     MapColliderek(k, map, szoba_layerek[7].objects, "Lava_object");
@@ -112,6 +120,10 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     }
 
     const player = await jatekos_betolt(k, xpos, ypos);
+
+    const breakableWallObj = szoba_layerek[5].objects[0];
+
+    BreakableFal(k, breakableWallObj, breakableWallLayer, 2, true, "smelting_breakable_wall");
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
 
