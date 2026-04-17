@@ -14,7 +14,7 @@
       "^.+\\.js$": "babel-jest"
     }
   },
-  "author": "V",
+  "author": "Nagy-Huszár Virág és Huszár Imre László",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.29.0",
