@@ -11,6 +11,8 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { maxHpNovelese } from "../entitások/hp_kezelo.js";
+import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -139,6 +141,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
 
+    ScrapletLetrehozas(k, 500, 500, player);
+
     if (ladderLayer && ladderLayer.objects) {
         ladderLayer.objects.forEach((obj) => {
             LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
@@ -250,6 +254,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
             console.log("Kaon bonus heart felvéve");
 
             localStorage.setItem("kaon_bonus_heart_picked", "true");
+
+            maxHpNovelese(playerObj, 2);
 
             if (bonusHeartSprite) {
                 bonusHeartSprite.destroy();

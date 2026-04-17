@@ -8,12 +8,10 @@ export function setBackgroundColor(k, hexColorCode) {
   ]);
 }
 
-export function MapColliderek(k, map, colliderek) {
-  console.log("MapColliderek meghívva");
-  console.log("MapColliderek map: " + map);
-  console.log("MapColliderek colliderek: " + colliderek);
-
+export function MapColliderek(k, map, colliderek, forcedTag = null) {
   for (const collider of colliderek) {
+    const objektumTag = forcedTag || collider.type || "Solid";
+
     if (collider.polygon) {
       const coordinates = [];
       for (const point of collider.polygon) {
@@ -28,7 +26,7 @@ export function MapColliderek(k, map, colliderek) {
         }),
         k.body({ isStatic: true }),
         "Solid",
-        collider.type,
+        objektumTag,
       ]);
       continue;
     }
@@ -41,7 +39,7 @@ export function MapColliderek(k, map, colliderek) {
       }),
       k.body({ isStatic: true }),
       "Solid",
-      collider.type,
+      objektumTag,
     ]);
   }
 }
