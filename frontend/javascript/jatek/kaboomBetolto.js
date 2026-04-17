@@ -17,11 +17,15 @@ const GRAVITY = 700;
 const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
 const JUMP_FORCE = 400;
 
-
 export { GRAVITY, SPEED, JUMP_FORCE };
+
+let mestesunk_idja=null;
 
 export async function KaboomBetolto(mentes_id) {
   specialeffektdoboz();
+
+  mestesunk_idja=mentes_id;
+
   const user = JSON.parse(localStorage.getItem("user"));
   let mentesbetolto;
   if (user.usernev === "guest") {
@@ -374,29 +378,33 @@ export async function KaboomBetolto(mentes_id) {
 export async function KellEAzNPC(valtozo_utvonal) {
 
   const user = JSON.parse(localStorage.getItem("user"));
-  if (user.usernev === "guest") {
+  if (user.usernev === "guest") { //EZT LEKEZELNI
     return true;
   }
+
+  console.log(valtozo_utvonal +"     "+mestesunk_idja+"     "+JSON.parse(localStorage.getItem("user")).id)
 
   const kell = await fecthData(
     "http://127.0.0.1:3000/api/kelleNPC",
     "POST",
     {
-      valtozo_utvonal,
-      mentes_id: 1,
+      valtozo_utvonal: valtozo_utvonal,
+      mentes_id: mestesunk_idja+1,
       user_id: JSON.parse(localStorage.getItem("user")).id
     }
   );
 
   console.log("kelleNPC válasz:", kell);
 
-  if (!kell.success || !kell.message) {
+  if (!kell.success) {
     return false;
   }
 
-  const ertek = kell.message.VOLT_E_NPC;
+  const ertek = kell.message[0].VOLT_E_NPC;
 
-  return ertek === 0 || ertek === false || ertek === "false";
+  console.log("Volt-e NPC: "+ertek);
+
+  return ertek == 0;
 }
 
 async function specialeffektdoboz() {

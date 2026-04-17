@@ -187,7 +187,7 @@ export function MentesCollider(k, colliderObj, savepointNev) {
   return mentesPont;
 }
 
-export async function MentesLetrehozo(user_id, mentes_id, savepointNev) {
+export async function MentesLetrehozo(user_id, mentes_id, savepointNev) { //Ezt ki kell egészíteni a mentett adatokkal
   try {
     const response = await fetch("http://127.0.0.1:3000/api/mentes/update-savepoint", {
       method: "PATCH",
