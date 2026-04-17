@@ -11,6 +11,7 @@ import {
 } from "../../options.js";
 import { MentesLetrehozo } from "../szobak/Szobakezelo.js";
 import { hpRendszerBeallitas } from "./hp_kezelo.js";
+import { hpUI } from "./hp_ui.js";
 
 export async function jatekos_betolt(k, xpos, ypos) {
   const player = k.add([
@@ -24,7 +25,18 @@ export async function jatekos_betolt(k, xpos, ypos) {
     "player",
   ]);
 
-  hpRendszerBeallitas(player, 5);
+  let kezdoSzivek = 5;
+
+  if (localStorage.getItem("kaon_bonus_heart_picked") === "true") {
+    kezdoSzivek += 1;
+  }
+
+  if (localStorage.getItem("hidden_room_heart_picked") === "true") {
+    kezdoSzivek += 1;
+  }
+
+  hpRendszerBeallitas(player, kezdoSzivek);
+  player.hpUI = hpUI(k, player);
 
   player.letaranVan = false;
   player.aktivLetra = null;

@@ -1,8 +1,23 @@
 export function hpRendszerBeallitas(player, kezdoSzivek = 5) {
   player.maxHp = kezdoSzivek * 2;
-  player.hp = player.maxHp;
 
-  player.invulnerable = false; //ideiglenes sérthetetlenség
+  const mentettHp = localStorage.getItem("player_current_hp");
+
+  if (mentettHp !== null) {
+    player.hp = Number(mentettHp);
+  } else {
+    player.hp = player.maxHp;
+  }
+
+  if (player.hp > player.maxHp) {
+    player.hp = player.maxHp;
+  }
+
+  if (player.hp < 0) {
+    player.hp = 0;
+  }
+
+  player.invulnerable = false;
   player.dead = false;
 }
 
@@ -16,12 +31,33 @@ export function sebzesAdas(k, player, mennyiseg) {
     player.hp = 0;
   }
 
+  localStorage.setItem("player_current_hp", player.hp);
+
+  if (player.hpUI) {
+    player.hpUI.frissit();
+  }
+
   console.log(`Player HP: ${player.hp}/${player.maxHp}`);
 
-  //ideiglenes sérthetetlenség, hogy ne kapjon 1 frame alatt 100 sebzést
   player.invulnerable = true;
 
-  k.wait(0.6, () => {
+  if (player.play) {
+    player.play("hurt");
+  }
+
+  k.wait(0.35, () => {
+    if (!player.exists() || player.dead) return;
+
+    if (player.letaranVan) {
+      player.play("idle");
+    } else if (!player.isGrounded()) {
+      player.play("jump");
+    } else {
+      player.play("idle");
+    }
+  });
+
+  k.wait(2.5, () => {
     if (player.exists()) {
       player.invulnerable = false;
     }
@@ -41,10 +77,36 @@ export function gyogyitas(player, mennyiseg) {
     player.hp = player.maxHp;
   }
 
+  localStorage.setItem("player_current_hp", player.hp);
+
+  if (player.hpUI) {
+    player.hpUI.frissit();
+  }
+
   console.log(`Player HP: ${player.hp}/${player.maxHp}`);
+}
+
+export function maxHpNovelese(player, mennyiseg) {
+  if (!player || player.dead) return;
+
+  player.maxHp += mennyiseg;
+  player.hp += mennyiseg;
+
+  if (player.hp > player.maxHp) {
+    player.hp = player.maxHp;
+  }
+
+  localStorage.setItem("player_current_hp", player.hp);
+
+  if (player.hpUI) {
+    player.hpUI.frissit();
+  }
+
+  console.log(`Player max HP növelve: ${player.hp}/${player.maxHp}`);
 }
 
 export function playerHalal(player) {
   player.dead = true;
+  localStorage.setItem("player_current_hp", 0);
   console.log("A játékos meghalt");
 }

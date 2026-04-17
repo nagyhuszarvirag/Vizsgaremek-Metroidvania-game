@@ -19,12 +19,12 @@ const JUMP_FORCE = 400;
 
 export { GRAVITY, SPEED, JUMP_FORCE };
 
-let mestesunk_idja=null;
+let mestesunk_idja = null;
 
 export async function KaboomBetolto(mentes_id) {
   specialeffektdoboz();
 
-  mestesunk_idja=mentes_id;
+  mestesunk_idja = mentes_id;
 
   const user = JSON.parse(localStorage.getItem("user"));
   let mentesbetolto;
@@ -340,6 +340,21 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
+  k.loadSprite("scraplet", "../../images/sprites/enemies/scraplet.png", {
+    sliceX: 8,
+    sliceY: 5,
+    anims: {
+      idle: { from: 0, to: 2, loop: true },
+      walk: { from: 16, to: 22, loop: true },
+      attack: { from: 32, to: 37, speed: 10 },
+    },
+  });
+
+  k.loadSprite("blue_hearts", "../../images/UI/Blue_hearts.png", {
+    sliceX: 3,
+    sliceY: 1,
+  });
+
   k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
 
   switch (
@@ -382,14 +397,14 @@ export async function KellEAzNPC(valtozo_utvonal) {
     return true;
   }
 
-  console.log(valtozo_utvonal +"     "+mestesunk_idja+"     "+JSON.parse(localStorage.getItem("user")).id)
+  console.log(valtozo_utvonal + "     " + mestesunk_idja + "     " + JSON.parse(localStorage.getItem("user")).id)
 
   const kell = await fecthData(
     "http://127.0.0.1:3000/api/kelleNPC",
     "POST",
     {
       valtozo_utvonal: valtozo_utvonal,
-      mentes_id: mestesunk_idja+1,
+      mentes_id: mestesunk_idja + 1,
       user_id: JSON.parse(localStorage.getItem("user")).id
     }
   );
@@ -402,7 +417,7 @@ export async function KellEAzNPC(valtozo_utvonal) {
 
   const ertek = kell.message[0].VOLT_E_NPC;
 
-  console.log("Volt-e NPC: "+ertek);
+  console.log("Volt-e NPC: " + ertek);
 
   return ertek == 0;
 }

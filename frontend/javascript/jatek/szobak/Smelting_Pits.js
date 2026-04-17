@@ -11,6 +11,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { sebzesAdas } from "../entitások/hp_kezelo.js";
 
 export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -124,6 +125,11 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     const breakableWallObj = szoba_layerek[5].objects[0];
 
     BreakableFal(k, breakableWallObj, breakableWallLayer, 2, true, "smelting_breakable_wall");
+
+    player.onCollideUpdate("Lava_object", () => {
+        if (localStorage.getItem("lava_protection_ability") === "true") return;
+        sebzesAdas(k, player, 1);
+    });
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
 

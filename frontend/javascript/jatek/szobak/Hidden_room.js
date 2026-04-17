@@ -8,6 +8,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 
 export async function Hidden_Room(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -103,20 +104,17 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     ]);
 
     k.onCollide("player", "hidden_room_heart_pickup", (playerObj, obj) => {
-      console.log("Hidden room szív felvéve");
+      console.log("Hidden room bonus heart felvéve");
 
       localStorage.setItem("hidden_room_heart_picked", "true");
+
+      maxHpNovelese(playerObj, 2);
 
       if (heartSprite) {
         heartSprite.destroy();
       }
 
       obj.destroy();
-
-      //ide később jöhet majd:
-      //max hp növelés
-      //aktuális hp növelés
-      //mentés backendbe
     });
   }
 }
