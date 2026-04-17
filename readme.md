@@ -152,3 +152,7 @@ Nyisd meg a böngésződben a **http://localhost:3000** címet.
 `npx kill-port port`<br>
 
 `npx kill-port 3000`<br>
+
+`Tesztek futtatása: npm run test`<br>
+
+
