@@ -25,7 +25,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
     "player",
   ]);
 
-  let kezdoSzivek = 5;
+  let kezdoSzivek = 5; //Majd a mentés adatai-ba bele lesz rakva a két plussz perma hp, úgyhogy majd azt felhasználhatjuk, hogy mindig jó mentés, jó hp-t kapjon
 
   if (localStorage.getItem("kaon_bonus_heart_picked") === "true") {
     kezdoSzivek += 1;
