@@ -12,6 +12,7 @@ import { Cemetery } from "./szobak/Cemetery.js";
 import { Hidden_Room } from "./szobak/Hidden_room.js";
 import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
+import { nyelv } from "../options.js";
 
 const GRAVITY = 700;
 const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
@@ -130,32 +131,33 @@ export async function KaboomBetolto(mentes_id) {
   //console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
 
   k.scene("intro", () => {
-    k.add([
+    /*k.add([
       k.text("Skip Intro"),
       //k.pos(window.innerWidth-50 , window.innerHeight-850),
       k.pos(191, 566),
       k.color(k.Color.fromHex("#000000")),
-    ]);
+    ]);*/
 
-    k.add([
+    /*k.add([
       k.pos(191, 566),
       k.area({
         shape: new k.Rect(k.vec2(0), 200, 60),
       }),
       k.body({ isStatic: true }),
       "SkipIntro",
-    ]);
+    ]);*/
 
+    cutscene_kezeles(k, "intro");
 
     kellintro = true;
 
-    k.onClick("SkipIntro", () => {
+    k.onClick("Skipintro", () => {
       //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
       //Ide majd zenét elindítását is belerakhatjuk
       if (kellintro) {
         console.log("Intro átugorva");
         kellintro = false;
-        k.destroyAll("SkipIntro");
+        k.destroyAll("Skipintro");
         k.go("Kezdoszoba");
       }
     });
@@ -328,7 +330,7 @@ export async function KaboomBetolto(mentes_id) {
       jump: { from: 36, to: 38, speed: 2.5 },
       run_and_jump: { from: 12, to: 14, loop: true },
       attack: { from: 60, to: 67, speed: 16 },
-      hurt: { from: 48, to: 51, speed: 16 },
+      hurt: { from: 48, to: 51, speed: 0.1 },
     },
   });
 
@@ -345,8 +347,10 @@ export async function KaboomBetolto(mentes_id) {
     sliceY: 5,
     anims: {
       idle: { from: 0, to: 2, loop: true },
-      walk: { from: 16, to: 22, loop: true },
-      attack: { from: 32, to: 37, speed: 10 },
+      hurt: { from: 8, to: 9, speed: 0.1 },
+      die: { from: 16, to: 18, speed: 1 },
+      walk: { from: 24, to: 29, loop: true },
+      attack: { from: 32, to: 39, speed: 5 },
     },
   });
 
@@ -428,4 +432,58 @@ async function specialeffektdoboz() {
   let specieffekdoboz = document.createElement("div");
   specieffekdoboz.id = "specieffektdoboz";
   container.appendChild(specieffekdoboz);
+}
+
+async function cutscene_kezeles(k, scene_name) {
+
+  const skip_neve= "Skip" + scene_name; 
+  const data= await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +nyelv +"/kaboomBetolto.json");
+
+  k.add([
+      k.text(data.data.skip),
+      k.pos(70, 30),
+      k.color(k.Color.fromHex("#000000")),
+    ]);
+
+  add([
+      k.pos(60, 20),
+      k.area({
+        shape: new k.Rect(k.vec2(0), 350, 60),
+      }),
+      k.body({ isStatic: true }),
+      skip_neve,
+  ]);
+
+  //Ez kezeli majd a jelenetet, de jelenleg buggos és nem törli rendesen a videót. Majd meg kell nézni
+    /*const video = document.createElement('video');
+    const source = document.createElement('source');
+    const container = document.querySelector("body");
+
+    video.id = 'videok';
+    video.width = window.innerWidth;
+    video.height = window.innerHeight;
+    video.autoplay = true;
+    source.src = '../../cutscenes/' + scene_name + '.mp4';
+    source.type = 'video/mp4';
+
+    video.appendChild(source);
+    container.appendChild(video);
+
+    let videoRemoved = false;
+
+    function VideoTorles() {
+    if (!videoRemoved) {
+      videoRemoved = true;
+      video.remove();
+      clearInterval(checkInterval);
+    }
+
+    video.addEventListener('ended', VideoTorles);
+
+    k.onClick(skip_neve, () => {
+      VideoTorles();
+      k.destroyAll(skip_neve);
+    });
+
+}*/
 }

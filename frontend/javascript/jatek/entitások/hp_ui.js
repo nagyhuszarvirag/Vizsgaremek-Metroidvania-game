@@ -22,9 +22,9 @@ export function hpUI(k, player) {
 
       const heart = k.add([
         k.sprite("blue_hearts", { frame }),
-        k.pos(20 + i * 22, 20),
+        k.pos(20 + i * 60, 20),
         k.fixed(),
-        k.scale(2),
+        k.scale(4),
         "hp_ui",
       ]);
 
