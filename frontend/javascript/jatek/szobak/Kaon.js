@@ -62,6 +62,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     const ladderLayer = layerKereses("Ladder");
 
+    const scrapletsLayer = layerKereses("Scraplets");
+
     const bossArenaLayer = layerKereses("Boss_arena");
 
     let xpos = backFromCrystalLayer.objects[0].x;
@@ -141,7 +143,11 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
 
-    ScrapletLetrehozas(k, 500, 500, player);
+    if (scrapletsLayer && scrapletsLayer.objects) {
+        scrapletsLayer.objects.forEach((obj) => {
+            ScrapletLetrehozas(k, obj.x, obj.y, player, 120);
+        });
+    }
 
     if (ladderLayer && ladderLayer.objects) {
         ladderLayer.objects.forEach((obj) => {

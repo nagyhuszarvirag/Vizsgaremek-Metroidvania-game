@@ -25,6 +25,8 @@ let mestesunk_idja = null;
 export async function KaboomBetolto(mentes_id) {
   specialeffektdoboz();
 
+  localStorage.removeItem("player_current_hp");
+
   mestesunk_idja = mentes_id;
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -130,7 +132,7 @@ export async function KaboomBetolto(mentes_id) {
 
   //console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
 
-  k.scene("intro", () => {
+  /*k.scene("intro", () => {
     /*k.add([
       k.text("Skip Intro"),
       //k.pos(window.innerWidth-50 , window.innerHeight-850),
@@ -138,42 +140,45 @@ export async function KaboomBetolto(mentes_id) {
       k.color(k.Color.fromHex("#000000")),
     ]);*/
 
-    /*k.add([
-      k.pos(191, 566),
-      k.area({
-        shape: new k.Rect(k.vec2(0), 200, 60),
-      }),
-      k.body({ isStatic: true }),
-      "SkipIntro",
-    ]);*/
+  /*k.add([
+    k.pos(191, 566),
+    k.area({
+      shape: new k.Rect(k.vec2(0), 200, 60),
+    }),
+    k.body({ isStatic: true }),
+    "SkipIntro",
+  ]);*/
 
-    cutscene_kezeles(k, "intro");
+  /*cutscene_kezeles(k, "intro");
 
-    kellintro = true;
+  kellintro = true;
 
-    k.onClick("Skipintro", () => {
-      //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
-      //Ide majd zenét elindítását is belerakhatjuk
-      if (kellintro) {
-        console.log("Intro átugorva");
-        kellintro = false;
-        k.destroyAll("Skipintro");
-        k.go("Kezdoszoba");
-      }
-    });
-
-    k.onKeyPress("enter", () => {
-      //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
-      //Ide majd zenét elindítását is belerakhatjuk
-      if (kellintro) {
-        console.log("Intro átugorva");
-        kellintro = false;
-        k.destroyAll("SkipIntro");
-        k.go("Kezdoszoba");
-      }
-    });
+  k.onClick("Skipintro", () => {
+    //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
+    //Ide majd zenét elindítását is belerakhatjuk
+    if (kellintro) {
+      console.log("Intro átugorva");
+      kellintro = false;
+      k.destroyAll("Skipintro");
+      k.go("Kezdoszoba");
+    }
   });
 
+  k.onKeyPress("enter", () => {
+    //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
+    //Ide majd zenét elindítását is belerakhatjuk
+    if (kellintro) {
+      console.log("Intro átugorva");
+      kellintro = false;
+      k.destroyAll("SkipIntro");
+      k.go("Kezdoszoba");
+    }
+  });
+});*/
+
+  k.scene("intro", async () => {
+    await cutscene_kezeles(k, "intro", "Kezdoszoba");
+  });
 
   //kezdőmap sprite
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
@@ -350,7 +355,7 @@ export async function KaboomBetolto(mentes_id) {
       hurt: { from: 8, to: 9, speed: 0.1 },
       die: { from: 16, to: 18, speed: 1 },
       walk: { from: 24, to: 29, loop: true },
-      attack: { from: 32, to: 39, speed: 5 },
+      attack: { from: 32, to: 35, speed: 16 },
     },
   });
 
@@ -434,44 +439,44 @@ async function specialeffektdoboz() {
   container.appendChild(specieffekdoboz);
 }
 
-async function cutscene_kezeles(k, scene_name) {
+/*async function cutscene_kezeles(k, scene_name) {
 
-  const skip_neve= "Skip" + scene_name; 
-  const data= await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +nyelv +"/kaboomBetolto.json");
+  const skip_neve = "Skip" + scene_name;
+  const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json");
 
   k.add([
-      k.text(data.data.skip),
-      k.pos(70, 30),
-      k.color(k.Color.fromHex("#000000")),
-    ]);
+    k.text(data.data.skip),
+    k.pos(70, 30),
+    k.color(k.Color.fromHex("#000000")),
+  ]);
 
   add([
-      k.pos(60, 20),
-      k.area({
-        shape: new k.Rect(k.vec2(0), 350, 60),
-      }),
-      k.body({ isStatic: true }),
-      skip_neve,
+    k.pos(60, 20),
+    k.area({
+      shape: new k.Rect(k.vec2(0), 350, 60),
+    }),
+    k.body({ isStatic: true }),
+    skip_neve,
   ]);
 
   //Ez kezeli majd a jelenetet, de jelenleg buggos és nem törli rendesen a videót. Majd meg kell nézni
-    /*const video = document.createElement('video');
-    const source = document.createElement('source');
-    const container = document.querySelector("body");
+  const video = document.createElement('video');
+  const source = document.createElement('source');
+  const container = document.querySelector("body");
 
-    video.id = 'videok';
-    video.width = window.innerWidth;
-    video.height = window.innerHeight;
-    video.autoplay = true;
-    source.src = '../../cutscenes/' + scene_name + '.mp4';
-    source.type = 'video/mp4';
+  video.id = 'videok';
+  video.width = window.innerWidth;
+  video.height = window.innerHeight;
+  video.autoplay = true;
+  source.src = '../../cutscenes/' + scene_name + '.mp4';
+  source.type = 'video/mp4';
 
-    video.appendChild(source);
-    container.appendChild(video);
+  video.appendChild(source);
+  container.appendChild(video);
 
-    let videoRemoved = false;
+  let videoRemoved = false;
 
-    function VideoTorles() {
+  function VideoTorles() {
     if (!videoRemoved) {
       videoRemoved = true;
       video.remove();
@@ -485,5 +490,79 @@ async function cutscene_kezeles(k, scene_name) {
       k.destroyAll(skip_neve);
     });
 
+  }
 }*/
+
+async function cutscene_kezeles(k, scene_name, nextScene) {
+  const data = await fecthData(
+    "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json"
+  );
+
+  const container = document.body;
+
+  const wrapper = document.createElement("div");
+  wrapper.id = "cutscene_wrapper";
+  wrapper.style.position = "fixed";
+  wrapper.style.inset = "0";
+  wrapper.style.width = "100vw";
+  wrapper.style.height = "100vh";
+  wrapper.style.zIndex = "99999";
+  wrapper.style.backgroundColor = "black";
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.alignItems = "center";
+
+  const video = document.createElement("video");
+  video.id = "videok";
+  video.autoplay = true;
+  video.playsInline = true;
+  video.style.position = "absolute";
+  video.style.inset = "0";
+  video.style.width = "100vw";
+  video.style.height = "100vh";
+  video.style.objectFit = "cover";
+  video.style.zIndex = "1";
+  video.style.backgroundColor = "black";
+
+  const source = document.createElement("source");
+  source.src = "../../cutscenes/" + scene_name + ".mp4";
+  source.type = "video/mp4";
+
+  video.appendChild(source);
+
+  const skipButton = document.createElement("button");
+  skipButton.textContent = data.data.skip;
+  skipButton.style.position = "absolute";
+  skipButton.style.top = "20px";
+  skipButton.style.left = "20px";
+  skipButton.style.zIndex = "2";
+  skipButton.style.padding = "12px 20px";
+  skipButton.style.fontSize = "20px";
+  skipButton.style.cursor = "pointer";
+  skipButton.style.border = "2px solid black";
+  skipButton.style.background = "white";
+  skipButton.style.color = "black";
+
+  wrapper.appendChild(video);
+  wrapper.appendChild(skipButton);
+  container.appendChild(wrapper);
+
+  let closed = false;
+
+  function cleanupAndGo() {
+    if (closed) return;
+    closed = true;
+
+    wrapper.remove();
+    k.go(nextScene);
+  }
+
+  video.addEventListener("ended", cleanupAndGo);
+  skipButton.addEventListener("click", cleanupAndGo);
+
+  k.onKeyPress("enter", () => {
+    cleanupAndGo();
+  });
+
+  video.load();
 }

@@ -12,6 +12,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -95,6 +96,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     }
 
     const ladderLayer = layerKereses("Ladder");
+    const scrapletSpawnLayer = layerKereses("Scraplet_spawnpoint");
     const breakableWall1Layer = objectLayerKereses("Breakable_wall_1");
     const breakableWall2Layer = objectLayerKereses("Breakable_wall_2");
     const breakableWall3Layer = objectLayerKereses("Breakable_wall_3");
@@ -156,6 +158,12 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const player = await jatekos_betolt(k, xpos, ypos);
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
+
+    if (scrapletSpawnLayer && scrapletSpawnLayer.objects) {
+        scrapletSpawnLayer.objects.forEach((obj) => {
+            ScrapletLetrehozas(k, obj.x, obj.y, player, 100);
+        });
+    }
 
     if (ladderLayer && ladderLayer.objects) {
         ladderLayer.objects.forEach((obj) => {
