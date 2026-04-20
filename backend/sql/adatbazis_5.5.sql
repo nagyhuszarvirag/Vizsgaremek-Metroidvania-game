@@ -37,14 +37,31 @@ CREATE TABLE IF NOT EXISTS mentes (
         JSON_OBJECT(
             'savepoint', 'kezdomap_1',
             'world_interactions', JSON_OBJECT(
-                'mitteous-plateau_breakable-ground1', false
+                'mitteous-plateau_breakable-ground1', false,
+                'Iacon_breakable-ground1', false,
+                'Iacon_breakable-ground2', false,
+                'Iacon_breakable-wall1', false,
+                'Iacon_breakable-wall2', false,
+                'Iacon_breakable-wall3', false,
+                'Smelting-pits_breakable-wall1', false,
+                'lighthouse-on', false,
+                'lighthouse-sea-of-flowers-cutscenes', false,
+                'crystal-heart-open_lock', false,
+                'crystal-heart-lava-protection', false,
+                'bonus-hp-1', false,
+                'bonus-hp-2', false,
+                'bonus-hp-3', false
             ),
             'NPC_interactions', JSON_OBJECT(
                 'Ratchet', false,
-                'Prowl', false
+                'Prowl', false,
+                'Chromedome_and_Ratchet', false,
+                'Swindle', false,
+                'Tailgate', false
             ),
             'bosses', JSON_OBJECT(
-                'Tarn', false
+                'Tarn', false,
+                'Sparkeater', false
             ),
             'ability_unlocked', JSON_OBJECT(
                 'double_jump', false,

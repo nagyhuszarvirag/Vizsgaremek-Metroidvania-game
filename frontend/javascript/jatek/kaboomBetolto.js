@@ -353,7 +353,7 @@ export async function KaboomBetolto(mentes_id) {
     anims: {
       idle: { from: 0, to: 2, loop: true },
       hurt: { from: 8, to: 9, speed: 0.1 },
-      die: { from: 16, to: 18, speed: 1 },
+      die: { from: 16, to: 18, speed: 0.1 },
       walk: { from: 24, to: 29, loop: true },
       attack: { from: 32, to: 35, speed: 16 },
     },
