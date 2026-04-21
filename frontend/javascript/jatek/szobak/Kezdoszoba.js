@@ -11,6 +11,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { KellEAzNPC } from "../kaboomBetolto.js";
 
 export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
@@ -58,9 +59,26 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
   const map = k.add([k.pos(0, 0), k.sprite("Kezdoszoba")]);
 
   MapColliderek(k, map, szoba_layerek[3].objects);
-  NPCCollider(k, szoba_layerek[4].objects, "Prowl");
 
-  const player = await jatekos_betolt(k, xpos, ypos);
+  let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
+
+  if(kelleprowl){
+    k.add([
+            k.pos(0, 0),
+            k.sprite('Kezdoszoba_table')
+        ]);
+
+    NPCCollider(k, szoba_layerek[4].objects, "Prowl");
+  }
+  else{
+    k.add([
+            k.pos(0, 0),
+            k.sprite('Kezdoszoba_table_flipped')
+        ]);
+  }
+  
+
+  const player = await jatekos_betolt(k, xpos, ypos, "Kezdoszoba");
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 

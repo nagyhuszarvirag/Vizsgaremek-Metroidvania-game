@@ -109,7 +109,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Savepoint objektum neve: ", savepointNev);
   MentesCollider(k, savepointObj, savepointNev);
 
-  const player = await jatekos_betolt(k, xpos, ypos);
+  const player = await jatekos_betolt(k, xpos, ypos, "Mitteous_Plateau");
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 

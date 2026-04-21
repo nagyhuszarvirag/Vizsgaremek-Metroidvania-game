@@ -1,6 +1,7 @@
 import {
   setBackgroundColor,
   MapColliderek,
+  NPCCollider,
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
   MentesCollider,
@@ -9,6 +10,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { KellEAzNPC } from "../kaboomBetolto.js";
 
 export async function Medbay(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -54,7 +56,20 @@ export async function Medbay(k, szoba_belepesi_pont = null) {
   const savepointNev = mapData.data.layers[2].name;
   MentesCollider(k, savepointObj, savepointNev);
 
-  const player = await jatekos_betolt(k, xpos, ypos);
+  let kellerachet = await KellEAzNPC("$.NPC_interactions.Ratchet");
+  
+  //Itt a medbay asztalt be kell tenni
+
+   /*k.add([ 
+              k.pos(0, 0),
+              k.sprite('Kezdoszoba_table')
+    ]);*/
+
+    if(kellerachet){
+      NPCCollider(k, szoba_layerek[5].objects, "Ratchet");
+    }
+   
+  const player = await jatekos_betolt(k, xpos, ypos, "Medbay");
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 
