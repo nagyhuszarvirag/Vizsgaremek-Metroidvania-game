@@ -181,7 +181,9 @@ export async function KaboomBetolto(mentes_id) {
   });
 
   //kezdőmap sprite
-  k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját késúbbi kezelésre
+  k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját későbbi kezelésre
+  k.loadSprite("Kezdoszoba_table", "../../images/maps/kezdomap_table.png"); 
+  k.loadSprite("Kezdoszoba_table_flipped", "../../images/maps/kezdomap_table_flipped.png"); 
 
   //Mitteous map sprite
   k.loadSprite("Mitteous_Plateau", "../../images/maps/Mitteous_Plateau.png");
@@ -347,6 +349,38 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
+  k.loadSprite("Ratchet", "../../images/sprites/NPC/Ratchet.png", {
+    sliceX: 8,
+    sliceY: 1,
+    anims: {
+      idle: { from: 0, to: 7, loop: true },
+    },
+  });
+
+  k.loadSprite("Swindle", "../../images/sprites/NPC/Ratchet.png", { //neki majd a saját képét kéne betölteni
+    sliceX: 8,
+    sliceY: 1,
+    anims: {
+      idle: { from: 0, to: 7, loop: true },
+    },
+  });
+
+  k.loadSprite("Chromedome", "../../images/sprites/NPC/Prowl.png", { //neki majd a saját képét kéne betölteni
+    sliceX: 8,
+    sliceY: 1,
+    anims: {
+      idle: { from: 0, to: 7, loop: true },
+    },
+  });
+
+  k.loadSprite("Tailgate", "../../images/sprites/NPC/Ratchet.png", { //neki majd a saját képét kéne betölteni
+    sliceX: 8,
+    sliceY: 1,
+    anims: {
+      idle: { from: 0, to: 7, loop: true },
+    },
+  });
+
   k.loadSprite("scraplet", "../../images/sprites/enemies/scraplet.png", {
     sliceX: 8,
     sliceY: 5,
@@ -355,7 +389,7 @@ export async function KaboomBetolto(mentes_id) {
       hurt: { from: 8, to: 9, speed: 0.1 },
       die: { from: 16, to: 18, speed: 0.1 },
       walk: { from: 24, to: 29, loop: true },
-      attack: { from: 32, to: 35, speed: 16 },
+      attack: { from: 32, to: 39, speed: 5 },
     },
   });
 
@@ -439,61 +473,7 @@ async function specialeffektdoboz() {
   container.appendChild(specieffekdoboz);
 }
 
-/*async function cutscene_kezeles(k, scene_name) {
-
-  const skip_neve = "Skip" + scene_name;
-  const data = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json");
-
-  k.add([
-    k.text(data.data.skip),
-    k.pos(70, 30),
-    k.color(k.Color.fromHex("#000000")),
-  ]);
-
-  add([
-    k.pos(60, 20),
-    k.area({
-      shape: new k.Rect(k.vec2(0), 350, 60),
-    }),
-    k.body({ isStatic: true }),
-    skip_neve,
-  ]);
-
-  //Ez kezeli majd a jelenetet, de jelenleg buggos és nem törli rendesen a videót. Majd meg kell nézni
-  const video = document.createElement('video');
-  const source = document.createElement('source');
-  const container = document.querySelector("body");
-
-  video.id = 'videok';
-  video.width = window.innerWidth;
-  video.height = window.innerHeight;
-  video.autoplay = true;
-  source.src = '../../cutscenes/' + scene_name + '.mp4';
-  source.type = 'video/mp4';
-
-  video.appendChild(source);
-  container.appendChild(video);
-
-  let videoRemoved = false;
-
-  function VideoTorles() {
-    if (!videoRemoved) {
-      videoRemoved = true;
-      video.remove();
-      clearInterval(checkInterval);
-    }
-
-    video.addEventListener('ended', VideoTorles);
-
-    k.onClick(skip_neve, () => {
-      VideoTorles();
-      k.destroyAll(skip_neve);
-    });
-
-  }
-}*/
-
-async function cutscene_kezeles(k, scene_name, nextScene) {
+export async function cutscene_kezeles(k, scene_name, nextScene =null) {
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json"
   );
@@ -554,7 +534,10 @@ async function cutscene_kezeles(k, scene_name, nextScene) {
     closed = true;
 
     wrapper.remove();
-    k.go(nextScene);
+    if(nextScene!=null){
+      k.go(nextScene);
+    }
+    
   }
 
   video.addEventListener("ended", cleanupAndGo);

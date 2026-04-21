@@ -1,4 +1,4 @@
-import { KellEAzNPC, GRAVITY, SPEED, JUMP_FORCE } from "../kaboomBetolto.js";
+import { KellEAzNPC, cutscene_kezeles, GRAVITY, SPEED, JUMP_FORCE } from "../kaboomBetolto.js";
 import {
   volume,
   nyelv,
@@ -13,7 +13,7 @@ import { MentesLetrehozo } from "../szobak/Szobakezelo.js";
 import { hpRendszerBeallitas } from "./hp_kezelo.js";
 import { hpUI } from "./hp_ui.js";
 
-export async function jatekos_betolt(k, xpos, ypos) {
+export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
   const player = k.add([
     k.sprite("player"),
     k.pos(xpos, ypos - 30), //a -30 azért kell, hogy a játékos ne a lábánál legyen lerakva, hanem a közepénél
@@ -53,6 +53,10 @@ export async function jatekos_betolt(k, xpos, ypos) {
 
 
   let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
+  let kellerachet = await KellEAzNPC("$.NPC_interactions.Ratchet");
+  let kelleswindle = await KellEAzNPC("$.NPC_interactions.Swindle");
+  let kelletailgate = await KellEAzNPC("$.NPC_interactions.Tailgate");
+  let kelleChromedome_and_Ratchet_combo = await KellEAzNPC("$.NPC_interactions.Chromedome_and_Ratchet");
 
   console.log("Kell-e Prowl: " + kelleprowl);
 
@@ -71,6 +75,54 @@ export async function jatekos_betolt(k, xpos, ypos) {
     }
   });
 
+  player.onCollideUpdate("Ratchet", (obj) => {
+    if (kellerachet) {
+      aktivNPC = obj;
+    }
+  });
+
+  player.onCollideEnd("Ratchet", (obj) => {
+    if (aktivNPC === obj) {
+      aktivNPC = null;
+    }
+  });
+
+  player.onCollideUpdate("Swindle", (obj) => {
+    if (kelleswindle) {
+      aktivNPC = obj;
+    }
+  });
+
+  player.onCollideEnd("Swindle", (obj) => {
+    if (aktivNPC === obj) {
+      aktivNPC = null;
+    }
+  });
+
+  player.onCollideUpdate("Tailgate", (obj) => {
+    if (kelletailgate) {
+      aktivNPC = obj;
+    }
+  });
+
+  player.onCollideEnd("Tailgate", (obj) => {
+    if (aktivNPC === obj) {
+      aktivNPC = null;
+    }
+  });
+
+  player.onCollideUpdate("Chromedome_and_Ratchet", (obj) => {
+    if (kelleChromedome_and_Ratchet_combo) {
+      aktivNPC = obj;
+    }
+  });
+
+  player.onCollideEnd("Chromedome_and_Ratchet", (obj) => {
+    if (aktivNPC === obj) {
+      aktivNPC = null;
+    }
+  });
+
   player.onCollideUpdate("mentespont", (obj) => {
     aktivMentesPont = obj;
   });
@@ -84,10 +136,59 @@ export async function jatekos_betolt(k, xpos, ypos) {
   k.onKeyPress(playerInteractGombja, async () => {
     //NPC
     if (aktivNPC) {
-      if (kelleprowl) {
-        console.log("A player beszél: Prowlral");
-        kelleprowl = false;
-      }
+      switch (current_map){
+        case "Kezdoszoba":
+           if (kelleprowl) {
+            cutscene_kezeles(k,"prowl_chromedome_and_rewind");
+            kelleprowl = false;
+          }
+          break;
+
+        case "Mitteous_Plateau":
+            if (kelleChromedome_and_Ratchet_combo) {
+            cutscene_kezeles(k,"tailgate_a_föld_alatt");
+            kelleChromedome_and_Ratchet_combo = false;
+          }
+          break;
+
+        case "Iacon":
+            if (kelleswindle) {
+              cutscene_kezeles(k,"swindle");
+              kelleswindle = false;
+          }
+          break;
+
+        case "Medbay":
+            if (kellerachet) {
+            cutscene_kezeles(k,"rigor_morphis");
+            kellerachet = false;
+          }
+          break;
+
+        case "Leesos_hely":
+           if (kelletailgate) {
+            cutscene_kezeles(k,"tailgate_a_föld_alatt");
+            kelletailgate = false;
+          }
+          break;
+
+       /*case "Smelting_Pits":
+          break;
+
+        case "End_map":
+          break;
+
+        case "Crystal_City":
+          break;
+
+        case "The_cemetery":
+          break;*/
+
+        default:
+          console.log("Ismeretlen szoba");
+          break;
+        }
+
       return;
     }
 
@@ -96,6 +197,7 @@ export async function jatekos_betolt(k, xpos, ypos) {
       const user = JSON.parse(localStorage.getItem("user"));
 
       if (!user || user.usernev === "guest") {
+        //Guestként lokális mentés van csak
         console.log("Guestként nincs mentés");
         return;
       }
@@ -226,7 +328,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
         const letraTop = player.aktivLetra.pos.y + playerHalfHeight;
         const letraBottom = player.aktivLetra.pos.y + player.aktivLetra.letraHeight - playerHalfHeight;
 
-        if (k.isKeyDown("w")) {
+        if (k.isKeyDown("w")) { //Ezt áttenni dinamikussá
           player.pos.y -= climbSpeed * k.dt();
         }
 

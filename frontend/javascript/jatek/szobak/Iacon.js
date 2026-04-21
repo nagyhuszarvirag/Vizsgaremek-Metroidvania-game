@@ -1,6 +1,7 @@
 import {
     setBackgroundColor,
     MapColliderek,
+    NPCCollider,
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
     MentesCollider,
@@ -13,6 +14,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
+import { KellEAzNPC } from "../kaboomBetolto.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -155,7 +157,13 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const savepointNev = mapData.data.layers[9].name;
     MentesCollider(k, savepointObj, savepointNev);
 
-    const player = await jatekos_betolt(k, xpos, ypos);
+     let kelleswindle = await KellEAzNPC("$.NPC_interactions.Swindle");
+    
+    if(kelleswindle){
+        NPCCollider(k, szoba_layerek[32].objects, "Swindle");
+    }
+
+    const player = await jatekos_betolt(k, xpos, ypos, "Iacon");
 
     Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 

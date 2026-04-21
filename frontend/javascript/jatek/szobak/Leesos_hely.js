@@ -49,7 +49,13 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
 
   MapColliderek(k, map, szoba_layerek[2].objects);
 
-  const player = await jatekos_betolt(k, xpos, ypos);
+  let kelletailgate = await KellEAzNPC("$.NPC_interactions.Tailgate");
+  
+    if(kelletailgate){  
+      NPCCollider(k, szoba_layerek[6].objects, "Tailgate");
+    }
+
+  const player = await jatekos_betolt(k, xpos, ypos, "Leesos_hely");
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 
