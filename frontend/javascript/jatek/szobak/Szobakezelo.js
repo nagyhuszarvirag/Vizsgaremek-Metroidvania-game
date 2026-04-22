@@ -1,4 +1,4 @@
-import { KellEAzNPC } from "../kaboomBetolto.js";
+import { KellEAzNPC, aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -206,6 +206,31 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) { //Ezt 
     return {
       success: false,
       message: "Mentés sikertelen",
+    };
+  }
+}
+
+export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) {
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/mentes/update-teljes-mentes", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id,
+        mentes_id,
+        mentett_adatok,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Teljes mentés hiba:", error);
+    return {
+      success: false,
+      message: "Teljes mentés sikertelen",
     };
   }
 }
@@ -657,7 +682,7 @@ export function LetraCollider(k, letraObj, player, interactKey, jumpKey, upKey =
   return letra;
 }
 
-export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag = "breakable_wall") {
+export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag = "breakable_wall", saveKey = null) {
   let currentHp = hp;
   let serulhet = true;
   let torott = false;
@@ -706,6 +731,10 @@ export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag 
 
     if (currentHp <= 0) {
       torott = true;
+
+      if (saveKey && aktivMentesAdatok) {
+        aktivMentesAdatok.world_interactions[saveKey] = true;
+      }
 
       if (falSprite && falSprite.exists()) {
         falSprite.destroy();

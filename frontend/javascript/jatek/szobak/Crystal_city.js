@@ -10,6 +10,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -74,8 +75,10 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         k.sprite("Crystal_City_Gate"),
     ]);
 
+    const lavaProtectionUnlocked = aktivMentesAdatok?.world_interactions?.["crystal-heart-lava-protection"] === true;
+
     let lavaProtectionAbilityLayer = null;
-    if (!localStorage.getItem("lava_protection_ability")) {
+    if (!lavaProtectionUnlocked) {
         lavaProtectionAbilityLayer = k.add([
             k.pos(0, 0),
             k.sprite("Crystal_City_heart"),
@@ -111,7 +114,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         );
     }
 
-    if (toKaonLayer && toKaonLayer.objects && toKaonLayer.objects[1]) {
+    if (toKaonLayer && toKaonLayer.objects && toKaonLayer.objects[0]) {
         SzobavaltozatoKezelo(
             k,
             toKaonLayer.objects[0].x,
@@ -160,13 +163,8 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         ]);
     }
 
-    /*if (localStorage.getItem("lava_protection_ability")) {
-      if (unlockableGate) unlockableGate.destroy();
-      if (gateSprite) gateSprite.destroy();
-    }*/
-
     if (
-        !localStorage.getItem("lava_protection_ability") &&
+        !lavaProtectionUnlocked &&
         lavaProtectAbilityObjectLayer &&
         lavaProtectAbilityObjectLayer.objects &&
         lavaProtectAbilityObjectLayer.objects[0]
@@ -181,20 +179,12 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             "lava_protection_ability_pickup",
         ]);
 
-        k.add([
-            k.pos(pickupObj.x, pickupObj.y),
-            k.rect(pickupObj.width, pickupObj.height),
-            k.color(255, 0, 0),
-            k.opacity(0.4),
-        ]);
-
         k.onCollide("player", "lava_protection_ability_pickup", (playerObj, obj) => {
             console.log("Láva védelem képesség felvéve");
 
-            localStorage.setItem("lava_protection_ability", "true");
-
-            if (unlockableGate) unlockableGate.destroy();
-            if (gateSprite) gateSprite.destroy();
+            if (aktivMentesAdatok) {
+                aktivMentesAdatok.world_interactions["crystal-heart-lava-protection"] = true;
+            }
 
             if (lavaProtectionAbilityLayer) {
                 lavaProtectionAbilityLayer.destroy();
@@ -240,7 +230,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
         k.onCollide("player", "damaging_crystal", () => {
             console.log("Sebző kristály!");
-            //ide jöhet később a sebzés logika ha úgy jó
+            // ide jöhet később a sebzés logika
         });
     }
 }

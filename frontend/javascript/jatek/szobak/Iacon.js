@@ -14,7 +14,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
-import { KellEAzNPC } from "../kaboomBetolto.js";
+import { KellEAzNPC, aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -103,63 +103,109 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const breakableWall2Layer = objectLayerKereses("Breakable_wall_2");
     const breakableWall3Layer = objectLayerKereses("Breakable_wall_3");
 
-    const hiddenBreakableWall = k.add([k.pos(0, 0), k.sprite("Iacon_Hidden_wall")]);
-    const breakableWall1 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_1")]);
-    const breakableWall2 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_2")]);
-    const collapsingGround1 = k.add([k.pos(0, 0), k.sprite("Iacon_Collapsing_ground_1")]);
-    const collapsingGround2 = k.add([k.pos(0, 0), k.sprite("Iacon_Collapsing_ground_2")]);
+    const wall1Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall1"] === true;
+    const wall2Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall2"] === true;
+    const wall3Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall3"] === true;
+    const ground1Gone = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-ground1"] === true;
+    const ground2Gone = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-ground2"] === true;
+
+    let hiddenBreakableWall = null;
+    if (!wall3Broken) {
+        hiddenBreakableWall = k.add([k.pos(0, 0), k.sprite("Iacon_Hidden_wall")]);
+    }
+
+    let breakableWall1 = null;
+    if (!wall1Broken) {
+        breakableWall1 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_1")]);
+    }
+
+    let breakableWall2 = null;
+    if (!wall2Broken) {
+        breakableWall2 = k.add([k.pos(0, 0), k.sprite("Iacon_Breakable_wall_2")]);
+    }
+
+    let collapsingGround1 = null;
+    if (!ground1Gone) {
+        collapsingGround1 = k.add([k.pos(0, 0), k.sprite("Iacon_Collapsing_ground_1")]);
+    }
+
+    let collapsingGround2 = null;
+    if (!ground2Gone) {
+        collapsingGround2 = k.add([k.pos(0, 0), k.sprite("Iacon_Collapsing_ground_2")]);
+    }
 
     const map = k.add([k.pos(0, 0), k.sprite("Iacon")]);
 
     MapColliderek(k, map, szoba_layerek[12].objects);
 
-    const collapseZone1 = mapData.data.layers[11].objects[0];
-    const collapsingGroundTrigger1 = k.add([
-        k.pos(collapseZone1.x, collapseZone1.y),
-        k.rect(collapseZone1.width, collapseZone1.height),
-        k.area(),
-        k.opacity(0),
-        "collapsing_ground_trigger_1",
-    ]);
+    if (!ground1Gone) {
+        const collapseZone1 = mapData.data.layers[11].objects[0];
+        const collapsingGroundTrigger1 = k.add([
+            k.pos(collapseZone1.x, collapseZone1.y),
+            k.rect(collapseZone1.width, collapseZone1.height),
+            k.area(),
+            k.opacity(0),
+            "collapsing_ground_trigger_1",
+        ]);
 
-    let collapseTriggered1 = false;
+        let collapseTriggered1 = false;
 
-    k.onCollide("player", "collapsing_ground_trigger_1", () => {
-        if (collapseTriggered1) return;
-        collapseTriggered1 = true;
+        k.onCollide("player", "collapsing_ground_trigger_1", () => {
+            if (collapseTriggered1) return;
+            collapseTriggered1 = true;
 
-        console.log("Beomló talaj 1 aktiválva");
-        collapsingGround1.destroy();
-        collapsingGroundTrigger1.destroy();
-    });
+            console.log("Beomló talaj 1 aktiválva");
 
-    const collapseZone2 = mapData.data.layers[17].objects[0];
-    const collapsingGroundTrigger2 = k.add([
-        k.pos(collapseZone2.x, collapseZone2.y),
-        k.rect(collapseZone2.width, collapseZone2.height),
-        k.area(),
-        k.opacity(0),
-        "collapsing_ground_trigger_2",
-    ]);
+            if (aktivMentesAdatok) {
+                aktivMentesAdatok.world_interactions["Iacon_breakable-ground1"] = true;
+            }
 
-    let collapseTriggered2 = false;
+            if (collapsingGround1) {
+                collapsingGround1.destroy();
+            }
+            collapsingGroundTrigger1.destroy();
+        });
+    }
 
-    k.onCollide("player", "collapsing_ground_trigger_2", () => {
-        if (collapseTriggered2) return;
-        collapseTriggered2 = true;
 
-        console.log("Beomló talaj 2 aktiválva");
-        collapsingGround2.destroy();
-        collapsingGroundTrigger2.destroy();
-    });
+
+    if (!ground2Gone) {
+        const collapseZone2 = mapData.data.layers[17].objects[0];
+        const collapsingGroundTrigger2 = k.add([
+            k.pos(collapseZone2.x, collapseZone2.y),
+            k.rect(collapseZone2.width, collapseZone2.height),
+            k.area(),
+            k.opacity(0),
+            "collapsing_ground_trigger_2",
+        ]);
+
+        let collapseTriggered2 = false;
+
+        k.onCollide("player", "collapsing_ground_trigger_2", () => {
+            if (collapseTriggered2) return;
+            collapseTriggered2 = true;
+
+            console.log("Beomló talaj 2 aktiválva");
+
+            if (aktivMentesAdatok) {
+                aktivMentesAdatok.world_interactions["Iacon_breakable-ground2"] = true;
+            }
+
+            if (collapsingGround2) {
+                collapsingGround2.destroy();
+            }
+            collapsingGroundTrigger2.destroy();
+        });
+    }
+
 
     const savepointObj = mapData.data.layers[9].objects[0];
     const savepointNev = mapData.data.layers[9].name;
     MentesCollider(k, savepointObj, savepointNev);
 
-     let kelleswindle = await KellEAzNPC("$.NPC_interactions.Swindle");
-    
-    if(kelleswindle){
+    let kelleswindle = await KellEAzNPC("$.NPC_interactions.Swindle");
+
+    if (kelleswindle) {
         NPCCollider(k, szoba_layerek[32].objects, "Swindle");
     }
 
@@ -179,16 +225,40 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         });
     }
 
-    if (breakableWall1Layer && breakableWall1Layer.objects && breakableWall1Layer.objects[0]) {
-        BreakableFal(k, breakableWall1Layer.objects[0], breakableWall1, 2, true, "breakable_wall_1");
+    if (!wall1Broken && breakableWall1Layer?.objects?.[0] && breakableWall1) {
+        BreakableFal(
+            k,
+            breakableWall1Layer.objects[0],
+            breakableWall1,
+            2,
+            true,
+            "breakable_wall_1",
+            "Iacon_breakable-wall1"
+        );
     }
 
-    if (breakableWall2Layer && breakableWall2Layer.objects && breakableWall2Layer.objects[0]) {
-        BreakableFal(k, breakableWall2Layer.objects[0], breakableWall2, 2, true, "breakable_wall_2");
+    if (!wall2Broken && breakableWall2Layer?.objects?.[0] && breakableWall2) {
+        BreakableFal(
+            k,
+            breakableWall2Layer.objects[0],
+            breakableWall2,
+            2,
+            true,
+            "breakable_wall_2",
+            "Iacon_breakable-wall2"
+        );
     }
 
-    if (breakableWall3Layer && breakableWall3Layer.objects && breakableWall3Layer.objects[0]) {
-        BreakableFal(k, breakableWall3Layer.objects[0], hiddenBreakableWall, 3, false, "hidden_breakable_wall");
+    if (!wall3Broken && breakableWall3Layer?.objects?.[0] && hiddenBreakableWall) {
+        BreakableFal(
+            k,
+            breakableWall3Layer.objects[0],
+            hiddenBreakableWall,
+            3,
+            false,
+            "hidden_breakable_wall",
+            "Iacon_breakable-wall3"
+        );
     }
 
     SzobakiesesKezelo(k, map, mapW, mapH);

@@ -13,6 +13,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 import { playerInteractGombja, playerUgroGombja } from "../../options.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -113,8 +114,10 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         k.sprite("City_of_Kaon"),
     ]);
 
+    const bonusHeartMegvan = aktivMentesAdatok?.world_interactions?.["bonus-hp-1"] === true;
+
     let bonusHeartSprite = null;
-    if (!localStorage.getItem("kaon_bonus_heart_picked")) {
+    if (!bonusHeartMegvan) {
         bonusHeartSprite = k.add([
             k.pos(0, 0),
             k.sprite("City_of_Kaon_heart"),
@@ -241,7 +244,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     //bónusz szív
     if (
-        !localStorage.getItem("kaon_bonus_heart_picked") &&
+        !bonusHeartMegvan &&
         bonusHeartLayer &&
         bonusHeartLayer.objects &&
         bonusHeartLayer.objects[0]
@@ -259,7 +262,9 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         k.onCollide("player", "kaon_bonus_heart_pickup", (playerObj, obj) => {
             console.log("Kaon bonus heart felvéve");
 
-            localStorage.setItem("kaon_bonus_heart_picked", "true");
+            if (aktivMentesAdatok) {
+                aktivMentesAdatok.world_interactions["bonus-hp-1"] = true;
+            }
 
             maxHpNovelese(playerObj, 2);
 

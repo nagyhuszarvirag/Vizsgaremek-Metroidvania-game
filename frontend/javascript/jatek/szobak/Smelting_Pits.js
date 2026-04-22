@@ -12,6 +12,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -60,6 +61,8 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         (layer) => layer.name === "Boss_arena"
     );
 
+    const breakableWallBroken = aktivMentesAdatok?.world_interactions?.["Smelting-pits_breakable-wall1"] === true;
+
     const bg = k.add([
         k.pos(0, 0),
         k.sprite("Smelting_Pits_BG_1"),
@@ -70,10 +73,13 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         k.sprite("Smelting_Pits"),
     ]);
 
-    const breakableWallLayer = k.add([
-        k.pos(0, 0),
-        k.sprite("Smelting_Pits_Breakable_wall"),
-    ]);
+    let breakableWallLayer = null;
+    if (!breakableWallBroken) {
+        breakableWallLayer = k.add([
+            k.pos(0, 0),
+            k.sprite("Smelting_Pits_Breakable_wall"),
+        ]);
+    }
 
     /*const collapsingGroundLayer = k.add([
         k.pos(0, 0),
@@ -122,12 +128,23 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
 
     const player = await jatekos_betolt(k, xpos, ypos);
 
-    const breakableWallObj = szoba_layerek[5].objects[0];
-
-    BreakableFal(k, breakableWallObj, breakableWallLayer, 2, true, "smelting_breakable_wall");
+    if (!breakableWallBroken && szoba_layerek[5]?.objects?.[0] && breakableWallLayer) {
+        BreakableFal(
+            k,
+            szoba_layerek[5].objects[0],
+            breakableWallLayer,
+            2,
+            true,
+            "smelting_breakable_wall",
+            "Smelting-pits_breakable-wall1"
+        );
+    }
 
     player.onCollideUpdate("Lava_object", () => {
-        if (localStorage.getItem("lava_protection_ability") === "true") return;
+        const vanLavaVedettseg = aktivMentesAdatok?.world_interactions?.["crystal-heart-lava-protection"] === true;
+
+        if (vanLavaVedettseg) return;
+
         sebzesAdas(k, player, 1);
     });
 

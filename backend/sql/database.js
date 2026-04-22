@@ -202,6 +202,23 @@ async function UpdateMentes(
   return rows || null;
 }
 
+//teljes menteses
+async function UpdateTeljesMentes(user_id, mentes_id, mentett_adatok) {
+  const sql = `
+    UPDATE mentes
+    SET mentett_adatok = ?
+    WHERE user_id = ? AND mentes_id = ?;
+  `;
+
+  const [rows] = await pool.execute(sql, [
+    JSON.stringify(mentett_adatok),
+    user_id,
+    mentes_id,
+  ]);
+
+  return rows || null;
+}
+
 //Lehívni az adott achivement unlocked tulajdonságát (NPC kezeléshez kell)
 async function FINDhAchivementAdatok(user_id, achivement_id) {
   const sql = `
@@ -351,4 +368,5 @@ module.exports = {
   emailKereses,
   UpdateMentes,
   FINDhAchivementAdatokFROMSAVE,
+  UpdateTeljesMentes
 };
