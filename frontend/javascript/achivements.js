@@ -14,9 +14,28 @@ export async function ShowAchivements() {
       nyelv +
       "/achivements.json",
   );
-  const achivmentAdatok = await fecthData(
+  let achivmentAdatok;
+
+  if(userid.id!=0){
+     achivmentAdatok = await fecthData(
     "http://127.0.0.1:3000/api/showachivements/" + userid.id + "/" + nyelv,
-  );
+    );
+  }else{
+    switch (nyelv) {
+      case 1:
+         achivmentAdatok = JSON.parse(localStorage.getItem("achivements_hu"));
+        console.log(achivmentAdatok);
+        break;
+
+      case 2:
+         achivmentAdatok = JSON.parse(localStorage.getItem("achivements_en"));
+        break;
+
+      default:
+        throw new Error("Ismeretlen nyelv!");
+        break;
+    }
+  }
 
   let fodiv = document.createElement("div");
   let sor = document.createElement("div");

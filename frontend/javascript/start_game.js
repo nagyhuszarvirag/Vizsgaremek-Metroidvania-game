@@ -16,6 +16,12 @@ export async function startGame() {
       "/start_game.json",
   );
 
+  const data_szoba_nevek = await fecthData(
+    "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+      nyelv +
+      "/szoba_nevek.json",
+  );
+
   let fodiv = document.createElement("div");
 
   fodiv.id = "game-container";
@@ -35,10 +41,52 @@ export async function startGame() {
   fodiv.appendChild(dekor_vonal_blokkal());
 
   sor = document.createElement("div");
+
+  let user = JSON.parse(localStorage.getItem("user"));
   for (let i = 0; i < 4; i++) {
     let jatekFajlok = document.createElement("div");
     //betölteni metnéseket
-    jatekFajlok.innerText = data.data.uj_jatek;
+
+    let szoba_nev = data.data.uj_jatek;
+    let mentes_szam;
+
+    if(user.id!=0){
+
+      let mentes=await fecthData(
+      "http://127.0.0.1:3000/api/mentesmeghiv/" + user.id + "/" + i,
+      );
+
+      mentes_szam=mentes.data.mentett_adatok.savepoint;
+
+    }
+    else{    
+      mentes_szam=JSON.parse(localStorage.getItem("mentes_"+i));
+    }
+
+    switch (mentes_szam) {
+      case "savepoint_2":
+          szoba_nev = data_szoba_nevek.data.mitteous;
+          break;
+
+        case "savepoint_2":
+          szoba_nev = data_szoba_nevek.data.mitteous;
+          break;
+
+        case "savepoint_3":
+          szoba_nev = data_szoba_nevek.data.iacon;
+          break;
+
+        case "Savepoint_4":
+          szoba_nev = data_szoba_nevek.data.medbay;
+          break;
+
+        case "Savepoint_5":
+          szoba_nev = data_szoba_nevek.data.kaon;
+          break;
+      }
+
+    
+    jatekFajlok.innerText = szoba_nev;
     jatekFajlok.classList.add("jatek_fajlok", "p-4");
     jatekFajlok.id = "jatek_fajlok_" + i;
 
