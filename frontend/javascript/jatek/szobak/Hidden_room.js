@@ -9,6 +9,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Hidden_Room(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -56,9 +57,11 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     k.sprite("hidden_room_solid"),
   ]);
 
-  let heartSprite = null;
-  if (!localStorage.getItem("hidden_room_heart_picked")) {
-    heartSprite = k.add([
+  const bonusHeartMegvan = aktivMentesAdatok?.world_interactions?.["bonus-hp-2"] === true;
+
+  let bonusHeartSprite = null;
+  if (!bonusHeartMegvan) {
+    bonusHeartSprite = k.add([
       k.pos(0, 0),
       k.sprite("hidden_room_heart"),
     ]);
@@ -88,7 +91,7 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
   }
 
   if (
-    !localStorage.getItem("hidden_room_heart_picked") &&
+    !bonusHeartMegvan &&
     heartObjectLayer &&
     heartObjectLayer.objects &&
     heartObjectLayer.objects[0]
@@ -106,12 +109,15 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     k.onCollide("player", "hidden_room_heart_pickup", (playerObj, obj) => {
       console.log("Hidden room bonus heart felvéve");
 
-      localStorage.setItem("hidden_room_heart_picked", "true");
+
+      if (aktivMentesAdatok) {
+        aktivMentesAdatok.world_interactions["bonus-hp-2"] = true;
+      }
 
       maxHpNovelese(playerObj, 2);
 
-      if (heartSprite) {
-        heartSprite.destroy();
+      if (bonusHeartSprite) {
+        bonusHeartSprite.destroy();
       }
 
       obj.destroy();

@@ -41,6 +41,13 @@ export function sebzesAdas(k, player, mennyiseg) {
 
   player.invulnerable = true;
 
+  player.serul = true;
+
+  const irany = player.flipX ? -1 : 1;
+  player.knockbackX = irany * 440;
+  player.knockbackY = -120;
+  player.knockbackTimer = 0.18;
+
   if (player.play) {
     player.play("hurt");
   }
@@ -48,13 +55,7 @@ export function sebzesAdas(k, player, mennyiseg) {
   k.wait(0.35, () => {
     if (!player.exists() || player.dead) return;
 
-    if (player.letaranVan) {
-      player.play("idle");
-    } else if (!player.isGrounded()) {
-      player.play("jump");
-    } else {
-      player.play("idle");
-    }
+    player.serul = false;
   });
 
   k.wait(2.5, () => {

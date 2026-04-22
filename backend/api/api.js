@@ -638,6 +638,32 @@ router.patch("/mentes/update-savepoint", async (req, res) => {
   }
 });
 
+router.patch("/mentes/update-teljes-mentes", async (req, res) => {
+  try {
+    const { user_id, mentes_id, mentett_adatok } = req.body;
+
+    if (!user_id || !mentes_id || !mentett_adatok) {
+      return res.status(400).json({
+        success: false,
+        message: "Hiányzó adat",
+      });
+    }
+
+    await database.UpdateTeljesMentes(user_id, mentes_id, mentett_adatok);
+
+    res.status(200).json({
+      success: true,
+      message: "Teljes mentés elmentve",
+    });
+  } catch (err) {
+    console.error("PATCH /mentes/update-teljes-mentes hiba:", err);
+    res.status(500).json({
+      success: false,
+      message: "Adatbázis hiba",
+    });
+  }
+});
+
 //ez alá ne írj új apit csak fölé
 router.use((err, req, res, next) => {
   const now = new Date().toLocaleString("hu-HU");

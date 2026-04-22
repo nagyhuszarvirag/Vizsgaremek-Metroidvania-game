@@ -10,6 +10,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -74,35 +75,49 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const Layer_4 = k.add([k.pos(0, 0), k.sprite("Mitteous_Plateau4")]);
   const map = k.add([k.pos(0, 0), k.sprite("Mitteous_Plateau")]);
 
-  const collapsingGround = k.add([
-    k.pos(0, 0),
-    k.sprite("Mitteous_Plateau_Collapsing_ground"),
-  ]);
+  const collapseGroundGone = aktivMentesAdatok?.world_interactions?.["mitteous-plateau_breakable-ground1"] === true;
+
+  let collapsingGround = null;
+  if (!collapseGroundGone) {
+    collapsingGround = k.add([
+      k.pos(0, 0),
+      k.sprite("Mitteous_Plateau_Collapsing_ground"),
+    ]);
+  }
 
 
   MapColliderek(k, map, szoba_layerek[15].objects);
   //Collapsing_Ground_logic helye:szoba_layerek[15].objects
-  const collapseZone = mapData.data.layers[16].objects[0];
+  if (!collapseGroundGone) {
+    const collapseZone = mapData.data.layers[16].objects[0];
 
-  const collapsingGroundTrigger = k.add([
-    k.pos(collapseZone.x, collapseZone.y),
-    k.rect(collapseZone.width, collapseZone.height),
-    k.area(),
-    k.opacity(0),
-    "collapsing_ground_trigger",
-  ]);
+    const collapsingGroundTrigger = k.add([
+      k.pos(collapseZone.x, collapseZone.y),
+      k.rect(collapseZone.width, collapseZone.height),
+      k.area(),
+      k.opacity(0),
+      "collapsing_ground_trigger",
+    ]);
 
-  let collapseTriggered = false;
+    let collapseTriggered = false;
 
-  k.onCollide("player", "collapsing_ground_trigger", () => {
-    if (collapseTriggered) return;
-    collapseTriggered = true;
+    k.onCollide("player", "collapsing_ground_trigger", () => {
+      if (collapseTriggered) return;
+      collapseTriggered = true;
 
-    console.log("Beomló talaj aktiválva");
+      console.log("Beomló talaj aktiválva");
 
-    collapsingGround.destroy();
-    collapsingGroundTrigger.destroy();
-  });
+      if (aktivMentesAdatok) {
+        aktivMentesAdatok.world_interactions["mitteous-plateau_breakable-ground1"] = true;
+      }
+
+      if (collapsingGround) {
+        collapsingGround.destroy();
+      }
+
+      collapsingGroundTrigger.destroy();
+    });
+  }
 
   const savepointObj = mapData.data.layers[8].objects[0];
   const savepointNev = mapData.data.layers[8].name;

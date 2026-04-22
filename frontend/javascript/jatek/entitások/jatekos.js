@@ -1,4 +1,4 @@
-import { KellEAzNPC, cutscene_kezeles, GRAVITY, SPEED, JUMP_FORCE } from "../kaboomBetolto.js";
+import { KellEAzNPC, cutscene_kezeles, GRAVITY, SPEED, JUMP_FORCE, mentesunk_idja, aktivMentesAdatok } from "../kaboomBetolto.js";
 import {
   volume,
   nyelv,
@@ -9,11 +9,11 @@ import {
   playerInteractGombja,
   mobileMode,
 } from "../../options.js";
-import { MentesLetrehozo } from "../szobak/Szobakezelo.js";
+import { MentesLetrehozo, TeljesMentesLetrehozo } from "../szobak/Szobakezelo.js";
 import { hpRendszerBeallitas } from "./hp_kezelo.js";
 import { hpUI } from "./hp_ui.js";
 
-export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
+export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   const player = k.add([
     k.sprite("player"),
     k.pos(xpos, ypos - 30), //a -30 azért kell, hogy a játékos ne a lábánál legyen lerakva, hanem a közepénél
@@ -27,13 +27,18 @@ export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
 
   let kezdoSzivek = 5; //Majd a mentés adatai-ba bele lesz rakva a két plussz perma hp, úgyhogy majd azt felhasználhatjuk, hogy mindig jó mentés, jó hp-t kapjon
 
-  if (localStorage.getItem("kaon_bonus_heart_picked") === "true") {
+  if (aktivMentesAdatok?.world_interactions?.["bonus-hp-1"] === true) {
     kezdoSzivek += 1;
   }
 
-  if (localStorage.getItem("hidden_room_heart_picked") === "true") {
+  if (aktivMentesAdatok?.world_interactions?.["bonus-hp-2"] === true) {
     kezdoSzivek += 1;
   }
+
+  if (aktivMentesAdatok?.world_interactions?.["bonus-hp-3"] === true) {
+    kezdoSzivek += 1;
+  }
+
 
   hpRendszerBeallitas(player, kezdoSzivek);
   player.hpUI = hpUI(k, player);
@@ -43,6 +48,10 @@ export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
   player.letraSebesseg = 100;
   player.tamad = false;
   player.tamadasAblakNyitva = false;
+  player.serul = false;
+  player.knockbackX = 0;
+  player.knockbackY = 0;
+  player.knockbackTimer = 0;
 
   player.play("idle");
 
@@ -136,58 +145,58 @@ export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
   k.onKeyPress(playerInteractGombja, async () => {
     //NPC
     if (aktivNPC) {
-      switch (current_map){
+      switch (current_map) {
         case "Kezdoszoba":
-           if (kelleprowl) {
-            cutscene_kezeles(k,"prowl_chromedome_and_rewind");
+          if (kelleprowl) {
+            cutscene_kezeles(k, "prowl_chromedome_and_rewind");
             kelleprowl = false;
           }
           break;
 
         case "Mitteous_Plateau":
-            if (kelleChromedome_and_Ratchet_combo) {
-            cutscene_kezeles(k,"tailgate_a_föld_alatt");
+          if (kelleChromedome_and_Ratchet_combo) {
+            cutscene_kezeles(k, "tailgate_a_föld_alatt");
             kelleChromedome_and_Ratchet_combo = false;
           }
           break;
 
         case "Iacon":
-            if (kelleswindle) {
-              cutscene_kezeles(k,"swindle");
-              kelleswindle = false;
+          if (kelleswindle) {
+            cutscene_kezeles(k, "swindle");
+            kelleswindle = false;
           }
           break;
 
         case "Medbay":
-            if (kellerachet) {
-            cutscene_kezeles(k,"rigor_morphis");
+          if (kellerachet) {
+            cutscene_kezeles(k, "rigor_morphis");
             kellerachet = false;
           }
           break;
 
         case "Leesos_hely":
-           if (kelletailgate) {
-            cutscene_kezeles(k,"tailgate_a_föld_alatt");
+          if (kelletailgate) {
+            cutscene_kezeles(k, "tailgate_a_föld_alatt");
             kelletailgate = false;
           }
           break;
 
-       /*case "Smelting_Pits":
-          break;
-
-        case "End_map":
-          break;
-
-        case "Crystal_City":
-          break;
-
-        case "The_cemetery":
-          break;*/
+        /*case "Smelting_Pits":
+           break;
+ 
+         case "End_map":
+           break;
+ 
+         case "Crystal_City":
+           break;
+ 
+         case "The_cemetery":
+           break;*/
 
         default:
           console.log("Ismeretlen szoba");
           break;
-        }
+      }
 
       return;
     }
@@ -209,7 +218,15 @@ export async function jatekos_betolt(k, xpos, ypos, current_map ="semelyik") {
         return;
       }
 
-      const eredmeny = await MentesLetrehozo(user.id, 1, savepointNev);
+      if (aktivMentesAdatok) {
+        aktivMentesAdatok.savepoint = savepointNev;
+      }
+
+      const eredmeny = await TeljesMentesLetrehozo(
+        user.id,
+        mentesunk_idja + 1,
+        aktivMentesAdatok
+      );
 
       console.log("Mentés eredménye:", eredmeny);
     }
@@ -302,6 +319,15 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
   k.onUpdate(() => {
     //Optimalizált mozgás (Remélem ez így jó lesz c:)
 
+    if (player.knockbackTimer > 0) {
+      player.knockbackTimer -= k.dt();
+
+      player.move(player.knockbackX, player.knockbackY);
+
+      player.knockbackX *= 0.88;
+      player.knockbackY *= 0.92;
+    }
+
     let moveX = 0;
     let moveY = 0;
 
@@ -386,8 +412,10 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
     let targetAnim = "idle";
 
-
-    if (!player.isGrounded()) {
+    if (player.serul) {
+      targetAnim = "hurt";
+    }
+    else if (!player.isGrounded()) {
       targetAnim = "jump";
     }
     else if (moveX !== 0) {

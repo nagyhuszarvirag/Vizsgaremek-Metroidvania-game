@@ -20,14 +20,15 @@ const JUMP_FORCE = 400;
 
 export { GRAVITY, SPEED, JUMP_FORCE };
 
-let mestesunk_idja = null;
+export let mentesunk_idja = null;
+export let aktivMentesAdatok = null;
 
 export async function KaboomBetolto(mentes_id) {
   specialeffektdoboz();
 
   localStorage.removeItem("player_current_hp");
 
-  mestesunk_idja = mentes_id;
+  mentesunk_idja = mentes_id;
 
   const user = JSON.parse(localStorage.getItem("user"));
   let mentesbetolto;
@@ -62,6 +63,8 @@ export async function KaboomBetolto(mentes_id) {
       "http://127.0.0.1:3000/api/mentesmeghiv/" + user.id + "/" + mentes_id,
     );
   }
+
+  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok));
 
   let kellintro = false;
   //console.log("Mentés betöltve: " + mentesbetolto.data.mentett_adatok.savepoint);
@@ -182,8 +185,8 @@ export async function KaboomBetolto(mentes_id) {
 
   //kezdőmap sprite
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját későbbi kezelésre
-  k.loadSprite("Kezdoszoba_table", "../../images/maps/kezdomap_table.png"); 
-  k.loadSprite("Kezdoszoba_table_flipped", "../../images/maps/kezdomap_table_flipped.png"); 
+  k.loadSprite("Kezdoszoba_table", "../../images/maps/kezdomap_table.png");
+  k.loadSprite("Kezdoszoba_table_flipped", "../../images/maps/kezdomap_table_flipped.png");
 
   //Mitteous map sprite
   k.loadSprite("Mitteous_Plateau", "../../images/maps/Mitteous_Plateau.png");
@@ -337,7 +340,7 @@ export async function KaboomBetolto(mentes_id) {
       jump: { from: 36, to: 38, speed: 2.5 },
       run_and_jump: { from: 12, to: 14, loop: true },
       attack: { from: 60, to: 67, speed: 16 },
-      hurt: { from: 48, to: 51, speed: 0.1 },
+      hurt: { from: 48, to: 51, speed: 6 },
     },
   });
 
@@ -389,7 +392,7 @@ export async function KaboomBetolto(mentes_id) {
       hurt: { from: 8, to: 9, speed: 0.1 },
       die: { from: 16, to: 18, speed: 0.1 },
       walk: { from: 24, to: 29, loop: true },
-      attack: { from: 32, to: 39, speed: 5 },
+      attack: { from: 36, to: 39, speed: 12 },
     },
   });
 
@@ -440,14 +443,14 @@ export async function KellEAzNPC(valtozo_utvonal) {
     return true;
   }
 
-  console.log(valtozo_utvonal + "     " + mestesunk_idja + "     " + JSON.parse(localStorage.getItem("user")).id)
+  console.log(valtozo_utvonal + "     " + mentesunk_idja + "     " + JSON.parse(localStorage.getItem("user")).id)
 
   const kell = await fecthData(
     "http://127.0.0.1:3000/api/kelleNPC",
     "POST",
     {
       valtozo_utvonal: valtozo_utvonal,
-      mentes_id: mestesunk_idja + 1,
+      mentes_id: mentesunk_idja + 1,
       user_id: JSON.parse(localStorage.getItem("user")).id
     }
   );
@@ -473,12 +476,23 @@ async function specialeffektdoboz() {
   container.appendChild(specieffekdoboz);
 }
 
-export async function cutscene_kezeles(k, scene_name, nextScene =null) {
+export async function cutscene_kezeles(k, scene_name, nextScene = null) {
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json"
   );
 
   const container = document.body;
+
+  const zene = document.getElementById("zenemarad");
+
+  let elozoMuted = true;
+  let elozoVolume = 1;
+
+  if (zene) {
+    elozoMuted = zene.muted;
+    elozoVolume = zene.volume;
+    zene.pause();
+  }
 
   const wrapper = document.createElement("div");
   wrapper.id = "cutscene_wrapper";
@@ -534,10 +548,32 @@ export async function cutscene_kezeles(k, scene_name, nextScene =null) {
     closed = true;
 
     wrapper.remove();
-    if(nextScene!=null){
+
+    window.focus();
+
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      canvas.tabIndex = 0;
+      canvas.focus();
+    }
+
+    if (nextScene != null) {
       k.go(nextScene);
     }
-    
+
+    if (zene) {
+      zene.pause();
+      zene.src = "../audio/the_humbling_river.mp3";
+      zene.currentTime = 0;
+      zene.muted = elozoMuted;
+      zene.volume = elozoVolume;
+
+      if (!elozoMuted) {
+        zene.play().catch(err => {
+          console.log("Zene indítás hiba:", err);
+        });
+      }
+    }
   }
 
   video.addEventListener("ended", cleanupAndGo);
