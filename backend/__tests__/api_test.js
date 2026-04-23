@@ -51,7 +51,7 @@ describe('API Tesztek', () => {
       expect(axios.get).toHaveBeenCalledWith('http://127.0.0.1:3000/api/testsql');
     });
 
-    it('should handle server error', async () => {
+    it('Szerver errort kezel', async () => {
       axios.get.mockRejectedValue(new Error('Database error'));
       await expect(fetchData('http://127.0.0.1:3000/api/testsql')).rejects.toThrow('Database error');
     });
@@ -240,7 +240,7 @@ describe('API Tesztek', () => {
   });
 
   describe('GET /api/map_data/:szoba_neve', () => {
-    it('Vissza kéri a kezdomap.json adatait', async () => {
+    it('Visszakéri a kezdomap.json adatait', async () => {
         const data = { "compressionlevel":-1,
    "height":50,
    "infinite":false,
@@ -816,7 +816,7 @@ describe('API Tesztek', () => {
       expect(result).toEqual(responseData);
     });
 
-    it('Kulcskombinációk frissítése', async () => {
+    it('Kulcs kombinációk frissítése', async () => {
       const requestData = {
         user_id: 1,
         key: 'kiosztas',
