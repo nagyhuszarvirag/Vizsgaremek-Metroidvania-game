@@ -16,6 +16,12 @@ canvas {
   z-index: 1;       
 }
 
+.in_game_modallok{
+  position: absolute; 
+  z-index: 9999; 
+  background-color: black;
+}
+
 /*Innen átmásolva: https://www.youtube.com/watch?v=H0SE4x5ZfYc*/
 .rain{
 

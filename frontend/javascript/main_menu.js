@@ -165,7 +165,7 @@ export async function createMainMenu() {
           break;
 
         case 4:
-          console.log("Kilépés");
+          //console.log("Kilépés");
           import("./exit.js");
           break;
 

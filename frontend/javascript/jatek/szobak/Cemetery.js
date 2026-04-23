@@ -114,9 +114,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "cemetery_cutscene_trigger",
     ]);
 
-    k.onCollide("player", "cemetery_cutscene_trigger", () => {
-      console.log("Cemetery cutscene trigger aktiválva");
-    });
+    
   }
 
   //lighthouse trigger
@@ -131,10 +129,42 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "lighthouse_trigger",
     ]);
 
-    k.onCollide("player", "lighthouse_trigger", () => {
-      console.log("Világítótorony trigger aktiválva");
-    });
+    
   }
+
+  let aktiv_esemeny=null;
+
+  player.onCollideUpdate("cemetery_cutscene_trigger", () => {
+    aktiv_esemeny = "cemetery_cutscene_trigger";
+  });
+
+  player.onCollideEnd("cemetery_cutscene_trigger", () => {
+    if (aktiv_esemeny === "cemetery_cutscene_trigger") {
+      aktiv_esemeny = null;
+    }
+  });
+
+  player.onCollideUpdate("lighthouse_trigger", () => {
+    aktiv_esemeny = "lighthouse_trigger";
+  });
+
+  player.onCollideEnd("lighthouse_trigger", () => {
+    if (aktiv_esemeny === "lighthouse_trigger") {
+      aktiv_esemeny = null;
+    }
+  });
+
+  k.onKeyPress(playerInteractGombja, async () => {
+      if(aktiv_esemeny=="lighthouse_trigger")
+        {
+          console.log("lighthouse");
+        }
+
+      if(aktiv_esemeny=="cemetery_cutscene_trigger")
+        {
+          console.log("cemetery");
+        }
+  });
 
   const esokezelo = Eso();
   window.esokezelo = esokezelo;

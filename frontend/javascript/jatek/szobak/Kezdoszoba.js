@@ -5,7 +5,8 @@ import {
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
   EffektTorles,
-  LetraCollider
+  LetraCollider,
+  szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -16,6 +17,8 @@ import { KellEAzNPC } from "../kaboomBetolto.js";
 export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
   EffektTorles();
+
+  szoba_zene_beallitas("Prowls_office_room");
 
   setBackgroundColor(k, "#00001b");
 

@@ -24,6 +24,11 @@ export let mentesunk_idja = null;
 export let aktivMentesAdatok = null;
 
 export async function KaboomBetolto(mentes_id) {
+  let in_game_menu_tarolo=document.createElement("div");
+  in_game_menu_tarolo.id="in_game_menu_tarolo";
+  in_game_menu_tarolo.classList.add("in_game_modallok");
+  document.body.appendChild(in_game_menu_tarolo);
+
   specialeffektdoboz();
 
   localStorage.removeItem("player_current_hp");
@@ -34,8 +39,6 @@ export async function KaboomBetolto(mentes_id) {
   let mentesbetolto;
   if (user.usernev === "guest") {
     console.log("Guest mentés betöltése localStorage-ból");
-    console.log(localStorage.getItem("mentes_0"));
-    //mentesbetolto = JSON.parse(localStorage.getItem("mentes_" + mentes_id));
     mentesbetolto = {
       data: {
         mentett_adatok: {
@@ -67,7 +70,6 @@ export async function KaboomBetolto(mentes_id) {
   aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok));
 
   let kellintro = false;
-  //console.log("Mentés betöltve: " + mentesbetolto.data.mentett_adatok.savepoint);
   console.log("Mentés betöltve: ", mentesbetolto);
 
   const scale = 1;
@@ -77,14 +79,6 @@ export async function KaboomBetolto(mentes_id) {
     height: window.innerHeight,
     scale: scale,
   });
-
-  /*k.scene("kezdoszoba", (adatok) => {
-    Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
-  });*/
-
-  /*k.scene("mitteous", (adatok) => {
-    Mitteous(k, adatok?.szoba_belepesi_pont ?? null);
-  });*/
 
   k.scene("Kezdoszoba", (adatok) => {
     Kezdoszoba(k, adatok?.szoba_belepesi_pont ?? null);
@@ -132,52 +126,6 @@ export async function KaboomBetolto(mentes_id) {
 
   k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
   k.debug.drawArea = true;
-
-  //console.log("x:"+window.innerWidth+" y:"+window.innerHeight);
-
-  /*k.scene("intro", () => {
-    /*k.add([
-      k.text("Skip Intro"),
-      //k.pos(window.innerWidth-50 , window.innerHeight-850),
-      k.pos(191, 566),
-      k.color(k.Color.fromHex("#000000")),
-    ]);*/
-
-  /*k.add([
-    k.pos(191, 566),
-    k.area({
-      shape: new k.Rect(k.vec2(0), 200, 60),
-    }),
-    k.body({ isStatic: true }),
-    "SkipIntro",
-  ]);*/
-
-  /*cutscene_kezeles(k, "intro");
-
-  kellintro = true;
-
-  k.onClick("Skipintro", () => {
-    //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
-    //Ide majd zenét elindítását is belerakhatjuk
-    if (kellintro) {
-      console.log("Intro átugorva");
-      kellintro = false;
-      k.destroyAll("Skipintro");
-      k.go("Kezdoszoba");
-    }
-  });
-
-  k.onKeyPress("enter", () => {
-    //ezt dinamikussá tenni könnyű cancel érdekében, ez lesz majd a skip intro gomb
-    //Ide majd zenét elindítását is belerakhatjuk
-    if (kellintro) {
-      console.log("Intro átugorva");
-      kellintro = false;
-      k.destroyAll("SkipIntro");
-      k.go("Kezdoszoba");
-    }
-  });
-});*/
 
   k.scene("intro", async () => {
     await cutscene_kezeles(k, "intro", "Kezdoszoba");
@@ -338,7 +286,7 @@ export async function KaboomBetolto(mentes_id) {
       walk: { from: 72, to: 83, loop: true },
       run: { from: 24, to: 31, loop: true },
       jump: { from: 36, to: 38, speed: 2.5 },
-      run_and_jump: { from: 12, to: 14, loop: true },
+      die: { from: 12, to: 14, loop: true }, //Átrajzolom a meghalás animációt
       attack: { from: 60, to: 67, speed: 16 },
       hurt: { from: 48, to: 51, speed: 6 },
     },
@@ -563,7 +511,7 @@ export async function cutscene_kezeles(k, scene_name, nextScene = null) {
 
     if (zene) {
       zene.pause();
-      zene.src = "../audio/the_humbling_river.mp3";
+      //zene.src = "../audio/the_humbling_river.mp3";
       zene.currentTime = 0;
       zene.muted = elozoMuted;
       zene.volume = elozoVolume;

@@ -1,9 +1,5 @@
 import { nyelv } from "./options.js";
 import { fecthData } from "./index.js";
-console.log("sikeres betöltés 4");
-
-//Imi, itt legyen egy popup vagy valami, hogy biztosan ki akar-e lépni a játékból mielőtt bezárja az ablakot
-// exit.js
 
 (async function () {
   const dataNyelv = await fecthData(
