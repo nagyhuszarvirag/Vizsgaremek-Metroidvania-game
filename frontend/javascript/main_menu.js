@@ -114,17 +114,6 @@ export async function createMainMenu() {
 
   document.body.appendChild(zeneGomb);
 
-  /*const bejelentkezesGomb = document.createElement("button");
-  bejelentkezesGomb.textContent = data.data.login;
-  bejelentkezesGomb.classList.add("gombok");
-  let authModal = null;
-  bejelentkezesGomb.addEventListener("click", async () => {
-    if (!authModal) {
-      authModal = await modalLetrehoz();
-    }
-    authModal.style.display = "flex";
-  });*/
-
   const authContainer = document.createElement("div");
   authContainer.id = "authContainer";
   await renderAuthButton(authContainer, data);

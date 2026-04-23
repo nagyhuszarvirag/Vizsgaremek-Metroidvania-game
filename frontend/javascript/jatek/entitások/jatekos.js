@@ -184,18 +184,6 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           }
           break;
 
-        /*case "Smelting_Pits":
-           break;
- 
-         case "End_map":
-           break;
- 
-         case "Crystal_City":
-           break;
- 
-         case "The_cemetery":
-           break;*/
-
         default:
           console.log("Ismeretlen szoba");
           break;
@@ -230,6 +218,8 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
         mentesunk_idja + 1,
         aktivMentesAdatok
       );
+
+      console.log("Mentés létrehozva: ", aktivMentesAdatok);
 
       console.log("Mentés eredménye:", eredmeny);
     }

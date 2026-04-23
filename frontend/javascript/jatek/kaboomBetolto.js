@@ -67,7 +67,7 @@ export async function KaboomBetolto(mentes_id) {
     );
   }
 
-  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok));
+  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok)); 
 
   let kellintro = false;
   console.log("Mentés betöltve: ", mentesbetolto);
