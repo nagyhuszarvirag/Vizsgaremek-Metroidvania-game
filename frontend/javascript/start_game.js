@@ -5,20 +5,20 @@ import {
   visszaGomb,
   dekor_vonal_blokkal,
 } from "./index.js";
-import { nyelv } from "./options.js";
+import { settings } from "./options.js";
 import { KaboomBetolto } from "./jatek/kaboomBetolto.js";
 
 export async function startGame() {
   oldalTakarito();
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
+      settings.nyelv +
       "/start_game.json",
   );
 
   const data_szoba_nevek = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
+      settings.nyelv +
       "/szoba_nevek.json",
   );
 

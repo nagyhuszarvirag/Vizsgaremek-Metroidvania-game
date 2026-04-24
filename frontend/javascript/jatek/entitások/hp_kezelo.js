@@ -1,3 +1,5 @@
+import { respawnSavepointAlapjan } from "../kaboomBetolto.js";
+
 export function hpRendszerBeallitas(player, kezdoSzivek = 5) {
   player.maxHp = kezdoSzivek * 2;
 
@@ -65,7 +67,7 @@ export function sebzesAdas(k, player, mennyiseg) {
   });
 
   if (player.hp <= 0) {
-    playerHalal(player);
+    playerHalal(k, player);
   }
 }
 
@@ -106,8 +108,22 @@ export function maxHpNovelese(player, mennyiseg) {
   console.log(`Player max HP növelve: ${player.hp}/${player.maxHp}`);
 }
 
-export function playerHalal(player) {
+export function playerHalal(k, player) {
+  if (player.dead) return; // duplahívás védelem
   player.dead = true;
-  localStorage.setItem("player_current_hp", 0);
+
   console.log("A játékos meghalt");
+
+  localStorage.removeItem("player_current_hp");
+  
+  if (player.exists()) {
+    player.destroy();
+  }
+
+  k.wait(1, () => {
+    const savepoint =
+      localStorage.getItem("last_loaded_savepoint") || "kezdomap_1";
+
+    respawnSavepointAlapjan(k, savepoint);
+  });
 }

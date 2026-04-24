@@ -10,7 +10,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
@@ -98,7 +98,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
     if (ladderLayer && ladderLayer.objects) {
         ladderLayer.objects.forEach((obj) => {
-            LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+            LetraCollider(k, obj, player, settings.controls.interact, settings.controls.interact);
         });
     }
 

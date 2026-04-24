@@ -12,7 +12,8 @@ import { Cemetery } from "./szobak/Cemetery.js";
 import { Hidden_Room } from "./szobak/Hidden_room.js";
 import { setBackgroundColor } from "./szobak/Szobakezelo.js";
 import { fecthData } from "../index.js";
-import { nyelv } from "../options.js";
+import { settings } from "../options.js";
+import { beallitasokBetolteseSettingsbe } from "../beallitas_menu.js";
 
 const GRAVITY = 700;
 const SPEED = 120; //Ezt is lehet JSON-ben tárolni security miatt
@@ -24,8 +25,8 @@ export let mentesunk_idja = null;
 export let aktivMentesAdatok = null;
 
 export async function KaboomBetolto(mentes_id) {
-  let in_game_menu_tarolo=document.createElement("div");
-  in_game_menu_tarolo.id="in_game_menu_tarolo";
+  let in_game_menu_tarolo = document.createElement("div");
+  in_game_menu_tarolo.id = "in_game_menu_tarolo";
   in_game_menu_tarolo.classList.add("in_game_modallok");
   document.body.appendChild(in_game_menu_tarolo);
 
@@ -36,6 +37,11 @@ export async function KaboomBetolto(mentes_id) {
   mentesunk_idja = mentes_id;
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  if (user && user.usernev !== "guest") {
+    await beallitasokBetolteseSettingsbe(user.id);
+  }
+
   let mentesbetolto;
   if (user.usernev === "guest") {
     console.log("Guest mentés betöltése localStorage-ból");
@@ -67,7 +73,11 @@ export async function KaboomBetolto(mentes_id) {
     );
   }
 
-  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok)); 
+  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok));
+
+  const savepoint = mentesbetolto.data.mentett_adatok.savepoint;
+
+  localStorage.setItem("last_loaded_savepoint", savepoint);
 
   let kellintro = false;
   console.log("Mentés betöltve: ", mentesbetolto);
@@ -351,7 +361,7 @@ export async function KaboomBetolto(mentes_id) {
 
   k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
 
-  switch (
+  /*switch (
   mentesbetolto.data.mentett_adatok.savepoint //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
   ) {
     case "kezdomap_1":
@@ -381,7 +391,8 @@ export async function KaboomBetolto(mentes_id) {
       console.log(
         "Ismeretlen savepoint: " + mentesbetolto.data.mentett_adatok.savepoint,
       );
-  }
+  }*/
+  respawnSavepointAlapjan(k, mentesbetolto.data.mentett_adatok.savepoint);
 }
 
 export async function KellEAzNPC(valtozo_utvonal) {
@@ -426,7 +437,7 @@ async function specialeffektdoboz() {
 
 export async function cutscene_kezeles(k, scene_name, nextScene = null) {
   const data = await fecthData(
-    "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + nyelv + "/kaboomBetolto.json"
+    "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + settings.nyelv + "/kaboomBetolto.json"
   );
 
   const container = document.body;
@@ -532,4 +543,41 @@ export async function cutscene_kezeles(k, scene_name, nextScene = null) {
   });
 
   video.load();
+}
+
+export function respawnSavepointAlapjan(k, savepoint) {
+  switch (savepoint) {
+    case "kezdomap_1":
+      k.go("Kezdoszoba");
+      break;
+
+    case "savepoint_2":
+      k.go("Mitteous_Plateau", {
+        szoba_belepesi_pont: "savepoint_2",
+      });
+      break;
+
+    case "savepoint_3":
+      k.go("Iacon", {
+        szoba_belepesi_pont: "savepoint_3",
+      });
+      break;
+
+    case "Savepoint_4":
+      k.go("Medbay", {
+        szoba_belepesi_pont: "Savepoint_4",
+      });
+      break;
+
+    case "Savepoint_5":
+      k.go("Kaon", {
+        szoba_belepesi_pont: "Savepoint_5",
+      });
+      break;
+
+    default:
+      console.log("Ismeretlen savepoint:", savepoint);
+      k.go("Kezdoszoba");
+      break;
+  }
 }

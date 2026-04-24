@@ -2,7 +2,7 @@ import { fecthData, oldalTakarito } from "./index.js";
 import { modalLetrehoz } from "./bejelentkezes_regisztracio.js";
 import { sutiModalKeszit } from "./suti_modal.js";
 import { startGame } from "./start_game.js";
-import { volume, nyelv } from "./options.js";
+import { settings } from "./options.js";
 import { loadCredits } from "./credits.js";
 import { beallitasMenuLetrehoz } from "./beallitas_menu.js";
 import { ShowAchivements } from "./achivements.js";
@@ -69,7 +69,7 @@ export async function createMainMenu() {
   oldalTakarito();
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
+      settings.nyelv +
       "/main_menu.json",
   );
 
@@ -102,7 +102,7 @@ export async function createMainMenu() {
       zene.play(); //user interact ez engedélyezett böngészőkben
       window.dispatchEvent(
         new CustomEvent("hangeroValtozas", {
-          detail: { volume },
+          detail: { volume: settings.volume },
         }),
       );
       zeneGomb.textContent = data.data.music[1];
@@ -187,6 +187,7 @@ function zeneLetrehoz(data) {
   zene.muted = true; // induláskor némának kell lennie
   zene.preload = "auto";
   zene.id = "zenemarad";
+  zene.volume = settings.volume
 
   document.body.appendChild(zene);
 }

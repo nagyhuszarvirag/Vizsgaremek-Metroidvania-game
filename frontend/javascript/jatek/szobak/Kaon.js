@@ -11,7 +11,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { settings } from "../../options.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
@@ -157,7 +157,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
 
     if (ladderLayer && ladderLayer.objects) {
         ladderLayer.objects.forEach((obj) => {
-            LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+            LetraCollider(k, obj, player, settings.controls.interact, settings.controls.jump);
         });
     }
 

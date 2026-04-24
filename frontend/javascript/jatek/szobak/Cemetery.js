@@ -11,7 +11,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { playerInteractGombja, playerUgroGombja, volume } from "../../options.js";
+import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
@@ -81,7 +81,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   if (ladderLayer && ladderLayer.objects) {
     ladderLayer.objects.forEach((obj) => {
-      LetraCollider(k, obj, player, playerInteractGombja, playerUgroGombja);
+      LetraCollider(k, obj, player, settings.controls.interact, settings.controls.interact);
     });
   }
 
@@ -209,7 +209,7 @@ async function soundeffectLetrehoz(src) {
   soundeffekt.muted = true; // induláskor némának kell lennie
   soundeffekt.preload = "auto";
   soundeffekt.id = src;
-  soundeffekt.volume = volume * 0.5;
+  soundeffekt.volume = settings.volume * 0.5;
 
   soundeffekt.load();
 
