@@ -5,17 +5,26 @@ import {
   SzobavaltozatoKezelo,
   Eso,
   EffektTorles,
-  LetraCollider
+  LetraCollider,
+  szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { playerInteractGombja, playerUgroGombja } from "../../options.js";
+import { playerInteractGombja, playerUgroGombja, volume } from "../../options.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
+
+  if(aktivMentesAdatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"]==false){
+    szoba_zene_beallitas("before the flower cutscene cemetery");
+  }
+  else{
+    szoba_zene_beallitas("after the flower cutscene cemetery");
+  }
 
   setBackgroundColor(k, "#000000");
 
@@ -114,9 +123,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "cemetery_cutscene_trigger",
     ]);
 
-    k.onCollide("player", "cemetery_cutscene_trigger", () => {
-      console.log("Cemetery cutscene trigger aktiválva");
-    });
+    
   }
 
   //lighthouse trigger
@@ -131,12 +138,94 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "lighthouse_trigger",
     ]);
 
-    k.onCollide("player", "lighthouse_trigger", () => {
-      console.log("Világítótorony trigger aktiválva");
-    });
+    
   }
+
+  let aktiv_esemeny=null;
+
+  player.onCollideUpdate("cemetery_cutscene_trigger", () => {
+    aktiv_esemeny = "cemetery_cutscene_trigger";
+
+    if(aktivMentesAdatok?.world_interactions?.["lighthouse-on"]==false){
+    const VanEZene = document.getElementById("Sound_effekt_layer_1");
+
+    if (!VanEZene) {
+      soundeffectLetrehoz("Sound_effekt_layer_1");
+      soundeffectLetrehoz("Sound_effekt_layer_2");
+    }
+  }
+  else{
+    szoba_zene_beallitas("after the flower cutscene cemetery");
+  }
+  });
+
+  player.onCollideEnd("cemetery_cutscene_trigger", () => {
+    if (aktiv_esemeny === "cemetery_cutscene_trigger") {
+      aktiv_esemeny = null;
+    }
+
+    const VanEZene = document.getElementById("Sound_effekt_layer_1");
+
+    if (VanEZene) {
+      soundeffectTorol("Sound_effekt_layer_1");
+      soundeffectTorol("Sound_effekt_layer_2");
+    }
+
+  });
+
+  player.onCollideUpdate("lighthouse_trigger", () => {
+    aktiv_esemeny = "lighthouse_trigger";
+  });
+
+  player.onCollideEnd("lighthouse_trigger", () => {
+    if (aktiv_esemeny === "lighthouse_trigger") {
+      aktiv_esemeny = null;
+    }
+  });
+
+  k.onKeyPress(playerInteractGombja, async () => {
+      if(aktiv_esemeny=="lighthouse_trigger")
+        {
+          console.log("lighthouse");
+        }
+
+      if(aktiv_esemeny=="cemetery_cutscene_trigger")
+        {
+          console.log("cemetery");
+        }
+  });
 
   const esokezelo = Eso();
   window.esokezelo = esokezelo;
   esokezelo.start();
+}
+
+async function soundeffectLetrehoz(src) {
+  const soundeffekt = document.createElement("audio");
+
+  soundeffekt.src = "../audio/"+src+".mp3";
+  soundeffekt.loop = true;
+  soundeffekt.autoplay = true;
+  soundeffekt.muted = true; // induláskor némának kell lennie
+  soundeffekt.preload = "auto";
+  soundeffekt.id = src;
+  soundeffekt.volume = volume * 0.5;
+
+  soundeffekt.load();
+
+  if(soundeffekt.muted){ //ez a load után kell legyen, mert a play() fv-t megzavarja a load() fv. .
+    soundeffekt.muted = false;
+    soundeffekt.play();
+  }
+
+  document.body.appendChild(soundeffekt);
+}
+
+async function soundeffectTorol(src) {
+  const soundeffekt = document.getElementById(src);
+
+  console.log("Soundeffekt törlése:", src, soundeffekt);
+  if (soundeffekt) {
+    document.body.removeChild(soundeffekt);
+  }
 }

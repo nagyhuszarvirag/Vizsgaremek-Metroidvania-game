@@ -5,7 +5,8 @@ import {
   SzobavaltozatoKezelo,
   MentesCollider,
   Kod,
-  EffektTorles
+  EffektTorles,
+  szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -17,6 +18,8 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Mitteous map betöltve");
 
   EffektTorles();
+
+  szoba_zene_beallitas("Mitteous_room");
 
   //háttér
   setBackgroundColor(k, "#000000");

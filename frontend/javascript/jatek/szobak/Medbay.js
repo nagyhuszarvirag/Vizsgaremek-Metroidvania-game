@@ -5,7 +5,8 @@ import {
   SzobakiesesKezelo,
   SzobavaltozatoKezelo,
   MentesCollider,
-  EffektTorles
+  EffektTorles,
+  szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -16,6 +17,8 @@ export async function Medbay(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
+
+  szoba_zene_beallitas("medbay_room");
 
   setBackgroundColor(k, "#000000");
 

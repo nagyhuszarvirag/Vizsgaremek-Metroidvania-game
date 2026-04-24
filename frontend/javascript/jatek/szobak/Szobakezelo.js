@@ -758,3 +758,17 @@ export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag 
 
   return falCollider;
 }
+
+export function szoba_zene_beallitas(szoba_neve) {
+  let zenedoboza=document.getElementById("zenemarad");
+  let zene="../audio/"+szoba_neve+".mp3";
+
+  zenedoboza.src=zene;
+  zenedoboza.load();
+
+  if(zenedoboza.muted){ //ez a load után kell legyen, mert a play() fv-t megzavarja a load() fv. .
+    zenedoboza.muted = false;
+    zenedoboza.play();
+  }
+  
+}

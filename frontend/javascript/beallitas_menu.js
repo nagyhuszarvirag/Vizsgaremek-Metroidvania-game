@@ -23,7 +23,7 @@ import { adminPanelLetrehoz } from "./admin_panel.js";
 let jelenlegiFelh = null;
 
 //felhasználói beállítások lekérése backendből
-async function betoltFelhBeallitas(userId) {
+/*async function betoltFelhBeallitas(userId) {
   if (!userId || userId === 0) return null;
   try {
     const res = await fetch(`http://127.0.0.1:3000/api/felhasznalo/${userId}`);
@@ -33,7 +33,7 @@ async function betoltFelhBeallitas(userId) {
     console.error("Hiba a felhasználói beállítások betöltésénél:", e);
   }
   return null;
-}
+}*/
 
 //felhasználói fiókadatok lekérése backendből
 async function betoltFelhFiok(userId) {

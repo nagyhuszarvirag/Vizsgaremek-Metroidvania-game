@@ -9,9 +9,12 @@ import {
   playerInteractGombja,
   mobileMode,
 } from "../../options.js";
-import { MentesLetrehozo, TeljesMentesLetrehozo } from "../szobak/Szobakezelo.js";
+import { MentesLetrehozo, TeljesMentesLetrehozo, szoba_zene_beallitas } from "../szobak/Szobakezelo.js";
 import { hpRendszerBeallitas } from "./hp_kezelo.js";
 import { hpUI } from "./hp_ui.js";
+import {beallitasMenuLetrehoz} from "../../beallitas_menu.js";
+import { fecthData } from "../../index.js";
+import { startGame } from "../../start_game.js";
 
 export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   const player = k.add([
@@ -67,7 +70,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   let kelletailgate = await KellEAzNPC("$.NPC_interactions.Tailgate");
   let kelleChromedome_and_Ratchet_combo = await KellEAzNPC("$.NPC_interactions.Chromedome_and_Ratchet");
 
-  console.log("Kell-e Prowl: " + kelleprowl);
+  //console.log("Kell-e Prowl: " + kelleprowl);
 
   let aktivNPC = null;
   let aktivMentesPont = null;
@@ -181,18 +184,6 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           }
           break;
 
-        /*case "Smelting_Pits":
-           break;
- 
-         case "End_map":
-           break;
- 
-         case "Crystal_City":
-           break;
- 
-         case "The_cemetery":
-           break;*/
-
         default:
           console.log("Ismeretlen szoba");
           break;
@@ -228,16 +219,18 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
         aktivMentesAdatok
       );
 
+      console.log("Mentés létrehozva: ", aktivMentesAdatok);
+
       console.log("Mentés eredménye:", eredmeny);
     }
   });
 
-  k.onMousePress(() => {
+  k.onMousePress(() => { //Ezt akkor is le kell kezelni, ha nem a left click a támadás
     if (playerAttackGombja !== "left click") return;
     if (player.tamad) return;
     if (player.letaranVan) return;
 
-    console.log("Támadás lefutott");
+    //console.log("Támadás lefutott");
 
     player.tamad = true;
     player.tamadasAblakNyitva = false;
@@ -271,6 +264,29 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
       if (!player.exists()) return;
       player.tamad = false;
     });
+  });
+
+  let nyitott_menu=false;
+  k.onKeyPress("escape", async () => {
+    if(!nyitott_menu){
+      nyitott_menu=true;
+
+      const szoveg_adata = await fecthData("http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +nyelv +"/in_game_menu.json");
+
+      In_game_menu(szoveg_adata.data, k);
+
+      //kilep_jatekbol(k); //Ezt ki kell venni majd
+
+      /*let beallitas_modal_head=document.createElement("div");
+      let beallitas_modal_body=document.createElement("div");
+      let beallitas_modal_foot=document.createElement("div");
+
+      const userData = JSON.parse(localStorage.getItem("user")) || {id: 0,};
+      beallitasMenuLetrehoz(userData.id, beallitas_modal_head, beallitas_modal_body, beallitas_modal_foot);*/
+    }
+    else{
+      return;
+    }
   });
 
   player_mozgas_es_animacio_kezeles(player, k);
@@ -428,4 +444,78 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
   });
 
+}
+
+function In_game_menu(szoveg, k) { //Nem jelenik meg, meg kell javítani
+  //Ez az alapja: https://www.w3schools.com/booTsTrap/tryit.asp?filename=trybs_modal&stacked=h
+  console.log("in game menü megnyitva");
+    let legkulsobbmodaldiv=document.createElement("div");
+    let kulsomodaldiv=document.createElement("div");
+    let modaldiv=document.createElement("div");
+    let jatek_menu_modal_head=document.createElement("div");
+    let jatek_menu_modal_body=document.createElement("div");
+    let jatek_menu_modal_foot=document.createElement("div");
+
+    let h4=document.createElement("h4");
+    //Modal head
+    
+    h4.innerText=szoveg.valassz;
+    jatek_menu_modal_head.appendChild(h4);
+
+    let gomb=document.createElement("button");
+    gomb.classList.add("menu-gomb", "gombok");
+    //Modal body - Beállítások
+
+    gomb.addEventListener("click", async () => {
+      console.log("Itt a beállítások menüt be kell pakolni a modalba");
+    });
+    
+    h4.innerText=szoveg.valassz;
+    jatek_menu_modal_body.appendChild(gomb);
+
+    gomb=document.createElement("button");
+    gomb.classList.add("menu-gomb", "gombok");
+    //Modal body - Kilépés a játékból
+
+    gomb.addEventListener("click", async () => {
+      console.log("Itt ki kell lépni a játékból");
+      kilep_jatekbol(k);
+    });
+
+    h4.innerText=szoveg.valassz;
+    jatek_menu_modal_body.appendChild(gomb);
+
+    gomb=document.createElement("button");
+    gomb.classList.add("menu-gomb", "gombok");
+    //Modal foot - Vissza a játékba
+
+    gomb.addEventListener("click", async () => {
+      console.log("Itt vissza kell lépni a játékba");
+    });
+    
+    gomb.innerText=szoveg.vissza;
+    jatek_menu_modal_foot.appendChild(gomb);
+
+
+    h4.classList.add("modal-title");
+    jatek_menu_modal_head.classList.add("modal-header");
+    jatek_menu_modal_body.classList.add("modal-body");
+    jatek_menu_modal_foot.classList.add("modal-footer");
+    modaldiv.classList.add("modal-content");
+    kulsomodaldiv.classList.add("modal-dialog");
+    legkulsobbmodaldiv.classList.add("modal", "fade", "in_game_modallok");
+
+    modaldiv.appendChild(jatek_menu_modal_head);
+    modaldiv.appendChild(jatek_menu_modal_body);
+    modaldiv.appendChild(jatek_menu_modal_foot);
+    kulsomodaldiv.appendChild(modaldiv);
+    legkulsobbmodaldiv.appendChild(kulsomodaldiv);
+    document.getElementById("in_game_menu_tarolo").appendChild(legkulsobbmodaldiv);
+
+}
+
+async function kilep_jatekbol(k) {
+  k.quit();
+  startGame();
+  szoba_zene_beallitas("the_humbling_river");
 }

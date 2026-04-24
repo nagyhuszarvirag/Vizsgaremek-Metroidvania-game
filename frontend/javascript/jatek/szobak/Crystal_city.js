@@ -4,7 +4,8 @@ import {
     SzobakiesesKezelo,
     SzobavaltozatoKezelo,
     EffektTorles,
-    LetraCollider
+    LetraCollider,
+    szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -16,6 +17,8 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
+
+    szoba_zene_beallitas("crystal_city_room");
 
     setBackgroundColor(k, "#000000");
 

@@ -24,7 +24,6 @@ export async function ShowAchivements() {
     switch (nyelv) {
       case 1:
          achivmentAdatok = JSON.parse(localStorage.getItem("achivements_hu"));
-        console.log(achivmentAdatok);
         break;
 
       case 2:
