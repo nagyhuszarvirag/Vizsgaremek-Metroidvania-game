@@ -1,4 +1,4 @@
-import {
+/*import {
   volume,
   nyelv,
   playerEloreMegyGombja,
@@ -7,7 +7,8 @@ import {
   playerAttackGombja,
   playerInteractGombja,
   mobileMode,
-} from "../../options.js";
+} from "../../options.js";*/
+ import { settings } from "../../options.js";
 import { Kod } from "../szobak/Szobakezelo.js";
 
 export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaObj = null) {
@@ -53,9 +54,9 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
     //irány alapján cél offset
     let targetLook = 0;
 
-    if (k.isKeyDown(playerEloreMegyGombja)) {
+    if (k.isKeyDown(settings.controls.forward)) {
       targetLook = maxLook;
-    } else if (k.isKeyDown(playerHatraMegyGombja)) {
+    } else if (k.isKeyDown(settings.controls.back)) {
       targetLook = -maxLook;
     }
 

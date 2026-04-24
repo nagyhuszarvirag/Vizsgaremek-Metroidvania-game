@@ -1,10 +1,10 @@
-import { nyelv } from "./options.js";
+import { settings } from "./options.js";
 import { fecthData } from "./index.js";
 
 (async function () {
   const dataNyelv = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
+      settings.nyelv +
       "/exit.json",
   );
   const biztos = confirm(dataNyelv.data.felugAblak);

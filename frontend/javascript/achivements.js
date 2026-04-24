@@ -4,24 +4,24 @@ import {
   visszaGomb,
   dekor_vonal_blokkal,
 } from "./index.js";
-import { nyelv } from "./options.js";
+import { settings } from "./options.js";
 
 export async function ShowAchivements() {
   oldalTakarito();
   let userid = JSON.parse(localStorage.getItem("user"));
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-      nyelv +
+      settings.nyelv +
       "/achivements.json",
   );
   let achivmentAdatok;
 
   if(userid.id!=0){
      achivmentAdatok = await fecthData(
-    "http://127.0.0.1:3000/api/showachivements/" + userid.id + "/" + nyelv,
+    "http://127.0.0.1:3000/api/showachivements/" + userid.id + "/" + settings.nyelv,
     );
   }else{
-    switch (nyelv) {
+    switch (settings.nyelv) {
       case 1:
          achivmentAdatok = JSON.parse(localStorage.getItem("achivements_hu"));
         break;

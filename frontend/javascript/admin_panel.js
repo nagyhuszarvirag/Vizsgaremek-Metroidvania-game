@@ -4,14 +4,14 @@ import {
   visszaGomb,
   fecthData,
 } from "./index.js";
-import { nyelv } from "./options.js";
+import { settings } from "./options.js";
 
 export async function adminPanelLetrehoz() {
   oldalTakarito();
 
   const szoveg = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
-    nyelv +
+    settings.nyelv +
     "/admin_panel.json",
   );
 

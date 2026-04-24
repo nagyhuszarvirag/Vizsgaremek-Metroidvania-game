@@ -23,18 +23,31 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
     scraplet.hurtCooldown = false;
     scraplet.irany = 1;
     scraplet.turnCooldown = false;
+    scraplet.attackRange = 80;
+    scraplet.attackMode = false;
+    scraplet.animState = "idle";
 
     scraplet.spawnX = x;
     scraplet.spawnY = y;
     scraplet.patrolRange = patrolRange;
 
-    scraplet.play("idle");
+    function animValtas(animNev) {
+        if (scraplet.animState === animNev) return;
+
+        scraplet.animState = animNev;
+        scraplet.play(animNev);
+    }
+
+    //scraplet.play("idle");
+
+    animValtas("idle");
 
     function randomPihenes() {
         if (scraplet.dead || scraplet.chasing) return;
 
         scraplet.pihenes = true;
-        scraplet.play("idle");
+        //scraplet.play("idle");
+        animValtas("idle")
 
         const pihenesIdo = 2 + Math.random();
 
@@ -67,27 +80,57 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         const absTavolsagX = Math.abs(tavolsagX);
         const tavSpawnTol = Math.abs(scraplet.pos.x - scraplet.spawnX);
 
-        if (absTavolsagX < 180 && tavolsagY < 60 && tavSpawnTol < 220) {
-            scraplet.chasing = true;
+        const chaseStartRange = 180;
+        const chaseEndRange = 260;
+        const chaseYRange = 70;
+
+        if (!scraplet.chasing) {
+            if (absTavolsagX <= chaseStartRange && tavolsagY <= chaseYRange) {
+                scraplet.chasing = true;
+            }
         } else {
-            scraplet.chasing = false;
+            if (absTavolsagX > chaseEndRange || tavolsagY > chaseYRange + 30) {
+                scraplet.chasing = false;
+                scraplet.attackMode = false;
+            }
         }
 
         if (scraplet.chasing) {
             scraplet.pihenes = false;
 
-            if (absTavolsagX > 20) {
+            const attackStartRange = 80;
+            const attackEndRange = 105;
+            const minimumTavolsag = 8;
+
+            if (
+                !scraplet.attackMode &&
+                absTavolsagX <= attackStartRange &&
+                tavolsagY < 50
+            ) {
+                scraplet.attackMode = true;
+            }
+
+            if (
+                scraplet.attackMode &&
+                (absTavolsagX > attackEndRange || tavolsagY >= 60)
+            ) {
+                scraplet.attackMode = false;
+            }
+
+            if (absTavolsagX > 14) {
                 scraplet.irany = tavolsagX > 0 ? 1 : -1;
                 scraplet.flipX = scraplet.irany < 0;
-                scraplet.move(scraplet.irany * scraplet.speed, 0);
+            }
 
-                if (scraplet.curAnim() !== "walk") {
-                    scraplet.play("walk");
-                }
+            // attack anim közben is menjen tovább a player felé
+            if (absTavolsagX > minimumTavolsag) {
+                scraplet.move(scraplet.irany * scraplet.speed, 0);
+            }
+
+            if (scraplet.attackMode) {
+                animValtas("attack");
             } else {
-                if (scraplet.curAnim() !== "idle" && !scraplet.attacking) {
-                    scraplet.play("idle");
-                }
+                animValtas("walk");
             }
         } else {
             if (!scraplet.pihenes) {
@@ -110,7 +153,8 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
                 }
             } else {
                 if (scraplet.curAnim() !== "idle") {
-                    scraplet.play("idle");
+                    //scraplet.play("idle");
+                    animValtas("idle");
                 }
             }
         }
@@ -124,7 +168,8 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         scraplet.damageCooldown = true;
         scraplet.attacking = true;
 
-        scraplet.play("attack");
+        //scraplet.play("attack");
+        animValtas("attack");
 
         sebzesAdas(k, player, 1);
 
@@ -134,9 +179,11 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
             scraplet.attacking = false;
 
             if (scraplet.chasing || !scraplet.pihenes) {
-                scraplet.play("walk");
+                //scraplet.play("walk");
+                animValtas("walk");
             } else {
-                scraplet.play("idle");
+                //scraplet.play("idle");
+                animValtas("idle");
             }
         });
 
@@ -157,7 +204,8 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         console.log("Scraplet HP:", scraplet.hp);
 
         if (scraplet.hp > 0) {
-            scraplet.play("hurt");
+            //scraplet.play("hurt");
+            animValtas("hurt")
             scraplet.move(scraplet.flipX ? 120 : -120, 0);
 
             k.wait(0.2, () => {
@@ -166,16 +214,19 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
                 scraplet.hurtCooldown = false;
 
                 if (scraplet.chasing || !scraplet.pihenes) {
-                    scraplet.play("walk");
+                    //scraplet.play("walk");
+                    animValtas("walk");
                 } else {
-                    scraplet.play("idle");
+                    //scraplet.play("idle");
+                    animValtas("idle");
                 }
             });
         }
 
         if (scraplet.hp <= 0) {
             scraplet.dead = true;
-            scraplet.play("die");
+            //scraplet.play("die");
+            animValtas("die");
 
             k.wait(0.4, () => {
                 if (scraplet.exists()) scraplet.destroy();
