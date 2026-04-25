@@ -1,7 +1,3 @@
-// index.test.js
-// Jest test file – requires jest-environment-jsdom and a babel setup for ES modules.
-// (Axios is not needed for these tests; global fetch is mocked directly.)
-
 import { 
   fecthData, 
   masikJSMeghivasa, 

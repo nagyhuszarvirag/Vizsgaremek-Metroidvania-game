@@ -1,8 +1,8 @@
 
 describe('options', () => {
   beforeEach(() => {
-    jest.resetModules();           // törli a require cache-t
-    window.localStorage.clear();   // üres localStorage
+    jest.resetModules();           
+    window.localStorage.clear();  
   });
 
   test('alapértelmezett értékek, ha nincs localStorage', () => {
