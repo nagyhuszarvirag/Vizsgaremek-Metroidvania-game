@@ -64,7 +64,7 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         (layer) => layer.name === "Boss_arena"
     );
 
-    const breakableWallBroken = aktivMentesAdatok?.world_interactions?.["Smelting-pits_breakable-wall1"] === true;
+    const breakableWallBroken = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Smelting-pits_breakable-wall1"] === true;
 
     const bg = k.add([
         k.pos(0, 0),
@@ -144,7 +144,7 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     }
 
     player.onCollideUpdate("Lava_object", () => {
-        const vanLavaVedettseg = aktivMentesAdatok?.world_interactions?.["crystal-heart-lava-protection"] === true;
+        const vanLavaVedettseg = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-heart-lava-protection"] === true;
 
         if (vanLavaVedettseg) return;
 

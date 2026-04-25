@@ -117,7 +117,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         k.sprite("City_of_Kaon"),
     ]);
 
-    const bonusHeartMegvan = aktivMentesAdatok?.world_interactions?.["bonus-hp-1"] === true;
+    const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-1"] === true;
 
     let bonusHeartSprite = null;
     if (!bonusHeartMegvan) {
@@ -265,9 +265,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         k.onCollide("player", "kaon_bonus_heart_pickup", (playerObj, obj) => {
             console.log("Kaon bonus heart felvéve");
 
-            if (aktivMentesAdatok) {
-                aktivMentesAdatok.world_interactions["bonus-hp-1"] = true;
-            }
+            aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-1"] = true;
 
             maxHpNovelese(playerObj, 2);
 

@@ -126,49 +126,6 @@ export async function sutiModalKeszit() {
     localStorage.setItem("sutiElfogad", "1");
 
     localStorage.setItem(
-      "mentes_0",
-      JSON.stringify({
-        success: true,
-        data: {
-          mentett_adatok: {
-            savepoint: "kezdomap_1",
-            world_interactions: {
-              "mitteous-plateau_breakable-ground1": false,
-              'Iacon_breakable-ground1': false,
-              'Iacon_breakable-ground2': false,
-              'Iacon_breakable-wall1': false,
-              'Iacon_breakable-wall2': false,
-              'Iacon_breakable-wall3': false,
-              'Smelting-pits_breakable-wall1': false,
-              'lighthouse-on': false,
-              'lighthouse-sea-of-flowers-cutscenes': false,
-              'crystal-heart-open_lock': false,
-              'crystal-heart-lava-protection': false,
-              'bonus-hp-1': false,
-              'bonus-hp-2': false,
-              'bonus-hp-3': false
-            },
-            NPC_interactions: {
-              Ratchet: false,
-              Prowl: false,
-              Chromedome_and_Ratchet: false,
-              Swindle: false,
-              Tailgate: false
-            },
-            bosses: {
-              Tarn: false,
-              Sparkeater: false
-            },
-            ability_unlocked: {
-              double_jump: false,
-              dash: false,
-            },
-          },
-        },
-      }),
-    );
-
-    localStorage.setItem(
       "mentes_1",
       JSON.stringify({
         success: true,
@@ -256,6 +213,49 @@ export async function sutiModalKeszit() {
 
     localStorage.setItem(
       "mentes_3",
+      JSON.stringify({
+        success: true,
+        data: {
+          mentett_adatok: {
+            savepoint: "kezdomap_1",
+            world_interactions: {
+              "mitteous-plateau_breakable-ground1": false,
+              'Iacon_breakable-ground1': false,
+              'Iacon_breakable-ground2': false,
+              'Iacon_breakable-wall1': false,
+              'Iacon_breakable-wall2': false,
+              'Iacon_breakable-wall3': false,
+              'Smelting-pits_breakable-wall1': false,
+              'lighthouse-on': false,
+              'lighthouse-sea-of-flowers-cutscenes': false,
+              'crystal-heart-open_lock': false,
+              'crystal-heart-lava-protection': false,
+              'bonus-hp-1': false,
+              'bonus-hp-2': false,
+              'bonus-hp-3': false
+            },
+            NPC_interactions: {
+              Ratchet: false,
+              Prowl: false,
+              Chromedome_and_Ratchet: false,
+              Swindle: false,
+              Tailgate: false
+            },
+            bosses: {
+              Tarn: false,
+              Sparkeater: false
+            },
+            ability_unlocked: {
+              double_jump: false,
+              dash: false,
+            },
+          },
+        },
+      }),
+    );
+
+    localStorage.setItem(
+      "mentes_4",
       JSON.stringify({
         success: true,
         data: {

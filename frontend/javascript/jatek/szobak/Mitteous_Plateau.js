@@ -6,7 +6,8 @@ import {
   MentesCollider,
   Kod,
   EffektTorles,
-  szoba_zene_beallitas
+  szoba_zene_beallitas,
+  NPCCollider
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
@@ -78,7 +79,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const Layer_4 = k.add([k.pos(0, 0), k.sprite("Mitteous_Plateau4")]);
   const map = k.add([k.pos(0, 0), k.sprite("Mitteous_Plateau")]);
 
-  const collapseGroundGone = aktivMentesAdatok?.world_interactions?.["mitteous-plateau_breakable-ground1"] === true;
+  const collapseGroundGone = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["mitteous-plateau_breakable-ground1"] === true;
 
   let collapsingGround = null;
   if (!collapseGroundGone) {
@@ -111,7 +112,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
       console.log("Beomló talaj aktiválva");
 
       if (aktivMentesAdatok) {
-        aktivMentesAdatok.world_interactions["mitteous-plateau_breakable-ground1"] = true;
+        aktivMentesAdatok.data.mentett_adatok.world_interactions["mitteous-plateau_breakable-ground1"] = true;
       }
 
       if (collapsingGround) {
@@ -126,6 +127,15 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const savepointNev = mapData.data.layers[8].name;
   console.log("Savepoint objektum neve: ", savepointNev);
   MentesCollider(k, savepointObj, savepointNev);
+
+  let kelleChromedome_and_Ratchet_combo = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Chromedome_and_Ratchet;
+  let kellerachet = aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet;
+  let kelletailgate = aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate;
+  
+    if (kelleChromedome_and_Ratchet_combo && kellerachet && kelletailgate) { //Chromedome és Ratchet kell ide
+      console.log("Chromedome és Ratchet kell a szobába");
+      //NPCCollider(k, szoba_layerek[6].objects, "Tailgate");
+    }
 
   const player = await jatekos_betolt(k, xpos, ypos, "Mitteous_Plateau");
 

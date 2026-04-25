@@ -12,7 +12,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
-import { KellEAzNPC } from "../kaboomBetolto.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
@@ -63,8 +63,7 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
   MapColliderek(k, map, szoba_layerek[3].objects);
 
-  let kelleprowl = await KellEAzNPC("$.NPC_interactions.Prowl");
-
+  let kelleprowl =!aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Prowl;
   if(kelleprowl){
     k.add([
             k.pos(0, 0),
@@ -72,6 +71,7 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
         ]);
 
     NPCCollider(k, szoba_layerek[4].objects, "Prowl");
+    
   }
   else{
     k.add([
@@ -94,19 +94,4 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
   SzobakiesesKezelo(k, map, mapW, mapH);
   SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon", "atjaro_mitteous");
 
-  /*
-  
-    //átjáró zóna
-    k.add([
-      k.pos(930, 480), //ez nem biztos hogy jó helyen van
-      k.rect(50, 120),
-      k.area(),
-      k.opacity(0),
-      "atjaro",
-    ]);
-  
-    k.onCollide("player", "atjaro", () => {
-      console.log("váltás");
-      k.go("mitteous");
-    });*/
 }

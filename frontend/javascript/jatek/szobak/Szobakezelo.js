@@ -1,4 +1,5 @@
-import { KellEAzNPC, aktivMentesAdatok } from "../kaboomBetolto.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import  {fecthData} from "../../index.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -11,6 +12,7 @@ export function setBackgroundColor(k, hexColorCode) {
 export function MapColliderek(k, map, colliderek, forcedTag = null) {
   for (const collider of colliderek) {
     const objektumTag = forcedTag || collider.type || "Solid";
+
 
     if (collider.polygon) {
       const coordinates = [];
@@ -45,15 +47,7 @@ export function MapColliderek(k, map, colliderek, forcedTag = null) {
 }
 
 export function NPCCollider(k, collider, NPC) {
-  console.log(collider);
-  console.log(collider[0].x);
-  console.log(collider[0].y);
-  console.log(collider[0].width);
-  console.log(collider[0].height);
 
-  //Note to self: Az NPC collider első koordinátája ott legyen, ahol akarom az NPC-t. A kezdőszobát ez alapján átírom
-
-  if (true) {
     let NPC_adder = k.add([
       k.sprite(NPC),
       k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
@@ -65,7 +59,6 @@ export function NPCCollider(k, collider, NPC) {
     ]);
 
     NPC_adder.play("idle");
-  }
 
 }
 
@@ -115,29 +108,6 @@ export function SzobakiesesKezelo(k, map, mapW, mapH) { //láthatatlan falak
 
 
 }
-
-/*export function SzobavaltozatoKezelo(k, atjaroX, atjaroY, atjaroWidth, atjaroHeight, celSzoba, belepesiPont = null){
-
-  console.log("SzobavaltozatoKezelo meghívva");
-  console.log("SzobavaltozatoKezelo atjaroX: " + atjaroX);
-  console.log("SzobavaltozatoKezelo atjaroY: " + atjaroY);
-  console.log("SzobavaltozatoKezelo atjaroWidth: " + atjaroWidth);
-  console.log("SzobavaltozatoKezelo atjaroHeight: " + atjaroHeight);
-  console.log("SzobavaltozatoKezelo celSzoba: " + celSzoba);
-
-   k.add([
-    k.pos(atjaroX, atjaroY), 
-    k.rect(atjaroWidth, atjaroHeight),
-    k.area(),
-    k.opacity(0),
-    "atjaro",
-  ]);
-
-  k.onCollide("player", "atjaro", () => {
-    console.log("váltás");
-    k.go(celSzoba, { szoba_belepesi_pont: belepesiPont });
-  });
-}*/
 
 export function SzobavaltozatoKezelo(
   k,
@@ -212,20 +182,28 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) { //Ezt 
 
 export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) {
   try {
-    const response = await fetch("http://127.0.0.1:3000/api/mentes/update-teljes-mentes", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id,
-        mentes_id,
-        mentett_adatok,
-      }),
+    let mentendo_adatok= mentett_adatok.data.mentett_adatok;
+
+    if(user_id!=0){
+      console.log( "Mentendő adatok: ",mentendo_adatok);
+      const response = await fecthData("http://127.0.0.1:3000/api/mentes/update-teljes-mentes", "PATCH", {
+        user_id: user_id,
+        mentes_id: mentes_id,
+        mentett_adatok: mentendo_adatok
     });
 
-    const data = await response.json();
+    const data = await response;
     return data;
+    } else{
+      let mentesneve="mentes_"+mentes_id;
+      localStorage.setItem(mentesneve,
+      JSON.stringify({
+        success: true,
+        data:{ mentett_adatok: mentendo_adatok }
+      }),
+    );
+    }
+    
   } catch (error) {
     console.error("Teljes mentés hiba:", error);
     return {
@@ -733,7 +711,7 @@ export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag 
       torott = true;
 
       if (saveKey && aktivMentesAdatok) {
-        aktivMentesAdatok.world_interactions[saveKey] = true;
+        aktivMentesAdatok.data.mentett_adatok.world_interactions[saveKey] = true;
       }
 
       if (falSprite && falSprite.exists()) {

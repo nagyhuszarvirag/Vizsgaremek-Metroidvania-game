@@ -1,7 +1,15 @@
-import { respawnSavepointAlapjan } from "../kaboomBetolto.js";
+import {aktivMentesAdatok, respawnSavepointAlapjan} from "../kaboomBetolto.js";
 
 export function hpRendszerBeallitas(player, kezdoSzivek = 5) {
-  player.maxHp = kezdoSzivek * 2;
+  let plussz_hp_az_alaphoz=0;
+
+  for(let i=0; i<3; i++){
+    if(aktivMentesAdatok.data.mentett_adatok.world_interactions[`bonus-hp-${i+1}`]){
+      plussz_hp_az_alaphoz++;
+    }
+  }
+
+  player.maxHp = (kezdoSzivek + plussz_hp_az_alaphoz) * 2;
 
   const mentettHp = localStorage.getItem("player_current_hp");
 

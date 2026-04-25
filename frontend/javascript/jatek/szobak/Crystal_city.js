@@ -78,7 +78,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         k.sprite("Crystal_City_Gate"),
     ]);
 
-    const lavaProtectionUnlocked = aktivMentesAdatok?.world_interactions?.["crystal-heart-lava-protection"] === true;
+    const lavaProtectionUnlocked = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-heart-lava-protection"] == true;
 
     let lavaProtectionAbilityLayer = null;
     if (!lavaProtectionUnlocked) {
@@ -142,7 +142,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
                 unlockableGateLayer.objects[0].height,
             ),
             k.area(),
-            k.body({ isStatic: true }),
+            //k.body({ isStatic: true }),
             k.opacity(0),
             "unlockable_gate",
         ]);
@@ -186,7 +186,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             console.log("Láva védelem képesség felvéve");
 
             if (aktivMentesAdatok) {
-                aktivMentesAdatok.world_interactions["crystal-heart-lava-protection"] = true;
+                aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-lava-protection"] = true;
             }
 
             if (lavaProtectionAbilityLayer) {

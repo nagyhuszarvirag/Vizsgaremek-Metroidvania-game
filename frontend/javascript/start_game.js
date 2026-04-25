@@ -1,4 +1,3 @@
-//Meg kell csinálni az SQL-t, mert addig nem tudok itt haladni
 import {
   oldalTakarito,
   fecthData,
@@ -43,12 +42,13 @@ export async function startGame() {
   sor = document.createElement("div");
 
   let user = JSON.parse(localStorage.getItem("user"));
-  for (let i = 0; i < 4; i++) {
+  for (let i = 1; i < 5; i++) {
     let jatekFajlok = document.createElement("div");
     //betölteni metnéseket
 
     let szoba_nev = data.data.uj_jatek;
     let mentes_szam;
+    //console.log(i);
 
     if(user.id!=0){
 
@@ -60,13 +60,11 @@ export async function startGame() {
 
     }
     else{    
-      mentes_szam=JSON.parse(localStorage.getItem("mentes_"+i));
+      let mentes_segito=JSON.parse(localStorage.getItem("mentes_"+i));
+      mentes_szam=mentes_segito.data.mentett_adatok.savepoint;
     }
 
     switch (mentes_szam) {
-      case "savepoint_2":
-          szoba_nev = data_szoba_nevek.data.mitteous;
-          break;
 
         case "savepoint_2":
           szoba_nev = data_szoba_nevek.data.mitteous;

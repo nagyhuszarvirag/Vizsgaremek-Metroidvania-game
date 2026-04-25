@@ -11,7 +11,7 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { KellEAzNPC } from "../kaboomBetolto.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Medbay(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -59,13 +59,13 @@ export async function Medbay(k, szoba_belepesi_pont = null) {
   const savepointNev = mapData.data.layers[2].name;
   MentesCollider(k, savepointObj, savepointNev);
 
-  let kellerachet = await KellEAzNPC("$.NPC_interactions.Ratchet");
+  let kellerachet = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet;
   
   //Itt a medbay asztalt be kell tenni
 
    /*k.add([ 
-              k.pos(0, 0),
-              k.sprite('Kezdoszoba_table')
+        k.pos(0, 0),
+        k.sprite('Kezdoszoba_table')
     ]);*/
 
     if(kellerachet){

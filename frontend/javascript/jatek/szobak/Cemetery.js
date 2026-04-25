@@ -12,14 +12,14 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
-import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { aktivMentesAdatok, cutscene_kezeles } from "../kaboomBetolto.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
-  if(aktivMentesAdatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"]==false){
+  if(!aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"]){
     szoba_zene_beallitas("before the flower cutscene cemetery");
   }
   else{
@@ -81,7 +81,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   if (ladderLayer && ladderLayer.objects) {
     ladderLayer.objects.forEach((obj) => {
-      LetraCollider(k, obj, player, settings.controls.interact, settings.controls.interact);
+      LetraCollider(k, obj, player, settings.controls.interact, settings.controls.jump);
     });
   }
 
@@ -146,7 +146,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   player.onCollideUpdate("cemetery_cutscene_trigger", () => {
     aktiv_esemeny = "cemetery_cutscene_trigger";
 
-    if(aktivMentesAdatok?.world_interactions?.["lighthouse-on"]==false){
+    if(!aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"]){
     const VanEZene = document.getElementById("Sound_effekt_layer_1");
 
     if (!VanEZene) {
@@ -183,15 +183,28 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     }
   });
 
-  k.onKeyPress(playerInteractGombja, async () => {
-      if(aktiv_esemeny=="lighthouse_trigger")
+  k.onKeyPress(settings.controls.interact, async () => {
+    let lighthouse_on = !aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"];
+    let flowers_cutscene_seen = !aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"];
+      if(aktiv_esemeny=="lighthouse_trigger" && lighthouse_on)
         {
           console.log("lighthouse");
+          aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
         }
 
-      if(aktiv_esemeny=="cemetery_cutscene_trigger")
+      if(aktiv_esemeny=="cemetery_cutscene_trigger" && aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"] && flowers_cutscene_seen)
         {
           console.log("cemetery");
+
+          const VanEZene = document.getElementById("Sound_effekt_layer_1");
+
+          if (VanEZene) {
+            soundeffectTorol("Sound_effekt_layer_1");
+            soundeffectTorol("Sound_effekt_layer_2");
+          }
+
+          cutscene_kezeles(k, "Transformers_sea_of_flowers");
+          aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscene"] = true;
         }
   });
 
