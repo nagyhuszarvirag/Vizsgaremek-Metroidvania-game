@@ -57,7 +57,7 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     k.sprite("hidden_room_solid"),
   ]);
 
-  const bonusHeartMegvan = aktivMentesAdatok?.world_interactions?.["bonus-hp-2"] === true;
+  const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-2"] === true;
 
   let bonusHeartSprite = null;
   if (!bonusHeartMegvan) {
@@ -110,9 +110,7 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
       console.log("Hidden room bonus heart felvéve");
 
 
-      if (aktivMentesAdatok) {
-        aktivMentesAdatok.world_interactions["bonus-hp-2"] = true;
-      }
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-2"] = true;
 
       maxHpNovelese(playerObj, 2);
 

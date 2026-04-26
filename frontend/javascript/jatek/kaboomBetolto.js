@@ -25,6 +25,11 @@ export let mentesunk_idja = null;
 export let aktivMentesAdatok = null;
 
 export async function KaboomBetolto(mentes_id) {
+  let kilep_menu_tarolo = document.createElement("div");
+  kilep_menu_tarolo.id = "kilep_menu_tarolo";
+  kilep_menu_tarolo.classList.add("in_game_modallok");
+  document.body.appendChild(kilep_menu_tarolo);
+
   let in_game_menu_tarolo = document.createElement("div");
   in_game_menu_tarolo.id = "in_game_menu_tarolo";
   in_game_menu_tarolo.classList.add("in_game_modallok");
@@ -42,45 +47,21 @@ export async function KaboomBetolto(mentes_id) {
     await beallitasokBetolteseSettingsbe(user.id);
   }
 
-  let mentesbetolto;
   if (user.usernev === "guest") {
     console.log("Guest mentés betöltése localStorage-ból");
-    mentesbetolto = {
-      data: {
-        mentett_adatok: {
-          savepoint: "kezdomap_1",
-          world_interactions: {
-            "mitteous-plateau_breakable-ground1": false
-          },
-          NPC_interactions: {
-            Ratchet: false,
-            Prowl: false
-          },
-          bosses: {
-            Tarn: false
-          },
-          ability_unlocked: {
-            double_jump: false,
-            dash: false
-          }
-        }
-      }
-    };
+    let mentesunk_idja = "mentes_"+mentes_id;
+    aktivMentesAdatok = JSON.parse(localStorage.getItem(mentesunk_idja));
+    
   } else {
     console.log("User mentés betöltése az adatbázis-ból");
-    mentesbetolto = await fecthData(
+    aktivMentesAdatok = await fecthData(
       "http://127.0.0.1:3000/api/mentesmeghiv/" + user.id + "/" + mentes_id,
     );
   }
 
-  aktivMentesAdatok = JSON.parse(JSON.stringify(mentesbetolto.data.mentett_adatok));
-
-  const savepoint = mentesbetolto.data.mentett_adatok.savepoint;
+  const savepoint = aktivMentesAdatok.data.mentett_adatok.savepoint;
 
   localStorage.setItem("last_loaded_savepoint", savepoint);
-
-  let kellintro = false;
-  console.log("Mentés betöltve: ", mentesbetolto);
 
   const scale = 1;
 
@@ -361,70 +342,14 @@ export async function KaboomBetolto(mentes_id) {
 
   k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
 
-  /*switch (
-  mentesbetolto.data.mentett_adatok.savepoint //Később itt töltjük be a mentés alapján a megfelelő szobát és mentett pontot
-  ) {
-    case "kezdomap_1":
+  console.log("Aktív mentésünk: ",aktivMentesAdatok);
+
+  if(aktivMentesAdatok.data.mentett_adatok.savepoint=="kezdomap_1"){
       k.go("intro");
-      break;
-    case "savepoint_2":
-      k.go("Mitteous_Plateau", {
-        szoba_belepesi_pont: "savepoint_2"
-      });
-      break;
-    case "savepoint_3":
-      k.go("Iacon", {
-        szoba_belepesi_pont: "savepoint_3"
-      });
-      break;
-    case "Savepoint_4":
-      k.go("Medbay", {
-        szoba_belepesi_pont: "Savepoint_4"
-      });
-      break;
-    case "Savepoint_5":
-      k.go("Kaon", {
-        szoba_belepesi_pont: "Savepoint_5"
-      });
-      break;
-    default:
-      console.log(
-        "Ismeretlen savepoint: " + mentesbetolto.data.mentett_adatok.savepoint,
-      );
-  }*/
-  respawnSavepointAlapjan(k, mentesbetolto.data.mentett_adatok.savepoint);
-}
-
-export async function KellEAzNPC(valtozo_utvonal) {
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user.usernev === "guest") { //EZT LEKEZELNI
-    return true;
+  }else{
+    respawnSavepointAlapjan(k, aktivMentesAdatok.data.mentett_adatok.savepoint);
   }
-
-  console.log(valtozo_utvonal + "     " + mentesunk_idja + "     " + JSON.parse(localStorage.getItem("user")).id)
-
-  const kell = await fecthData(
-    "http://127.0.0.1:3000/api/kelleNPC",
-    "POST",
-    {
-      valtozo_utvonal: valtozo_utvonal,
-      mentes_id: mentesunk_idja + 1,
-      user_id: JSON.parse(localStorage.getItem("user")).id
-    }
-  );
-
-  console.log("kelleNPC válasz:", kell);
-
-  if (!kell.success) {
-    return false;
-  }
-
-  const ertek = kell.message[0].VOLT_E_NPC;
-
-  console.log("Volt-e NPC: " + ertek);
-
-  return ertek == 0;
+  
 }
 
 async function specialeffektdoboz() {

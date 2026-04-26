@@ -10,7 +10,6 @@ import {
 import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { KellEAzNPC } from "../kaboomBetolto.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
@@ -44,7 +43,7 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
 
   const szoba_layerek = mapData.data.layers;
 
-  const bonusHeartMegvan = aktivMentesAdatok?.world_interactions?.["bonus-hp-3"] === true;
+  const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-3"] === true;
 
   let bonusHeartSprite = null;
   if (!bonusHeartMegvan) {
@@ -61,7 +60,7 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
 
   MapColliderek(k, map, szoba_layerek[2].objects);
 
-  let kelletailgate = await KellEAzNPC("$.NPC_interactions.Tailgate");
+  let kelletailgate = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate;
 
   if (kelletailgate) {
     NPCCollider(k, szoba_layerek[6].objects, "Tailgate");
@@ -88,9 +87,7 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
     k.onCollide("player", "leesos_hely_bonus_heart_pickup", (playerObj, obj) => {
       console.log("Leesős hely bonus heart felvéve");
 
-      if (aktivMentesAdatok) {
-        aktivMentesAdatok.world_interactions["bonus-hp-3"] = true;
-      }
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-3"] = true;
 
       maxHpNovelese(playerObj, 2);
 

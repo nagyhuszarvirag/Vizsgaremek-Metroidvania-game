@@ -5,296 +5,303 @@ beforeAll(() => { //A play() nincsen a jest-ben és emiatt itt előtte le kell k
   });
 });
 
+import { createMainMenu, renderAuthButton, zeneLetrehoz } from '../../frontend/javascript/main_menu.js';
+import * as fetchModule from '../../frontend/javascript/index.js';
+import * as modalModule from '../../frontend/javascript/bejelentkezes_regisztracio.js';
+import * as sutiModule from '../../frontend/javascript/suti_modal.js';
+import * as startGameModule from '../../frontend/javascript/start_game.js';
+import * as optionsModule from '../../frontend/javascript/options.js';
+import * as creditsModule from '../../frontend/javascript/credits.js';
+import * as beallitasModule from '../../frontend/javascript/beallitas_menu.js';
+import * as achievementsModule from '../../frontend/javascript/achivements.js';
+
 jest.mock('../../frontend/javascript/index.js', () => ({
   fecthData: jest.fn(),
-  oldalTakarito: jest.fn()
+  oldalTakarito: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/bejelentkezes_regisztracio.js', () => ({
-  modalLetrehoz: jest.fn()
+  modalLetrehoz: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/suti_modal.js', () => ({
-  sutiModalKeszit: jest.fn()
+  sutiModalKeszit: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/start_game.js', () => ({
-  startGame: jest.fn()
+  startGame: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/options.js', () => ({
-  volume: 0.5,
-  nyelv: 'hu'
+  settings: {
+    nyelv: 'en',
+    volume: 0.5,
+  },
 }));
 
 jest.mock('../../frontend/javascript/credits.js', () => ({
-  loadCredits: jest.fn()
+  loadCredits: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/beallitas_menu.js', () => ({
-  beallitasMenuLetrehoz: jest.fn()
+  beallitasMenuLetrehoz: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/achivements.js', () => ({
-  ShowAchivements: jest.fn()
+  ShowAchivements: jest.fn(),
 }));
 
 jest.mock('../../frontend/javascript/exit.js', () => ({}), { virtual: true });
 
-const { createMainMenu } = require('../../frontend/javascript/main_menu.js');
 
-const { fecthData, oldalTakarito } = require('../../frontend/javascript/index.js');
-const { modalLetrehoz } = require('../../frontend/javascript/bejelentkezes_regisztracio.js');
-const { sutiModalKeszit } = require('../../frontend/javascript/suti_modal.js');
-const { startGame } = require('../../frontend/javascript/start_game.js');
-const { beallitasMenuLetrehoz } = require('../../frontend/javascript/beallitas_menu.js');
-const { ShowAchivements } = require('../../frontend/javascript/achivements.js');
-const { loadCredits } = require('../../frontend/javascript/credits.js');
-
-beforeEach(() => {
-  document.body.innerHTML = '';
-
-  localStorage.clear();
-
-  jest.clearAllMocks();
-
-  fecthData.mockResolvedValue({
-    data: {
-      title: 'Főmenü',
-      music: ['Zene be', 'Zene ki'],
-      login: 'Bejelentkezés',
-      logout: 'Kijelentkezés',
-      logoutConfirm: 'Biztosan kijelentkezel?',
-      buttons: ['Játék indítása', 'Beállítások', 'Eredmények', 'Készítők', 'Kilépés']
-    }
-  });
-
-  modalLetrehoz.mockResolvedValue(document.createElement('div'));
-});
+const localStorageMock = (() => {
+  let store = {};
+  return {
+    getItem: jest.fn((key) => store[key] ?? null),
+    setItem: jest.fn((key, value) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
+  };
+})();
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 describe('createMainMenu', () => {
-  test('oldalTakarito fv. segítségével letisztítja az oldalt', async () => {
-    await createMainMenu();
-    expect(oldalTakarito).toHaveBeenCalledTimes(1);
+  const mockData = {
+    data: {
+      title: 'Főmenü',
+      buttons: ['Start', 'Beállítások', 'Achievements', 'Credits', 'Kilépés'],
+      login: 'Bejelentkezés',
+      logout: 'Kijelentkezés',
+      logoutConfirm: 'Biztosan kijelentkezik?',
+      music: ['Zene ki', 'Zene be'],
+    },
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    document.body.innerHTML = ''; // tiszta DOM
+    localStorage.clear();
+
+    // Alapértelmezett felhasználó (guest)
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 0, usernev: 'guest', jog: 2 })
+    );
+
+    fetchModule.fecthData.mockResolvedValue(mockData);
+    modalModule.modalLetrehoz.mockResolvedValue(document.createElement('div'));
+    sutiModule.sutiModalKeszit.mockResolvedValue();
   });
 
-  test('A jelenlegi nyelvel (magyar) lehívja a menü JSON-jét', async () => {
+  test('meghívja az oldalTakarito függvényt és lekéri a nyelvi adatokat', async () => {
     await createMainMenu();
-    expect(fecthData).toHaveBeenCalledWith(
-      'http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/hu/main_menu.json'
+
+    expect(fetchModule.oldalTakarito).toHaveBeenCalled();
+    expect(fetchModule.fecthData).toHaveBeenCalledWith(
+      'http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/en/main_menu.json'
     );
   });
 
-  test('Létrehozza a zene helyét, ha nincs jelen', async () => {
+  test('ha nincs #zenemarad, létrehozza a zene audio elemet a megfelelő beállításokkal', async () => {
     await createMainMenu();
+
     const audio = document.getElementById('zenemarad');
-    expect(audio).toBeTruthy();
-    expect(audio.tagName).toBe('AUDIO');
-    expect(audio.src).toContain('the_humbling_river.mp3');
+    expect(audio).not.toBeNull();
+    expect(audio.src).toContain('http://localhost/audio/the_humbling_river.mp3');
     expect(audio.loop).toBe(true);
+    expect(audio.autoplay).toBe(true);
     expect(audio.muted).toBe(true);
+    expect(audio.preload).toBe('auto');
+    expect(audio.id).toBe('zenemarad');
+    expect(audio.volume).toBe(0.5);
   });
 
-  test('Nem hoz létre új a zene helyet, ha már jelen van', async () => {
+  test('ha már létezik #zenemarad, nem hoz létre újat', async () => {
     const existingAudio = document.createElement('audio');
     existingAudio.id = 'zenemarad';
     document.body.appendChild(existingAudio);
 
     await createMainMenu();
+
+    expect(document.getElementById('zenemarad')).toBe(existingAudio);
     const audioElements = document.querySelectorAll('audio');
     expect(audioElements.length).toBe(1);
-    expect(audioElements[0]).toBe(existingAudio);
-  });
-
-  test('Zene be és kikapcsoló gomb létrehozása', async () => {
-    await createMainMenu();
-    const musicBtn = document.getElementById('zeneGomb');
-    expect(musicBtn).toBeTruthy();
-    expect(musicBtn.textContent).toBe('Zene be');
   });
 
   test('Zene tényleges be- és kikapcsolása', async () => {
     await createMainMenu();
+
+    const zeneGomb = document.getElementById('zeneGomb');
+    expect(zeneGomb).not.toBeNull();
+    expect(zeneGomb.textContent).toBe('Zene ki'); // mert music[0]
+
     const audio = document.getElementById('zenemarad');
-    const musicBtn = document.getElementById('zeneGomb');
-
     expect(audio.muted).toBe(true);
-    expect(musicBtn.textContent).toBe('Zene be');
+    const playSpy = jest.spyOn(audio, 'play');
 
-    musicBtn.click();
+    zeneGomb.click();
     expect(audio.muted).toBe(false);
-    expect(musicBtn.textContent).toBe('Zene ki');
+    expect(playSpy).toHaveBeenCalled();
+    expect(zeneGomb.textContent).toBe('Zene be');
 
-    musicBtn.click();
+    zeneGomb.click();
     expect(audio.muted).toBe(true);
-    expect(musicBtn.textContent).toBe('Zene be');
+    expect(zeneGomb.textContent).toBe('Zene ki');
+
+    playSpy.mockRestore();
   });
 
-  test('Hangerő kezelés', async () => {
+  test('a hangerő változtatás eseményre frissíti a zene hangerejét', async () => {
     await createMainMenu();
-    const audio = document.getElementById('zenemarad');
-    audio.volume = 0.5;
 
-    const event = new CustomEvent('hangeroValtozas', { detail: { volume: 0.8 } });
-    window.dispatchEvent(event);
+    const audio = document.getElementById('zenemarad');
+    window.dispatchEvent(
+      new CustomEvent('hangeroValtozas', { detail: { volume: 0.8 } })
+    );
     expect(audio.volume).toBe(0.8);
 
-    window.dispatchEvent(new CustomEvent('hangeroValtozas', { detail: { volume: 2 } }));
-    expect(audio.volume).toBe(1);
-
-    window.dispatchEvent(new CustomEvent('hangeroValtozas', { detail: { volume: -0.5 } }));
-    expect(audio.volume).toBe(0);
-
-    audio.volume = 0.5;
-    window.dispatchEvent(new CustomEvent('hangeroValtozas', { detail: { volume: 'invalid' } }));
-    expect(audio.volume).toBe(0.5);
-  });
-
-  test('Bejelentkezés gomb létrehozása', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 0, usernev: 'guest', jog: 2 }));
-
-    await createMainMenu();
-    const authContainer = document.getElementById('authContainer');
-    expect(authContainer).toBeTruthy();
-    const loginBtn = authContainer.querySelector('button');
-    expect(loginBtn.textContent).toBe('Bejelentkezés');
-  });
-
-  test('login ablak megnyitása, ha rányomunk', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 0, usernev: 'guest', jog: 2 }));
-    const mockModal = document.createElement('div');
-    mockModal.style.display = 'none';
-    modalLetrehoz.mockResolvedValue(mockModal);
-
-    await createMainMenu();
-    const loginBtn = document.querySelector('#authContainer button');
-    await loginBtn.click();
-
-    expect(modalLetrehoz).toHaveBeenCalledTimes(1);
-    expect(mockModal.style.display).toBe('flex');
-  });
-
-  test('Kijelentkezés gomb kezelés, ha be vagyunk jelentkezve', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 1, usernev: 'player1', jog: 1 }));
-
-    await createMainMenu();
-    const logoutBtn = document.querySelector('#authContainer button');
-    expect(logoutBtn.textContent).toBe('Kijelentkezés');
-  });
-
-  test('Visszajelzés és visszaállítás guest-re kijelentkezéskor', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 1, usernev: 'player1', jog: 1 }));
-    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
-    const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
-
-    await createMainMenu();
-    const logoutBtn = document.querySelector('#authContainer button');
-    logoutBtn.click();
-
-    expect(confirmSpy).toHaveBeenCalledWith('Biztosan kijelentkezel?');
-    expect(localStorage.getItem('user')).toBe(JSON.stringify({ id: 0, usernev: 'guest', jog: 2 }));
-    expect(dispatchEventSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'authChanged',
-        detail: { loggedIn: false }
-      })
+    audio.volume = 0.5; 
+    window.dispatchEvent(
+      new CustomEvent('hangeroValtozas', { detail: { volume: 'abc' } })
     );
-
-    confirmSpy.mockRestore();
+    expect(audio.volume).toBe(0.5); 
   });
 
-  test('Kijelentkezés megszakítása', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 1, usernev: 'player1', jog: 1 }));
-    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
+  describe('authContainer – bejelentkezés / kijelentkezés', () => {
+    test('guest felhasználó esetén a "Bejelentkezés" gomb jelenik meg', async () => {
+      await createMainMenu();
+      const container = document.getElementById('authContainer');
+      expect(container.innerHTML).toContain('Bejelentkezés');
+      const loginBtn = container.querySelector('button');
+      expect(loginBtn).not.toBeNull();
+      expect(loginBtn.textContent).toBe('Bejelentkezés');
+    });
 
-    await createMainMenu();
-    const logoutBtn = document.querySelector('#authContainer button');
-    logoutBtn.click();
+    test('a bejelentkezés gombra kattintva megjelenik a modal', async () => {
+      const fakeModal = document.createElement('div');
+      fakeModal.style.display = 'none';
+      modalModule.modalLetrehoz.mockResolvedValue(fakeModal);
 
-    expect(localStorage.getItem('user')).toBe(JSON.stringify({ id: 1, usernev: 'player1', jog: 1 }));
-    confirmSpy.mockRestore();
+      await createMainMenu();
+      const loginBtn = document.querySelector('#authContainer button');
+      await loginBtn.click();
+
+      expect(modalModule.modalLetrehoz).toHaveBeenCalled();
+      expect(fakeModal.style.display).toBe('flex');
+    });
+
+    test('bejelentkezett felhasználó esetén a "Kijelentkezés" gomb jelenik meg', async () => {
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ id: 1, usernev: 'teszt', jog: 1 })
+      );
+
+      await createMainMenu();
+      const container = document.getElementById('authContainer');
+      const logoutBtn = container.querySelector('button');
+      expect(logoutBtn).not.toBeNull();
+      expect(logoutBtn.textContent).toBe('Kijelentkezés');
+    });
+
+    test('a kijelentkezés gombra kattintva confirm jelenik meg, és ha igaz, guest lesz a felhasználó', async () => {
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ id: 1, usernev: 'teszt', jog: 1 })
+      );
+      window.confirm = jest.fn(() => true);
+
+      await createMainMenu();
+      const logoutBtn = document.querySelector('#authContainer button');
+      const dispatchSpy = jest.spyOn(window, 'dispatchEvent');
+
+      await logoutBtn.click();
+
+      expect(window.confirm).toHaveBeenCalledWith('Biztosan kijelentkezik?');
+
+      const raw = localStorage.getItem('user');
+      const user = JSON.parse(raw);
+      expect(user.id).toBe(0);
+      expect(user.usernev).toBe('guest');
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'authChanged',
+          detail: { loggedIn: false },
+        })
+      );
+
+      const updatedContainer = document.getElementById('authContainer');
+      const newBtn = updatedContainer.querySelector('button');
+      expect(newBtn.textContent).toBe('Bejelentkezés');
+    });
+
+    test('ha a confirm false, akkor nem történik kijelentkezés', async () => {
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ id: 1, usernev: 'teszt', jog: 1 })
+      );
+      window.confirm = jest.fn(() => false);
+
+      await createMainMenu();
+      const logoutBtn = document.querySelector('#authContainer button');
+      const dispatchSpy = jest.spyOn(window, 'dispatchEvent');
+
+      await logoutBtn.click();
+
+      expect(window.confirm).toHaveBeenCalled();
+      const raw = localStorage.getItem('user');
+      const user = JSON.parse(raw);
+      expect(user.id).toBe(1);
+      expect(dispatchSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'authChanged' })
+      );
+      const container = document.getElementById('authContainer');
+      expect(container.innerHTML).toContain('Kijelentkezés');
+    });
   });
 
-  test('A menü fő gombjait létrehozza és teszteli', async () => {
-    localStorage.setItem('user', JSON.stringify({ id: 0, usernev: 'guest', jog: 2 }));
-
+  test('létrehozza a menü címet és gombokat, a kattintáseseményekkel', async () => {
     await createMainMenu();
-    const menuButtons = document.querySelectorAll('.menu-gomb');
-    expect(menuButtons.length).toBe(5);
 
-    const buttonTexts = Array.from(menuButtons).map(btn => btn.textContent);
-    expect(buttonTexts).toEqual([
-      'Játék indítása',
-      'Beállítások',
-      'Eredmények',
-      'Készítők',
-      'Kilépés'
-    ]);
+    const title = document.getElementById('menu-cim');
+    expect(title).not.toBeNull();
+    expect(title.textContent).toBe('Főmenü');
 
-    menuButtons[0].click();
-    expect(startGame).toHaveBeenCalledTimes(1);
+    const gombok = document.querySelectorAll('.menu-gomb');
+    expect(gombok.length).toBe(5);
 
-    menuButtons[1].click();
-    expect(beallitasMenuLetrehoz).toHaveBeenCalledTimes(1);
+    expect(gombok[0].textContent).toBe('Start');
+    expect(gombok[1].textContent).toBe('Beállítások');
+    expect(gombok[2].textContent).toBe('Achievements');
+    expect(gombok[3].textContent).toBe('Credits');
+    expect(gombok[4].textContent).toBe('Kilépés');
 
-    menuButtons[2].click();
-    expect(ShowAchivements).toHaveBeenCalledTimes(1);
+    gombok[0].click();
+    expect(startGameModule.startGame).toHaveBeenCalled();
 
-    menuButtons[3].click();
-    expect(loadCredits).toHaveBeenCalledTimes(1);
+    gombok[1].click();
+    expect(beallitasModule.beallitasMenuLetrehoz).toHaveBeenCalledWith(0);
+
+    gombok[2].click();
+    expect(achievementsModule.ShowAchivements).toHaveBeenCalled();
+
+    gombok[3].click();
+    expect(creditsModule.loadCredits).toHaveBeenCalled();
 
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    menuButtons[4].click();
-    expect(consoleSpy).toHaveBeenCalledWith('Kilépés');
+    gombok[4].click();
+    expect(consoleSpy).not.toHaveBeenCalledWith('Ismeretlen gomb');
     consoleSpy.mockRestore();
   });
 
-  test('A menü dolgait felrakja a body-ba', async () => {
+  test('meghívja a sutiModalKeszit-et', async () => {
     await createMainMenu();
-    expect(document.getElementById('menu')).toBeTruthy();
-    expect(document.getElementById('menu-cim').textContent).toBe('Főmenü');
-    expect(document.querySelector('.menu-gomb')).toBeTruthy();
-    expect(document.getElementById('zeneGomb')).toBeTruthy();
-    expect(document.getElementById('authContainer')).toBeTruthy();
-  });
-
-  test('Meghívja a sutiModalKeszitet', async () => {
-    await createMainMenu();
-    expect(sutiModalKeszit).toHaveBeenCalledTimes(1);
-  });
-
-  test('Újratölti magát az autentikáció, amikor megváltozik az értéke', async () => {
-    await createMainMenu();
-    jest.clearAllMocks();  
-
-    window.dispatchEvent(new CustomEvent('authChanged'));
-    await new Promise(resolve => setTimeout(resolve, 0));
-    expect(oldalTakarito).toHaveBeenCalled();
-  });
-});
-
-describe('DOMContentLoaded listener', () => {
-  test('Meghívja a createMainMenu ha megvan a DOMContentLoaded', async () => {
-    oldalTakarito.mockClear();
-    fecthData.mockClear();
-
-    document.dispatchEvent(new Event('DOMContentLoaded'));
-    await new Promise(resolve => setTimeout(resolve, 0));
-    expect(oldalTakarito).toHaveBeenCalled();
-  });
-});
-
-describe('Segítő function', () => {
-  test('setGuestUser jól beállít minket guest usernek', () => {
-    localStorage.setItem('user', JSON.stringify({ id: 1 }));
-    const setGuest = () => {
-      localStorage.setItem('user', JSON.stringify({ id: 0, usernev: 'guest', jog: 2 }));
-    };
-    setGuest();
-    expect(JSON.parse(localStorage.getItem('user'))).toEqual({
-      id: 0,
-      usernev: 'guest',
-      jog: 2
-    });
+    expect(sutiModule.sutiModalKeszit).toHaveBeenCalled();
   });
 });

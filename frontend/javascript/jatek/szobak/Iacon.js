@@ -15,7 +15,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
-import { KellEAzNPC, aktivMentesAdatok } from "../kaboomBetolto.js";
+import { aktivMentesAdatok } from "../kaboomBetolto.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -106,11 +106,11 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const breakableWall2Layer = objectLayerKereses("Breakable_wall_2");
     const breakableWall3Layer = objectLayerKereses("Breakable_wall_3");
 
-    const wall1Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall1"] === true;
-    const wall2Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall2"] === true;
-    const wall3Broken = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-wall3"] === true;
-    const ground1Gone = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-ground1"] === true;
-    const ground2Gone = aktivMentesAdatok?.world_interactions?.["Iacon_breakable-ground2"] === true;
+    const wall1Broken = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Iacon_breakable-wall1"] ;
+    const wall2Broken = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Iacon_breakable-wall2"] ;
+    const wall3Broken = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Iacon_breakable-wall3"] ;
+    const ground1Gone = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Iacon_breakable-ground1"] ;
+    const ground2Gone = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Iacon_breakable-ground2"] ;
 
     let hiddenBreakableWall = null;
     if (!wall3Broken) {
@@ -160,7 +160,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
             console.log("Beomló talaj 1 aktiválva");
 
             if (aktivMentesAdatok) {
-                aktivMentesAdatok.world_interactions["Iacon_breakable-ground1"] = true;
+                aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground1"] = true;
             }
 
             if (collapsingGround1) {
@@ -191,7 +191,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
             console.log("Beomló talaj 2 aktiválva");
 
             if (aktivMentesAdatok) {
-                aktivMentesAdatok.world_interactions["Iacon_breakable-ground2"] = true;
+                aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground2"] = true;
             }
 
             if (collapsingGround2) {
@@ -206,7 +206,7 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
     const savepointNev = mapData.data.layers[9].name;
     MentesCollider(k, savepointObj, savepointNev);
 
-    let kelleswindle = await KellEAzNPC("$.NPC_interactions.Swindle");
+    let kelleswindle = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Swindle;
 
     if (kelleswindle) {
         NPCCollider(k, szoba_layerek[32].objects, "Swindle");

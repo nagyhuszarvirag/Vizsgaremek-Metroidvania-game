@@ -15,8 +15,6 @@ export async function adminPanelLetrehoz() {
     "/admin_panel.json",
   );
 
-  console.log(szoveg);
-
   const content = document.createElement("div");
   content.classList.add("container", "mt-5", "beallitas_menu");
 
