@@ -14,6 +14,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { TarnLetrehozas } from "../entitások/tarn_boss.js";
 
 export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -62,6 +63,10 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
 
     const bossArenaLayer = szoba_layerek.find(
         (layer) => layer.name === "Boss_arena"
+    );
+
+    const tarnSpawnLayer = szoba_layerek.find(
+        (layer) => layer.name === "Boss_spawnpoint"
     );
 
     const breakableWallBroken = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["Smelting-pits_breakable-wall1"] === true;
@@ -130,6 +135,24 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     }
 
     const player = await jatekos_betolt(k, xpos, ypos);
+
+    const tarnDead =
+        aktivMentesAdatok?.data?.mentett_adatok?.bosses?.Tarn === true;
+
+    if (
+        !tarnDead &&
+        tarnSpawnLayer &&
+        tarnSpawnLayer.objects &&
+        tarnSpawnLayer.objects[0] &&
+        bossArenaLayer &&
+        bossArenaLayer.objects &&
+        bossArenaLayer.objects[0]
+    ) {
+        const spawn = tarnSpawnLayer.objects[0];
+        const arena = bossArenaLayer.objects[0];
+
+        TarnLetrehozas(k, spawn.x, spawn.y, player, arena);
+    }
 
     if (!breakableWallBroken && szoba_layerek[5]?.objects?.[0] && breakableWallLayer) {
         BreakableFal(
