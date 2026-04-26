@@ -19,10 +19,12 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   EffektTorles();
 
-  if(!aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"]){
+  const lighthouseOn = aktivMentesAdatok.data.mentett_adatok.world_interactions?.["lighthouse-on"] === true;
+  const flowersCutsceneSeen = aktivMentesAdatok.data.mentett_adatok.world_interactions?.["lighthouse-sea-of-flowers-cutscene"] === true;
+
+  if (!flowersCutsceneSeen) {
     szoba_zene_beallitas("before the flower cutscene cemetery");
-  }
-  else{
+  } else {
     szoba_zene_beallitas("after the flower cutscene cemetery");
   }
 
@@ -123,7 +125,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "cemetery_cutscene_trigger",
     ]);
 
-    
+
   }
 
   //lighthouse trigger
@@ -138,25 +140,25 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       "lighthouse_trigger",
     ]);
 
-    
+
   }
 
-  let aktiv_esemeny=null;
+  let aktiv_esemeny = null;
+  let cutsceeneFut = false;
 
   player.onCollideUpdate("cemetery_cutscene_trigger", () => {
+    if (cutsceeneFut) return;
+
     aktiv_esemeny = "cemetery_cutscene_trigger";
+    console.log("Cemetery cutscene triggerben vagy");
 
-    if(!aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"]){
-    const VanEZene = document.getElementById("Sound_effekt_layer_1");
+    const world = aktivMentesAdatok?.world_interactions;
+    const lighthouseOn = world?.["lighthouse-on"] === true;
 
-    if (!VanEZene) {
+    if (!lighthouseOn) {
       soundeffectLetrehoz("Sound_effekt_layer_1");
       soundeffectLetrehoz("Sound_effekt_layer_2");
     }
-  }
-  else{
-    szoba_zene_beallitas("after the flower cutscene cemetery");
-  }
   });
 
   player.onCollideEnd("cemetery_cutscene_trigger", () => {
@@ -175,37 +177,68 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   player.onCollideUpdate("lighthouse_trigger", () => {
     aktiv_esemeny = "lighthouse_trigger";
+    console.log("Világítótorony triggerben vagy");
   });
 
   player.onCollideEnd("lighthouse_trigger", () => {
     if (aktiv_esemeny === "lighthouse_trigger") {
       aktiv_esemeny = null;
     }
+    console.log("Kiléptél a világítótorony triggerből");
   });
 
-  k.onKeyPress(settings.controls.interact, async () => {
-    let lighthouse_on = !aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"];
-    let flowers_cutscene_seen = !aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-sea-of-flowers-cutscene"];
-      if(aktiv_esemeny=="lighthouse_trigger" && lighthouse_on)
-        {
-          console.log("lighthouse");
-          aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
-        }
 
-      if(aktiv_esemeny=="cemetery_cutscene_trigger" && aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["lighthouse-on"] && flowers_cutscene_seen)
-        {
-          console.log("cemetery");
+  k.onKeyPress((key) => {
+    if (key !== settings.controls.interact) return;
 
-          const VanEZene = document.getElementById("Sound_effekt_layer_1");
+    console.log("Interact lenyomva:", key);
+    console.log("Aktív esemény:", aktiv_esemeny);
 
-          if (VanEZene) {
-            soundeffectTorol("Sound_effekt_layer_1");
-            soundeffectTorol("Sound_effekt_layer_2");
-          }
+    console.log("World:", aktivMentesAdatok.data.mentett_adatok.world_interactions);
 
-          cutscene_kezeles(k, "Transformers_sea_of_flowers");
-          aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscene"] = true;
-        }
+    if (!aktivMentesAdatok.data.mentett_adatok.world_interactions) {
+      console.log("Nincs world_interactions!");
+      return;
+    }
+
+    const lighthouseOn = aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] === true;
+    const flowersCutsceneSeen =
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscenes"] === true;
+
+    if (aktiv_esemeny === "lighthouse_trigger" && !lighthouseOn) {
+      console.log("lighthouse");
+
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
+
+      soundeffectTorol("Sound_effekt_layer_1");
+      soundeffectTorol("Sound_effekt_layer_2");
+
+      return;
+    }
+
+    if (
+      aktiv_esemeny === "cemetery_cutscene_trigger" &&
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] === true &&
+      !flowersCutsceneSeen
+    ) {
+      console.log("cemetery");
+
+      cutsceeneFut = true;
+
+      soundeffectTorol("Sound_effekt_layer_1");
+      soundeffectTorol("Sound_effekt_layer_2");
+
+      aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscene"] = true;
+
+      cutscene_kezeles(k, "Transformers_sea_of_flowers", null, () => {
+        cutsceeneFut = false;
+        szoba_zene_beallitas("after the flower cutscene cemetery");
+      });
+
+      return;
+    }
+
+    console.log("Nem teljesült egyik cemetery interakció feltétel sem.");
   });
 
   const esokezelo = Eso();
@@ -213,32 +246,33 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   esokezelo.start();
 }
 
-async function soundeffectLetrehoz(src) {
+function soundeffectLetrehoz(src) {
+  if (document.getElementById(src)) return;
+
   const soundeffekt = document.createElement("audio");
 
-  soundeffekt.src = "../audio/"+src+".mp3";
+  soundeffekt.src = "../audio/" + src + ".mp3";
   soundeffekt.loop = true;
-  soundeffekt.autoplay = true;
-  soundeffekt.muted = true; // induláskor némának kell lennie
   soundeffekt.preload = "auto";
   soundeffekt.id = src;
   soundeffekt.volume = settings.volume * 0.5;
-
-  soundeffekt.load();
-
-  if(soundeffekt.muted){ //ez a load után kell legyen, mert a play() fv-t megzavarja a load() fv. .
-    soundeffekt.muted = false;
-    soundeffekt.play();
-  }
+  soundeffekt.muted = false;
 
   document.body.appendChild(soundeffekt);
+
+  soundeffekt.play().catch((err) => {
+    console.log("Sound effect indítás hiba:", err);
+  });
 }
 
-async function soundeffectTorol(src) {
+function soundeffectTorol(src) {
   const soundeffekt = document.getElementById(src);
 
-  console.log("Soundeffekt törlése:", src, soundeffekt);
-  if (soundeffekt) {
-    document.body.removeChild(soundeffekt);
-  }
+  if (!soundeffekt) return;
+
+  console.log("Soundeffekt törlése:", src);
+
+  soundeffekt.pause();
+  soundeffekt.currentTime = 0;
+  soundeffekt.remove();
 }

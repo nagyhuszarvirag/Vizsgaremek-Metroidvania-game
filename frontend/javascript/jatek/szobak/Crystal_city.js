@@ -12,6 +12,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { sebzesAdas } from "../entitások/hp_kezelo.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -199,31 +200,31 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
     if (damagingCrystalsLayer && damagingCrystalsLayer.objects) {
         damagingCrystalsLayer.objects.forEach((obj, index) => {
-            let x = obj.x;
-            let y = obj.y;
-            let width = obj.width || 0;
-            let height = obj.height || 0;
-
+            // Ha Tiled-ben polygon / háromszög objektum
             if (obj.polygon && obj.polygon.length > 0) {
-                const xs = obj.polygon.map((p) => p.x);
-                const ys = obj.polygon.map((p) => p.y);
+                const pontok = obj.polygon.map((p) => k.vec2(p.x, p.y));
 
-                const minX = Math.min(...xs);
-                const maxX = Math.max(...xs);
-                const minY = Math.min(...ys);
-                const maxY = Math.max(...ys);
+                k.add([
+                    k.pos(obj.x, obj.y),
+                    k.area({
+                        shape: new k.Polygon(pontok),
+                    }),
+                    k.body({ isStatic: true }),
+                    k.opacity(0),
+                    `damaging_crystal_${index}`,
+                    "damaging_crystal",
+                ]);
 
-                x = obj.x + minX;
-                y = obj.y + minY;
-                width = maxX - minX;
-                height = maxY - minY;
+                return;
             }
 
-            if (width > 0 && height > 0) {
+            //tartalék ha mondjuk a háromszög nem válik be
+            if (obj.width > 0 && obj.height > 0) {
                 k.add([
-                    k.pos(x, y),
-                    k.rect(width, height),
+                    k.pos(obj.x, obj.y),
+                    k.rect(obj.width, obj.height),
                     k.area(),
+                    k.body({ isStatic: true }),
                     k.opacity(0),
                     `damaging_crystal_${index}`,
                     "damaging_crystal",
@@ -231,9 +232,9 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             }
         });
 
-        k.onCollide("player", "damaging_crystal", () => {
+        k.onCollide("player", "damaging_crystal", (playerObj) => {
             console.log("Sebző kristály!");
-            // ide jöhet később a sebzés logika
+            sebzesAdas(k, playerObj, 1);
         });
     }
 }

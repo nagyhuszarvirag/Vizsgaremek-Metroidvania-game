@@ -8,7 +8,7 @@
   playerInteractGombja,
   mobileMode,
 } from "../../options.js";*/
- import { settings } from "../../options.js";
+import { settings } from "../../options.js";
 import { Kod } from "../szobak/Szobakezelo.js";
 
 export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaObj = null) {
@@ -44,9 +44,9 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
     const lookSpeed = 0.1;
     const maxLook = 60;
 
-    const verticalLookSpeed = 0.08;
-    const maxUpLook = 40;
-    const maxDownLook = 60;
+    let verticalLookSpeed = 0.14;
+    const maxUpLook = 35;
+    let maxDownLook = 160;
 
     velocityY = player.pos.y - prevY;
     prevY = player.pos.y;
@@ -60,17 +60,24 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
       targetLook = -maxLook;
     }
 
-    //lookahead simítás (EZ A VIDEÓ LÉNYEGE)
+    //lookahead simítás
     lookAhead += (targetLook - lookAhead) * lookSpeed;
 
     let targetVertical = 0;
 
-    if (!player.isGrounded()) {
-      if (velocityY < 0) {
-        targetVertical = -maxUpLook;
-      } else if (velocityY > 0) {
-        targetVertical = maxDownLook;
-      }
+    //emelkedésnél picit felfelé néz a kamera
+    if (!player.isGrounded() && velocityY < -2) {
+      targetVertical = -maxUpLook;
+    }
+
+    //esésnél a karakter alá néz
+    if (!player.isGrounded() && velocityY > 3) {
+      targetVertical = maxDownLook;
+    }
+
+    //földet érés után visszabounce-ol középre
+    if (player.isGrounded()) {
+      targetVertical = 0;
     }
 
     verticalLook += (targetVertical - verticalLook) * verticalLookSpeed;
@@ -131,12 +138,12 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
       camY = Math.min(mapH - halfH, camY);
     }
 
-      k.camPos(camX, camY);
+    k.camPos(camX, camY);
 
 
-      /*if(true){
-        const kodkezelo = await Kod();
-        kodkezelo.update(4, camX, camY);
-      }*/
-    });
+    /*if(true){
+      const kodkezelo = await Kod();
+      kodkezelo.update(4, camX, camY);
+    }*/
+  });
 }

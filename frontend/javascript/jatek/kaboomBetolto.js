@@ -49,9 +49,9 @@ export async function KaboomBetolto(mentes_id) {
 
   if (user.usernev === "guest") {
     console.log("Guest mentés betöltése localStorage-ból");
-    let mentesunk_idja = "mentes_"+mentes_id;
+    let mentesunk_idja = "mentes_" + mentes_id;
     aktivMentesAdatok = JSON.parse(localStorage.getItem(mentesunk_idja));
-    
+
   } else {
     console.log("User mentés betöltése az adatbázis-ból");
     aktivMentesAdatok = await fecthData(
@@ -335,6 +335,34 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
+  k.loadSprite("Sparkeater", "../../images/sprites/enemies/Sparkeater.png", {
+    sliceX: 12,
+    sliceY: 8,
+    anims: {
+      idle: { from: 0, to: 3, loop: true },
+      walk: { from: 12, to: 15, loop: true },
+      attack: { from: 24, to: 27, speed: 8 },
+      grapple: { from: 36, to: 39, speed: 8 },
+      scream: { from: 48, to: 51, speed: 8 },
+      hurt: { from: 60, to: 63, speed: 8 },
+      die: { from: 72, to: 75, speed: 6 },
+    },
+  });
+
+  k.loadSprite("Tarn", "../../images/sprites/enemies/Tarn.png", {
+    sliceX: 12,
+    sliceY: 8,
+    anims: {
+      idle: { from: 0, to: 3, loop: true },
+      walk: { from: 12, to: 15, loop: true },
+      attack: { from: 24, to: 27, speed: 8 },
+      grapple: { from: 36, to: 39, speed: 8 },
+      scream: { from: 48, to: 51, speed: 8 },
+      hurt: { from: 60, to: 63, speed: 8 },
+      die: { from: 72, to: 75, speed: 6 },
+    },
+  });
+
   k.loadSprite("blue_hearts", "../../images/UI/Blue_hearts.png", {
     sliceX: 3,
     sliceY: 1,
@@ -342,14 +370,14 @@ export async function KaboomBetolto(mentes_id) {
 
   k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
 
-  console.log("Aktív mentésünk: ",aktivMentesAdatok);
+  console.log("Aktív mentésünk: ", aktivMentesAdatok);
 
-  if(aktivMentesAdatok.data.mentett_adatok.savepoint=="kezdomap_1"){
-      k.go("intro");
-  }else{
+  if (aktivMentesAdatok.data.mentett_adatok.savepoint == "kezdomap_1") {
+    k.go("intro");
+  } else {
     respawnSavepointAlapjan(k, aktivMentesAdatok.data.mentett_adatok.savepoint);
   }
-  
+
 }
 
 async function specialeffektdoboz() {
@@ -360,7 +388,7 @@ async function specialeffektdoboz() {
   container.appendChild(specieffekdoboz);
 }
 
-export async function cutscene_kezeles(k, scene_name, nextScene = null) {
+export async function cutscene_kezeles(k, scene_name, nextScene = null, callback = null) {
   const data = await fecthData(
     "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" + settings.nyelv + "/kaboomBetolto.json"
   );
@@ -443,6 +471,10 @@ export async function cutscene_kezeles(k, scene_name, nextScene = null) {
 
     if (nextScene != null) {
       k.go(nextScene);
+    }
+
+    if (callback) {
+      callback();
     }
 
     if (zene) {

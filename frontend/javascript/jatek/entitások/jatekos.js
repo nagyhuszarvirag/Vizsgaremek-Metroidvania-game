@@ -224,7 +224,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
 
       const eredmeny = await TeljesMentesLetrehozo(
         user.id,
-        mentesunk_idja + 1,
+        mentesunk_idja,
         aktivMentesAdatok
       );
 

@@ -15,6 +15,7 @@ import { settings } from "../../options.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { SparkeaterLetrehozas } from "../entitások/sparkeater_boss.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -69,6 +70,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
     const scrapletsLayer = layerKereses("Scraplets");
 
     const bossArenaLayer = layerKereses("Boss_arena");
+    const sparkeaterSpawnLayer = layerKereses("Boss_spawnpoint");
 
     let xpos = backFromCrystalLayer.objects[0].x;
     let ypos = backFromCrystalLayer.objects[0].y;
@@ -153,6 +155,24 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         scrapletsLayer.objects.forEach((obj) => {
             ScrapletLetrehozas(k, obj.x, obj.y, player, 120);
         });
+    }
+
+    const sparkeaterDead =
+        aktivMentesAdatok?.data?.mentett_adatok?.bosses?.Sparkeater === true;
+
+    if (
+        !sparkeaterDead &&
+        sparkeaterSpawnLayer &&
+        sparkeaterSpawnLayer.objects &&
+        sparkeaterSpawnLayer.objects[0] &&
+        bossArenaLayer &&
+        bossArenaLayer.objects &&
+        bossArenaLayer.objects[0]
+    ) {
+        const spawn = sparkeaterSpawnLayer.objects[0];
+        const arena = bossArenaLayer.objects[0];
+
+        SparkeaterLetrehozas(k, spawn.x, spawn.y, player, arena);
     }
 
     if (ladderLayer && ladderLayer.objects) {
