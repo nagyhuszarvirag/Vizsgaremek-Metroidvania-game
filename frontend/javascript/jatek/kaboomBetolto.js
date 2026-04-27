@@ -10,7 +10,7 @@ import { Crystal_City } from "./szobak/Crystal_city.js";
 import { Kaon } from "./szobak/Kaon.js";
 import { Cemetery } from "./szobak/Cemetery.js";
 import { Hidden_Room } from "./szobak/Hidden_room.js";
-import { setBackgroundColor } from "./szobak/Szobakezelo.js";
+import { kilep_jatekbol } from "./entitások/jatekos.js";
 import { fecthData } from "../index.js";
 import { settings } from "../options.js";
 import { beallitasokBetolteseSettingsbe } from "../beallitas_menu.js";
@@ -120,6 +120,11 @@ export async function KaboomBetolto(mentes_id) {
 
   k.scene("intro", async () => {
     await cutscene_kezeles(k, "intro", "Kezdoszoba");
+  });
+
+  k.scene("end_game",  () => {
+    //Ide lehet berakni credits-et ha van idő
+    kilep_jatekbol(k);
   });
 
   //kezdőmap sprite
