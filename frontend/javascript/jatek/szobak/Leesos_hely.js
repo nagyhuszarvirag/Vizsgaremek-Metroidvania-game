@@ -61,9 +61,11 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
   MapColliderek(k, map, szoba_layerek[2].objects);
 
   let kelletailgate = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate;
+  let tailgate_helye_korrektalt=szoba_layerek[6].objects;
+  tailgate_helye_korrektalt[0].y=tailgate_helye_korrektalt[0].y-3; //Picit alacsony helyre raktam a sprite kezdőpontját, úgyhogy feljebb kellett vinnem
 
   if (kelletailgate) {
-    NPCCollider(k, szoba_layerek[6].objects, "Tailgate");
+    NPCCollider(k, tailgate_helye_korrektalt, "Tailgate");
   }
 
   const player = await jatekos_betolt(k, xpos, ypos, "Leesos_hely");

@@ -269,7 +269,6 @@ export async function KaboomBetolto(mentes_id) {
   k.loadSprite("hidden_room_heart", "../../images/maps/hidden_room_heart.png");
 
   k.loadSprite("player", "../../images/sprites/Main_player.png", {
-    //Ez még csak definiálás, majd le kell programozni a többi cuccot
     sliceX: 12,
     sliceY: 7,
     anims: {
@@ -277,7 +276,7 @@ export async function KaboomBetolto(mentes_id) {
       walk: { from: 72, to: 83, loop: true },
       run: { from: 24, to: 31, loop: true },
       jump: { from: 36, to: 38, speed: 2.5 },
-      die: { from: 12, to: 14, loop: true }, //Átrajzolom a meghalás animációt
+      die: { from: 12, to: 17, loop: true }, 
       attack: { from: 60, to: 67, speed: 16 },
       hurt: { from: 48, to: 51, speed: 6 },
     },
@@ -299,7 +298,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Swindle", "../../images/sprites/NPC/Ratchet.png", { //neki majd a saját képét kéne betölteni
+  k.loadSprite("Swindle", "../../images/sprites/NPC/Swindle.png", { 
     sliceX: 8,
     sliceY: 1,
     anims: {
@@ -307,7 +306,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Chromedome", "../../images/sprites/NPC/Prowl.png", { //neki majd a saját képét kéne betölteni
+  k.loadSprite("Chromedome", "../../images/sprites/NPC/Chromedome.png", { 
     sliceX: 8,
     sliceY: 1,
     anims: {
@@ -315,7 +314,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Tailgate", "../../images/sprites/NPC/Ratchet.png", { //neki majd a saját képét kéne betölteni
+  k.loadSprite("Tailgate", "../../images/sprites/NPC/Tailgate.png", { 
     sliceX: 8,
     sliceY: 1,
     anims: {
