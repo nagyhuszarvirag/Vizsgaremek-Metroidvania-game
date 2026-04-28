@@ -132,9 +132,12 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   let kellerachet = aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet;
   let kelletailgate = aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate;
   
-    if (kelleChromedome_and_Ratchet_combo && kellerachet && kelletailgate) { //Chromedome és Ratchet kell ide
-      console.log("Chromedome és Ratchet kell a szobába");
-      //NPCCollider(k, szoba_layerek[6].objects, "Tailgate");
+    if (kelleChromedome_and_Ratchet_combo && kellerachet && kelletailgate) { 
+      let chromedome_helye=szoba_layerek[7].objects;
+      chromedome_helye[0].x=1400;
+
+      NPCCollider(k, szoba_layerek[6].objects, "Ratchet", "Chromedome_and_Ratchet");
+      NPCCollider(k, chromedome_helye, "Chromedome", "Chromedome_and_Ratchet");
     }
 
   const player = await jatekos_betolt(k, xpos, ypos, "Mitteous_Plateau");

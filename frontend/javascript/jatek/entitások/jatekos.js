@@ -706,7 +706,7 @@ function biztos_kilep(szoveg, k, player) { //Megkérdezzük, hogy biztosan ki ak
   tarolo.appendChild(legkulsobbmodaldiv);
 }
 
-async function kilep_jatekbol(k) {
+export async function kilep_jatekbol(k) {
   k.quit();
   startGame();
   szoba_zene_beallitas("the_humbling_river");

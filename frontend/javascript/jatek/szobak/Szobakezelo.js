@@ -46,17 +46,30 @@ export function MapColliderek(k, map, colliderek, forcedTag = null) {
   }
 }
 
-export function NPCCollider(k, collider, NPC) {
+export function NPCCollider(k, collider, NPC, comboneve=null) {
 
-    let NPC_adder = k.add([
+  let NPC_adder;
+  if(comboneve){
+    NPC_adder = k.add([
       k.sprite(NPC),
       k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
       k.anchor("center"),
       k.area({
         shape: new k.Rect(k.vec2(0), 200, 100),
       }),
-      NPC,
+      comboneve,
     ]);
+    }else{
+      NPC_adder = k.add([
+        k.sprite(NPC),
+        k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
+        k.anchor("center"),
+        k.area({
+          shape: new k.Rect(k.vec2(0), 200, 100),
+        }),
+        NPC,
+      ]);
+    }
 
     NPC_adder.play("idle");
 
