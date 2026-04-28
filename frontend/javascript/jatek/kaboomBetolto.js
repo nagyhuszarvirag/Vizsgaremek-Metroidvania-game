@@ -275,7 +275,7 @@ export async function KaboomBetolto(mentes_id) {
 
   k.loadSprite("player", "../../images/sprites/Main_player.png", {
     sliceX: 12,
-    sliceY: 7,
+    sliceY: 8,
     anims: {
       idle: { from: 0, to: 7, loop: true },
       walk: { from: 72, to: 83, loop: true },
@@ -283,6 +283,7 @@ export async function KaboomBetolto(mentes_id) {
       jump: { from: 36, to: 38, speed: 2.5 },
       die: { from: 12, to: 17, loop: true }, 
       attack: { from: 60, to: 67, speed: 16 },
+      attack_2: { from: 84, to: 91, speed: 16 },
       hurt: { from: 48, to: 51, speed: 6 },
     },
   });
