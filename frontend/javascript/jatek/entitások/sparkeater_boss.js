@@ -241,7 +241,43 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
                 if (!mentett.world_interactions) mentett.world_interactions = {};
 
                 mentett.bosses.Sparkeater = true;
-                mentett.ability_unlocked.sprint = true;
+                mentett.ability_unlocked.dash = true;
+                mentett.world_interactions["crystal-city-key"] = true;
+            }
+
+            k.wait(0.8, () => {
+                if (boss.exists()) boss.destroy();
+            });
+        }
+    });
+
+    k.onCollide("player_slash_hitbox", "sparkeater", (slash) => {
+        if (boss.dead) return;
+        if (slash.alreadyHit) return;
+
+        slash.alreadyHit = true;
+
+        boss.hp -= slash.damage ?? 3;
+        console.log("Sparkeater slash sebzés:", boss.hp);
+
+        if (slash.exists()) {
+            slash.destroy();
+        }
+
+        if (boss.hp <= 0) {
+            boss.dead = true;
+
+            bossAnim("die");
+
+            if (aktivMentesAdatok?.data?.mentett_adatok) {
+                const mentett = aktivMentesAdatok.data.mentett_adatok;
+
+                if (!mentett.bosses) mentett.bosses = {};
+                if (!mentett.ability_unlocked) mentett.ability_unlocked = {};
+                if (!mentett.world_interactions) mentett.world_interactions = {};
+
+                mentett.bosses.Sparkeater = true;
+                mentett.ability_unlocked.dash = true;
                 mentett.world_interactions["crystal-city-key"] = true;
             }
 

@@ -13,6 +13,16 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         "scraplet",
     ]);
 
+    const attackTutorialZone = k.add([
+        k.pos(x - 80, y - 40),
+        k.rect(160, 80),
+        k.area(),
+        k.opacity(0),
+        "attack_tutorial_zone",
+    ]);
+
+    scraplet.tutorialZone = attackTutorialZone;
+
     scraplet.hp = 4;
     scraplet.dead = false;
     scraplet.attacking = false;
@@ -198,6 +208,10 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         if (scraplet.dead) return;
         if (scraplet.hurtCooldown) return;
 
+        if (player.tutorial) {
+            player.tutorial.markDone("attack");
+        }
+
         scraplet.hurtCooldown = true;
         scraplet.hp -= 1;
 
@@ -227,6 +241,39 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
             scraplet.dead = true;
             //scraplet.play("die");
             animValtas("die");
+
+            if (scraplet.tutorialZone && scraplet.tutorialZone.exists()) {
+                scraplet.tutorialZone.destroy();
+            }
+
+            k.wait(0.4, () => {
+                if (scraplet.exists()) scraplet.destroy();
+            });
+        }
+    });
+
+    k.onCollide("player_slash_hitbox", "scraplet", (slash, scraplet) => {
+        if (!slash.exists() || !scraplet.exists()) return;
+         if (slash.alreadyHit) return;
+
+         slash.alreadyHit = true;
+
+        scraplet.hp -= slash.damage ?? 3;
+
+        if (slash.exists()) {
+            slash.destroy();
+        }
+
+        console.log("Scraplet slash sebzés:", scraplet.hp);
+
+        if (scraplet.hp <= 0) {
+            scraplet.dead = true;
+            //scraplet.play("die");
+            animValtas("die");
+
+            if (scraplet.tutorialZone && scraplet.tutorialZone.exists()) {
+                scraplet.tutorialZone.destroy();
+            }
 
             k.wait(0.4, () => {
                 if (scraplet.exists()) scraplet.destroy();

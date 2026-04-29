@@ -232,6 +232,15 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
       cutscene_kezeles(k, "Transformers_sea_of_flowers", null, () => {
         cutsceeneFut = false;
+
+        const mentett = aktivMentesAdatok.data.mentett_adatok;
+
+        if (!mentett.ability_unlocked) {
+          mentett.ability_unlocked = {};
+        }
+
+        mentett.ability_unlocked.slash_attack = true;
+
         szoba_zene_beallitas("after the flower cutscene cemetery");
       });
 

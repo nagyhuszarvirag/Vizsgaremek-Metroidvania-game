@@ -1,5 +1,6 @@
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
-import  {fecthData} from "../../index.js";
+import { fecthData } from "../../index.js";
+import { settings } from "../../options.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -46,10 +47,10 @@ export function MapColliderek(k, map, colliderek, forcedTag = null) {
   }
 }
 
-export function NPCCollider(k, collider, NPC, comboneve=null) {
+export function NPCCollider(k, collider, NPC, comboneve = null) {
 
   let NPC_adder;
-  if(comboneve){
+  if (comboneve) {
     NPC_adder = k.add([
       k.sprite(NPC),
       k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
@@ -59,19 +60,19 @@ export function NPCCollider(k, collider, NPC, comboneve=null) {
       }),
       comboneve,
     ]);
-    }else{
-      NPC_adder = k.add([
-        k.sprite(NPC),
-        k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
-        k.anchor("center"),
-        k.area({
-          shape: new k.Rect(k.vec2(0), 200, 100),
-        }),
-        NPC,
-      ]);
-    }
+  } else {
+    NPC_adder = k.add([
+      k.sprite(NPC),
+      k.pos(collider[0].x, collider[0].y - 12), //a -30 azért kell, hogy az NPC ne a lábánál legyen lerakva, hanem a közepénél
+      k.anchor("center"),
+      k.area({
+        shape: new k.Rect(k.vec2(0), 200, 100),
+      }),
+      NPC,
+    ]);
+  }
 
-    NPC_adder.play("idle");
+  NPC_adder.play("idle");
 
 }
 
@@ -195,28 +196,28 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) { //Ezt 
 
 export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) {
   try {
-    let mentendo_adatok= mentett_adatok.data.mentett_adatok;
+    let mentendo_adatok = mentett_adatok.data.mentett_adatok;
 
-    if(user_id!=0){
-      console.log( "Mentendő adatok: ",mentendo_adatok);
+    if (user_id != 0) {
+      console.log("Mentendő adatok: ", mentendo_adatok);
       const response = await fecthData("http://127.0.0.1:3000/api/mentes/update-teljes-mentes", "PATCH", {
         user_id: user_id,
         mentes_id: mentes_id,
         mentett_adatok: mentendo_adatok
-    });
+      });
 
-    const data = await response;
-    return data;
-    } else{
-      let mentesneve="mentes_"+mentes_id;
+      const data = await response;
+      return data;
+    } else {
+      let mentesneve = "mentes_" + mentes_id;
       localStorage.setItem(mentesneve,
-      JSON.stringify({
-        success: true,
-        data:{ mentett_adatok: mentendo_adatok }
-      }),
-    );
+        JSON.stringify({
+          success: true,
+          data: { mentett_adatok: mentendo_adatok }
+        }),
+      );
     }
-    
+
   } catch (error) {
     console.error("Teljes mentés hiba:", error);
     return {
@@ -635,18 +636,38 @@ export function LetraCollider(k, letraObj, player, interactKey, jumpKey, upKey =
   player.onCollideUpdate("letra", (obj) => {
     if (obj === letra) {
       player.aktivLetra = letra;
+
+      if (player.tutorial && !player.letaranVan) {
+        player.tutorial.showOnce(
+          "ladder_interact",
+          `${interactKey.toUpperCase()} - mászás`
+        );
+      }
     }
   });
 
   player.onCollideEnd("letra", (obj) => {
     if (obj === letra && player.aktivLetra === letra) {
       player.aktivLetra = null;
+
+      if (player.tutorial) {
+        player.tutorial.hideHint();
+      }
     }
   });
 
   k.onKeyPress(interactKey, () => {
     if (player.aktivLetra === letra && !player.letaranVan) {
       player.letaranVan = true;
+
+      if (player.tutorial) {
+        player.tutorial.markDone("ladder_interact");
+
+        player.tutorial.showOnce(
+          "ladder_climb",
+          "W / S - mászás"
+        );
+      }
 
       player.pos.x = letra.pos.x + letra.letraWidth / 2;
 
@@ -751,15 +772,15 @@ export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag 
 }
 
 export function szoba_zene_beallitas(szoba_neve) {
-  let zenedoboza=document.getElementById("zenemarad");
-  let zene="../audio/"+szoba_neve+".mp3";
+  let zenedoboza = document.getElementById("zenemarad");
+  let zene = "../audio/" + szoba_neve + ".mp3";
 
-  zenedoboza.src=zene;
+  zenedoboza.src = zene;
   zenedoboza.load();
 
-  if(zenedoboza.muted){ //ez a load után kell legyen, mert a play() fv-t megzavarja a load() fv. .
+  if (zenedoboza.muted) { //ez a load után kell legyen, mert a play() fv-t megzavarja a load() fv. .
     zenedoboza.muted = false;
     zenedoboza.play();
   }
-  
+
 }
