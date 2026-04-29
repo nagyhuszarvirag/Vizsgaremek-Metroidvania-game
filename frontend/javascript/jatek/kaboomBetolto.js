@@ -283,10 +283,18 @@ export async function KaboomBetolto(mentes_id) {
       jump: { from: 36, to: 38, speed: 2.5 },
       die: { from: 12, to: 17, loop: true }, 
       attack: { from: 60, to: 67, speed: 16 },
-      attack_2: { from: 84, to: 91, speed: 16 },
+      slash_attack: { from: 84, to: 91, speed: 16 },
       hurt: { from: 48, to: 51, speed: 6 },
     },
   });
+
+  k.loadSprite("player_slash", "../../images/other/huge_attack_player.png", {
+  sliceX: 8,
+  sliceY: 1,
+  anims: {
+    fly: { from: 0, to: 7, loop: true, speed: 14 },
+  },
+});
 
   k.loadSprite("Prowl", "../../images/sprites/NPC/Prowl.png", {
     sliceX: 8,

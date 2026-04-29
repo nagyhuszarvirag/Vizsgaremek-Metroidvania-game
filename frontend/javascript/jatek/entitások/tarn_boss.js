@@ -227,6 +227,38 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     }
   });
 
+  k.onCollide("player_slash_hitbox", "tarn", (slash) => {
+    if (boss.dead) return;
+    if (slash.alreadyHit) return;
+
+    slash.alreadyHit = true;
+
+    boss.hp -= slash.damage ?? 3;
+    console.log("Sparkeater slash sebzés:", boss.hp);
+
+    if (slash.exists()) {
+      slash.destroy();
+    }
+
+    if (boss.hp <= 0) {
+      boss.dead = true;
+
+      const mentett = aktivMentesAdatok?.data?.mentett_adatok;
+
+      if (mentett) {
+        if (!mentett.bosses) mentett.bosses = {};
+        if (!mentett.ability_unlocked) mentett.ability_unlocked = {};
+
+        mentett.bosses.Tarn = true;
+        mentett.ability_unlocked.double_jump = true;
+      }
+
+      k.wait(0.5, () => {
+        if (boss.exists()) boss.destroy();
+      });
+    }
+  });
+
   boss.onUpdate(() => {
     if (boss.dead) return;
 

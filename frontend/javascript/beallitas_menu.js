@@ -291,6 +291,60 @@ async function valtasAltalanos(
   keyContainer.style.flexDirection = "column";
   keyContainer.style.gap = "5px";
 
+  const keyInputs = [];
+  const tiltottGombok = ["escape", "enter"];
+
+  function normalizaltGomb(gomb) {
+    return String(gomb || "").trim().toLowerCase();
+  }
+
+  function kiosztasEllenorzes() {
+    let vanHiba = false;
+
+    const darabok = {};
+
+    keyInputs.forEach(({ input }) => {
+      const ertek = normalizaltGomb(input.value);
+
+      input.style.border = "";
+      input.style.backgroundColor = "";
+
+      if (!ertek) {
+        vanHiba = true;
+        input.style.border = "3px solid red";
+        input.style.backgroundColor = "#ffd0d0";
+        return;
+      }
+
+      if (tiltottGombok.includes(ertek)) {
+        vanHiba = true;
+        input.style.border = "3px solid red";
+        input.style.backgroundColor = "#ffd0d0";
+        return;
+      }
+
+      darabok[ertek] = (darabok[ertek] || 0) + 1;
+    });
+
+    keyInputs.forEach(({ input }) => {
+      const ertek = normalizaltGomb(input.value);
+
+      if (darabok[ertek] > 1) {
+        vanHiba = true;
+        input.style.border = "3px solid red";
+        input.style.backgroundColor = "#ffd0d0";
+      }
+    });
+
+    if (typeof mentesGomb !== "undefined") {
+      mentesGomb.disabled = vanHiba;
+      mentesGomb.style.opacity = vanHiba ? "0.5" : "1";
+      mentesGomb.style.cursor = vanHiba ? "not-allowed" : "pointer";
+    }
+
+    return !vanHiba;
+  }
+
   function billenytuInputLetrehoz(labelText, value, setter) {
     const label = document.createElement("label");
     label.textContent = labelText;
@@ -309,8 +363,12 @@ async function valtasAltalanos(
         keyName = "space";
       }
 
+      keyName = keyName.toLowerCase();
+
       setter(keyName);
       input.value = keyName;
+
+      kiosztasEllenorzes();
     });
 
     input.addEventListener("dblclick", (e) => {
@@ -318,18 +376,24 @@ async function valtasAltalanos(
 
       setter("left click");
       input.value = "left click";
+
+      kiosztasEllenorzes();
     });
 
     input.addEventListener("click", () => {
       input.value = "";
       input.placeholder = "Nyomj meg egy billentyűt...";
       input.focus();
+
+      kiosztasEllenorzes();
     });
 
     const div = document.createElement("div");
     div.append(label, input);
     div.style.display = "flex";
     div.style.justifyContent = "space-between";
+
+    keyInputs.push({ input, setter });
 
     keyContainer.appendChild(div);
   }
@@ -365,6 +429,10 @@ async function valtasAltalanos(
   );
 
   content.appendChild(keyContainer);
+
+  setTimeout(() => {
+    kiosztasEllenorzes();
+  }, 0);
 
   const nyelvLabel = document.createElement("label");
   nyelvLabel.textContent = nyelvData.nyelv[0];
@@ -426,6 +494,11 @@ async function valtasAltalanos(
   mentesGomb.classList.add("gombok", "col-6");
 
   mentesGomb.addEventListener("click", async () => {
+    if (!kiosztasEllenorzes()) {
+      alert("Hibás billentyűkiosztás! Egy billentyű csak egy funkcióhoz tartozhat, az Enter és Escape pedig nem használható.");
+      return;
+    }
+
     const beallitasMentes = aktualisBeallitasMentesObjektum();
 
     if (jelenlegiFelh !== 0) {

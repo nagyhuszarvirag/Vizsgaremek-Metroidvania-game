@@ -16,6 +16,7 @@ import { hpUI } from "./hp_ui.js";
 import { beallitasMenuLetrehoz } from "../../beallitas_menu.js";
 import { fecthData } from "../../index.js";
 import { startGame } from "../../start_game.js";
+import { TutorialHint } from "./tutorial_kezelo.js";
 
 export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   const player = k.add([
@@ -58,6 +59,8 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   player.knockbackTimer = 0;
   player.menuNyitva = false;
   player.menu2Nyitva = false;
+  player.slashCooldown = 0;
+  player.slashCooldownMax = 15;
 
   player.play("idle");
 
@@ -66,6 +69,18 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
 
   Kamera_kezelo(k, xpos, ypos, player);*/
 
+  player.tutorial = TutorialHint(k, player);
+
+  player.tutorial.showOnce(
+    "movement",
+    `${settings.controls.back.toUpperCase()} / ${settings.controls.forward.toUpperCase()} - mozgás`
+  );
+
+  k.wait(5, () => {
+    if (player.tutorial) {
+      player.tutorial.hideHint();
+    }
+  });
 
   let kelleprowl = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Prowl;
   let kellerachet = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet;
@@ -79,12 +94,23 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   player.onCollideUpdate("Prowl", (obj) => {
     if (kelleprowl) {
       aktivNPC = obj;
+
+      if (player.tutorial) {
+        player.tutorial.showOnce(
+          "npc_interact",
+          `${settings.controls.interact.toUpperCase()} - beszélgetés`
+        );
+      }
     }
   });
 
   player.onCollideEnd("Prowl", (obj) => {
     if (aktivNPC === obj) {
       aktivNPC = null;
+
+      if (player.tutorial) {
+        player.tutorial.hideHint();
+      }
     }
   });
 
@@ -146,15 +172,33 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
     }
   });
 
+  player.onCollideUpdate("attack_tutorial_zone", () => {
+    if (!player.tutorial) return;
+
+    player.tutorial.showOnce(
+      "attack",
+      `${settings.controls.attack.toUpperCase()} - támadás`
+    );
+  });
+
+  player.onCollideEnd("attack_tutorial_zone", () => {
+    if (!player.tutorial) return;
+
+    player.tutorial.hideHint();
+  });
+
   k.onKeyPress(async (key) => {
     if (key !== settings.controls.interact) return;
 
     //NPC
     if (aktivNPC) {
-      console.log("NPC interakció előtt ",aktivMentesAdatok);
+      console.log("NPC interakció előtt ", aktivMentesAdatok);
       switch (current_map) {
         case "Kezdoszoba":
           if (kelleprowl) {
+            if (aktivNPC && player.tutorial) {
+              player.tutorial.markDone("npc_interact");
+            }
             cutscene_kezeles(k, "prowl_chromedome_and_rewind");
             aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Prowl = 1;
             kelleprowl = false;
@@ -172,7 +216,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
         case "Iacon":
           if (kelleswindle) {
             cutscene_kezeles(k, "swindle");
-            aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Swindle = 1  ;
+            aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Swindle = 1;
             kelleswindle = false;
           }
           break;
@@ -188,7 +232,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
         case "Leesos_hely":
           if (kelletailgate) {
             cutscene_kezeles(k, "tailgate_a_föld_alatt");
-            aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate = 1 ;
+            aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate = 1;
             kelletailgate = false;
           }
           break;
@@ -197,7 +241,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           console.log("Ismeretlen szoba");
           break;
       }
-      console.log("NPC interakció után ",aktivMentesAdatok);
+      console.log("NPC interakció után ", aktivMentesAdatok);
       return;
     }
 
@@ -276,6 +320,55 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
     });
   }
 
+  function playerSlashTamadasInditas() {
+    const slashUnlocked =
+      aktivMentesAdatok?.data?.mentett_adatok?.ability_unlocked?.slash_attack === true;
+
+    if (!slashUnlocked) return;
+    if (player.slashCooldown > 0) {
+      console.log("Slash még tölt:", player.slashCooldown.toFixed(1));
+      return;
+    }
+    if (player.tamad) return;
+    if (player.letaranVan) return;
+    if (player.dead) return;
+
+    player.slashCooldown = player.slashCooldownMax;
+
+    player.tamad = true;
+    player.play("slash_attack");
+
+    const irany = player.flipX ? 1 : -1;
+
+    const slash = k.add([
+      k.sprite("player_slash"),
+      k.pos(player.pos.x + irany * 35, player.pos.y - 10),
+      k.anchor("center"),
+      k.area(),
+      k.move(k.vec2(irany, 0), 320),
+      k.scale(-irany, 1),
+      "player_slash_hitbox",
+    ]);
+
+    slash.damage = 3;
+    slash.alreadyHit = false;
+
+    if (slash.play) {
+      slash.play("fly");
+    }
+
+    k.wait(0.6, () => {
+      if (slash.exists()) {
+        slash.destroy();
+      }
+    });
+
+    k.wait(0.45, () => {
+      if (!player.exists()) return;
+      player.tamad = false;
+    });
+  }
+
   k.onMousePress(() => {
     if (settings.controls.attack !== "left click") return;
 
@@ -287,6 +380,12 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
     if (key !== settings.controls.attack) return;
 
     playerTamadasInditas();
+  });
+
+  k.onKeyPress((key) => {
+    if (key !== "q") return;
+
+    playerSlashTamadasInditas();
   });
 
   k.onKeyPress("escape", async () => {
@@ -320,6 +419,10 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
     if (key !== settings.controls.jump) return;
 
     if (player.letaranVan) {
+      if (player.tutorial) {
+        player.tutorial.markDone("ladder_jump");
+      }
+
       player.letaranVan = false;
       k.setGravity(GRAVITY);
 
@@ -344,6 +447,22 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
   k.onUpdate(() => {
     //Optimalizált mozgás (Remélem ez így jó lesz c:)
+
+    if (
+      player.tutorial &&
+      !player.tutorial.isDone("movement") &&
+      (k.isKeyDown(settings.controls.forward) || k.isKeyDown(settings.controls.back))
+    ) {
+      player.tutorial.markDone("movement");
+    }
+
+    if (player.slashCooldown > 0) {
+      player.slashCooldown -= k.dt();
+
+      if (player.slashCooldown < 0) {
+        player.slashCooldown = 0;
+      }
+    }
 
     if (player.menuNyitva || player.menu2Nyitva) {
       if (player.vel) {
@@ -377,6 +496,19 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
       const climbSpeed = player.letraSebesseg;
 
       k.setGravity(0);
+
+      if (
+        player.tutorial &&
+        !player.tutorial.isDone("ladder_climb") &&
+        (k.isKeyDown("w") || k.isKeyDown("s"))
+      ) {
+        player.tutorial.markDone("ladder_climb");
+
+        player.tutorial.showOnce(
+          "ladder_jump",
+          `${settings.controls.jump.toUpperCase()} - leugrás`
+        );
+      }
 
       if (player.aktivLetra) {
         player.pos.x = player.aktivLetra.pos.x + player.aktivLetra.letraWidth / 2;
@@ -612,8 +744,8 @@ function biztos_kilep(szoveg, k, player) { //Megkérdezzük, hogy biztosan ki ak
     console.error("Nincs kilep_menu_tarolo div!");
     return;
   } else {
-      tarolo.tabIndex = 0;
-      tarolo.focus();
+    tarolo.tabIndex = 0;
+    tarolo.focus();
   }
 
   // Ha már van nyitva modal, ne hozzon létre még egyet
