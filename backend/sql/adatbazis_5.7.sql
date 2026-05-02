@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS mentes (
             'ability_unlocked', JSON_OBJECT(
                 'double_jump', false,
                 'dash', false,
-                'slash_attack'
+                'slash_attack', false
             )
         )
     ),

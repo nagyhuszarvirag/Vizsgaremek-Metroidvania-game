@@ -162,6 +162,7 @@ export async function sutiModalKeszit() {
             ability_unlocked: {
               double_jump: false,
               dash: false,
+              slash_attack: false
             },
           },
         },
@@ -205,6 +206,7 @@ export async function sutiModalKeszit() {
             ability_unlocked: {
               double_jump: false,
               dash: false,
+              slash_attack: false
             },
           },
         },
@@ -248,6 +250,7 @@ export async function sutiModalKeszit() {
             ability_unlocked: {
               double_jump: false,
               dash: false,
+              slash_attack: false
             },
           },
         },
@@ -291,6 +294,7 @@ export async function sutiModalKeszit() {
             ability_unlocked: {
               double_jump: false,
               dash: false,
+              slash_attack: false
             },
           },
         },
