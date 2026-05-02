@@ -73,6 +73,8 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     boss.pos.x = arenaObj.x + arenaObj.width - 100;
     boss.pos.y = arenaObj.y + arenaObj.height - 140;
 
+    TarnAnimation(boss, "walk");
+
     if (boss.vel) {
       boss.vel.x = 0;
       boss.vel.y = 0;
@@ -168,6 +170,8 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     const irany = player.pos.x > boss.pos.x ? 1 : -1;
 
+    TarnAnimation(boss, "jump");
+
     boss.jump(430);
     boss.move(irany * 180, 0);
 
@@ -206,6 +210,8 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     boss.hp -= 1;
     console.log("Tarn HP:", boss.hp);
 
+    TarnAnimation(boss, "hurt");
+
     if (hitbox.exists()) hitbox.destroy();
 
     if (boss.hp <= 0) {
@@ -222,6 +228,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
       }
 
       k.wait(0.5, () => {
+        TarnAnimation(boss, "die");
         if (boss.exists()) boss.destroy();
       });
     }
@@ -235,6 +242,8 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     boss.hp -= slash.damage ?? 3;
     console.log("Sparkeater slash sebzés:", boss.hp);
+
+    TarnAnimation(boss, "hurt");
 
     if (slash.exists()) {
       slash.destroy();
@@ -254,6 +263,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
       }
 
       k.wait(0.5, () => {
+        TarnAnimation(boss, "die");
         if (boss.exists()) boss.destroy();
       });
     }
@@ -286,25 +296,36 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     boss.flipX = t.dx < 0;
 
     if (boss.stompCooldown <= 0 && t.dist <= 110 && t.absY <= 70) {
+      TarnAnimation(boss, "stomp");
       stompAttack();
       return;
     }
 
     if (boss.shootCooldown <= 0 && t.dist <= 320) {
+      TarnAnimation(boss, "shoot");
       shootAttack();
       return;
     }
 
     if (boss.jumpCooldown <= 0 && t.dist > 180) {
+      TarnAnimation(boss, "jump");
       jumpMove();
       return;
     }
 
     if (t.dist > 80) {
+      TarnAnimation(boss, "walk");
       const iranyX = t.dx > 0 ? 1 : -1;
       boss.move(iranyX * boss.speed, 0);
     }
+
+    TarnAnimation(boss, "idle");
+
   });
 
   return boss;
+}
+
+async function TarnAnimation(boss, animation) {
+  boss.play(animation);
 }

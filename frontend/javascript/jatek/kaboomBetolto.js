@@ -363,16 +363,16 @@ export async function KaboomBetolto(mentes_id) {
   });
 
   k.loadSprite("Tarn", "../../images/sprites/enemies/Tarn.png", {
-    sliceX: 12,
-    sliceY: 8,
+    sliceX: 8,
+    sliceY: 7,
     anims: {
       idle: { from: 0, to: 3, loop: true },
-      walk: { from: 12, to: 15, loop: true },
-      attack: { from: 24, to: 27, speed: 8 },
-      grapple: { from: 36, to: 39, speed: 8 },
-      scream: { from: 48, to: 51, speed: 8 },
-      hurt: { from: 60, to: 63, speed: 8 },
-      die: { from: 72, to: 75, speed: 6 },
+      hurt: { from: 8, to: 10, speed: 8 },
+      die: { from: 16, to: 20, speed: 6 },
+      walk: { from: 24, to: 29, loop: true },
+      shoot: { from: 40, to: 47, speed: 8 },
+      stomp: { from: 48, to: 54, speed: 8 },
+      jump: { from: 32, to: 37, speed: 8 },
     },
   });
 
@@ -381,7 +381,7 @@ export async function KaboomBetolto(mentes_id) {
     sliceY: 1,
   });
 
-  k.setGravity(GRAVITY); //Ezt is fine tuningolni kell majd
+  k.setGravity(GRAVITY); 
 
   console.log("Aktív mentésünk: ", aktivMentesAdatok);
 
