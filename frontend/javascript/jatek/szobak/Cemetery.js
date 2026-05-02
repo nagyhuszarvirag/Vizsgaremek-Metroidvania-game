@@ -184,7 +184,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     if (aktiv_esemeny === "lighthouse_trigger") {
       aktiv_esemeny = null;
     }
-    console.log("Kiléptél a világítótorony triggerből");
   });
 
 
@@ -243,11 +242,8 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
         szoba_zene_beallitas("after the flower cutscene cemetery");
       });
-
-      return;
     }
 
-    console.log("Nem teljesült egyik cemetery interakció feltétel sem.");
   });
 
   const esokezelo = Eso();
