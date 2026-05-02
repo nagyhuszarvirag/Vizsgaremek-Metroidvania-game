@@ -118,7 +118,24 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         CollapsingPlatform(k, obj, sprite);
     }
 
-    MapColliderek(k, map, szoba_layerek[7].objects, "Lava_object");
+    function LavaColliderek(k, map, lavaObjektumok) {
+        for (const lava of lavaObjektumok) {
+            map.add([
+                k.pos(lava.x, lava.y),
+                k.area({
+                    shape: new k.Rect(
+                        k.vec2(0),
+                        lava.width,
+                        lava.height
+                    ),
+                }),
+                k.opacity(0),
+                "Lava_object",
+            ]);
+        }
+    }
+
+    LavaColliderek(k, map, szoba_layerek[7].objects);
 
     let bossArenaZone = null;
 
