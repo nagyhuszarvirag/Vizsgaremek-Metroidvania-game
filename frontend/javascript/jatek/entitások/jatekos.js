@@ -48,6 +48,39 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   hpRendszerBeallitas(player, kezdoSzivek);
   player.hpUI = hpUI(k, player);
 
+  const slashBarBg = k.add([
+    k.rect(180, 10),
+    k.pos(25, 90),
+    k.fixed(),
+    k.opacity(0.4),
+    k.z(999),
+  ]);
+
+  const slashBarFill = k.add([
+    k.rect(180, 10),
+    k.pos(25, 90),
+    k.fixed(),
+    k.color(0, 255, 100),
+    k.z(1000),
+  ]);
+
+  k.onUpdate(() => {
+    const slashUnlocked =
+      aktivMentesAdatok?.data?.mentett_adatok?.ability_unlocked?.slash_attack === true;
+
+    if (!slashUnlocked) {
+      slashBarBg.hidden = true;
+      slashBarFill.hidden = true;
+      return;
+    }
+
+    slashBarBg.hidden = false;
+    slashBarFill.hidden = false;
+
+    const ratio = 1 - player.slashCooldown / player.slashCooldownMax;
+    slashBarFill.width = 180 * Math.max(0, Math.min(1, ratio));
+  });
+
   player.letaranVan = false;
   player.aktivLetra = null;
   player.letraSebesseg = 100;
@@ -61,6 +94,8 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   player.menu2Nyitva = false;
   player.slashCooldown = 0;
   player.slashCooldownMax = 15;
+  player.dashSpeed = 520;
+  player.dashTime = 0.16;
 
   player.play("idle");
 
@@ -369,6 +404,54 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
     });
   }
 
+  function playerDashInditas() {
+    const dashUnlocked =
+      aktivMentesAdatok?.data?.mentett_adatok?.ability_unlocked?.dash === true;
+
+    if (!dashUnlocked) return;
+    if (player.dashCooldown > 0) return;
+    if (player.dashol) return;
+    if (player.tamad) return;
+    if (player.letaranVan) return;
+    if (player.dead) return;
+    if (player.menuNyitva || player.menu2Nyitva) return;
+
+    player.dashol = true;
+    player.dashCooldown = player.dashCooldownMax;
+
+    const irany = player.flipX ? 1 : -1;
+
+    if (player.vel) {
+      player.vel.x = 0;
+      player.vel.y = 0;
+    }
+
+    k.setGravity(0);
+
+    const dashUpdate = k.onUpdate(() => {
+      if (!player.exists() || player.dead) {
+        dashUpdate.cancel();
+        return;
+      }
+
+      player.move(irany * player.dashSpeed, 0);
+    });
+
+    k.wait(player.dashTime, () => {
+      dashUpdate.cancel();
+
+      if (!player.exists()) return;
+
+      player.dashol = false;
+      k.setGravity(GRAVITY);
+
+      if (player.vel) {
+        player.vel.x = 0;
+        player.vel.y = 0;
+      }
+    });
+  }
+
   k.onMousePress(() => {
     if (settings.controls.attack !== "left click") return;
 
@@ -396,6 +479,12 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
     In_game_menu(szoveg_adata.data, k, player);
   });
 
+  k.onKeyPress((key) => {
+    if (key !== "shift" && key !== "left shift") return;
+
+    playerDashInditas();
+  });
+
   player_mozgas_es_animacio_kezeles(player, k);
 
   return player;
@@ -408,11 +497,20 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
   //Fine tuningolni kell a sebességet
 
   //ideiglenes double jump
-  const MAX_JUMPS = 2;
-  let jumpsLeft = MAX_JUMPS;
+  function doubleJumpFeloldva() {
+    return (
+      aktivMentesAdatok?.data?.mentett_adatok?.ability_unlocked?.double_jump === true
+    );
+  }
+
+  function maxUgrasokSzama() {
+    return doubleJumpFeloldva() ? 2 : 1;
+  }
+
+  let jumpsLeft = maxUgrasokSzama();
 
   if (player.isGrounded()) {
-    jumpsLeft = MAX_JUMPS;
+    jumpsLeft = maxUgrasokSzama();
   };
 
   k.onKeyPress((key) => { //Ezt nem szabad az OnUpdate-ba rakni, mert akkor minden frame-ben megpróbál ugrani a játékos, ha lenyomva tartja a gombot és megszívjuk
@@ -438,7 +536,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
     if (player.isGrounded()) {
       player.jump(JUMP_FORCE);
-      jumpsLeft = MAX_JUMPS - 1;
+      jumpsLeft = maxUgrasokSzama() - 1;
     } else if (jumpsLeft > 0) {
       player.jump(JUMP_FORCE);
       jumpsLeft--;
@@ -454,6 +552,14 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
       (k.isKeyDown(settings.controls.forward) || k.isKeyDown(settings.controls.back))
     ) {
       player.tutorial.markDone("movement");
+    }
+
+    if (player.slashCooldown > 0) {
+      player.slashCooldown -= k.dt();
+
+      if (player.slashCooldown < 0) {
+        player.slashCooldown = 0;
+      }
     }
 
     if (player.slashCooldown > 0) {
@@ -487,6 +593,10 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
     let moveX = 0;
     let moveY = 0;
+
+    if (player.dashol) {
+      return;
+    }
 
     if (player.tamad) {
       return;
@@ -565,7 +675,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
     }
 
     if (player.isGrounded()) {
-      jumpsLeft = MAX_JUMPS;
+      jumpsLeft = maxUgrasokSzama();
     }
 
 
