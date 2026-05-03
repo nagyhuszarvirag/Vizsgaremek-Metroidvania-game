@@ -1,4 +1,4 @@
-export function TutorialHint(k, player) {
+export  function TutorialHint(k, player) {
     const TUTORIAL_STORAGE_KEY = "tutorialDone";
 
     function tutorialAllapotBetolt() {

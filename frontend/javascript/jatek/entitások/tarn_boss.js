@@ -20,7 +20,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     "boss",
   ]);
 
-  boss.hp = 50;
+  boss.hp = 40;
   boss.speed = 65;
   boss.dead = false;
   boss.attacking = false;

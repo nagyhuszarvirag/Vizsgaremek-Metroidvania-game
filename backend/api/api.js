@@ -359,17 +359,11 @@ router.get("/showachivements/:id/:nyelv", async (req, res) => {
 
 //achivements adatainak megváltoztatása
 router.patch("/updateachivements", async (req, res) => {
-  const { user_id, achivement_id, mentes_id, valtozo_utvonal, valtozott_adat } =
+  const { user_id, achivement_id } =
     req.body;
 
   await database.UpdatehAchivementAdatok(user_id, achivement_id);
 
-  await database.UpdateMentes(
-    user_id,
-    mentes_id,
-    valtozo_utvonal,
-    valtozott_adat,
-  );
   res.json({ success: true });
 });
 

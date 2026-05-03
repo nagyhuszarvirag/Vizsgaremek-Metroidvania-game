@@ -206,6 +206,51 @@ export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) 
         mentett_adatok: mentendo_adatok
       });
 
+      let Unlocked_achis=[];
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Prowl){
+        Unlocked_achis.push(1);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet){
+        Unlocked_achis.push(2);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Swindle){
+        Unlocked_achis.push(3);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate){
+        Unlocked_achis.push(8);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Chromedome_and_Ratchet){
+        Unlocked_achis.push(9);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-lava-protection"]){
+        Unlocked_achis.push(6);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscenes"]){
+        Unlocked_achis.push(4);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.bosses.Tarn){
+        Unlocked_achis.push(7);
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.bosses.Sparkeater){
+        Unlocked_achis.push(5);
+      }
+
+      for(const element of Unlocked_achis){
+        await fecthData("http://127.0.0.1:3000/api/updateachivements", "PATCH", {
+        user_id: user_id,
+        achivement_id: element
+      });
+      }
+
       const data = await response;
       return data;
     } else {
@@ -216,6 +261,65 @@ export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) 
           data: { mentett_adatok: mentendo_adatok }
         }),
       );
+
+      const achi_en = localStorage.getItem('achivements_en');
+      const achi_hu = localStorage.getItem('achivements_hu');
+
+      const achi_en_data=achi_en ? JSON.parse(achi_en) : {};
+      const achi_hu_data=achi_hu ? JSON.parse(achi_hu) : {};
+
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Prowl){
+        achi_en_data.data[0].unlocked=1;
+        achi_hu_data.data[0].unlocked=1;
+        
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet){
+        achi_en_data.data[1].unlocked=1;
+        achi_hu_data.data[1].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Swindle){
+        achi_en_data.data[2].unlocked=1;
+        achi_hu_data.data[2].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Tailgate){
+        achi_en_data.data[7].unlocked=1;
+        achi_hu_data.data[7].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Chromedome_and_Ratchet){
+        achi_en_data.data[8].unlocked=1;
+        achi_hu_data.data[8].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-lava-protection"]){
+        achi_en_data.data[5].unlocked=1;
+        achi_hu_data.data[5].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscenes"]){
+        achi_en_data.data[3].unlocked=1;
+        achi_hu_data.data[3].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.bosses.Tarn){
+        achi_en_data.data[6].unlocked=1;
+        achi_hu_data.data[6].unlocked=1;
+      }
+
+      if(aktivMentesAdatok.data.mentett_adatok.bosses.Sparkeater){
+        achi_en_data.data[4].unlocked=1;
+        achi_hu_data.data[4].unlocked=1;
+      }
+
+      const updated_achi_en_data = JSON.stringify(achi_en_data);
+      const updated_achi_hu_data = JSON.stringify(achi_hu_data);
+
+      localStorage.setItem("achivements_en",updated_achi_en_data);
+      localStorage.setItem("achivements_hu",updated_achi_hu_data);
     }
 
   } catch (error) {

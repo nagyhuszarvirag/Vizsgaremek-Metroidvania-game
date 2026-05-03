@@ -248,37 +248,6 @@ async function FINDhAchivementAdatokFROMSAVE(
   return rows || null;
 }
 
-/*
-async function FINDhAchivementAdatokFROMSAVE(valtozo_utvonal, mentes_slot, user_id) {
-  let sql = `
-    SELECT JSON_EXTRACT(mentett_adatok, ?) AS VOLT_E_NPC
-    FROM mentes
-    WHERE user_id = ?
-  `;
-
-  const params = [valtozo_utvonal, user_id];
-
-  switch (String(mentes_slot)) {
-    case "0":
-      sql += ` ORDER BY mentes_id LIMIT 1`;
-      break;
-    case "1":
-      sql += ` ORDER BY mentes_id LIMIT 1 OFFSET 1`;
-      break;
-    case "2":
-      sql += ` ORDER BY mentes_id LIMIT 1 OFFSET 2`;
-      break;
-    case "3":
-      sql += ` ORDER BY mentes_id LIMIT 1 OFFSET 3`;
-      break;
-    default:
-      return null;
-  }
-
-  const [rows] = await pool.execute(sql, params);
-  return rows[0] || null;
-}*/
-
 //elfelejtett jelszó kérés mentése
 async function elfelejtettJelszoKeresLetrehoz(user_email) {
   const query = `
