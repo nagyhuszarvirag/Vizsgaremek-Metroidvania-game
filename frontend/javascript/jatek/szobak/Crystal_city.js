@@ -52,6 +52,10 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     const lavaProtectAbilityObjectLayer = layerKereses("Lava_protect_ability_object");
     const ladderLayer = layerKereses("Ladder");
 
+    const lavaProtectionUnlocked = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-heart-lava-protection"] == true;
+    const crystalCityKeyUnlocked = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-city-key"] === true;
+    const crystalHeartGateOpen = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-heart-open_lock"] === true;
+
     let xpos = backFromIaconLayer.objects[0].x;
     let ypos = backFromIaconLayer.objects[0].y;
 
@@ -74,12 +78,15 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         k.sprite("Crystal_City"),
     ]);
 
-    const gateSprite = k.add([
-        k.pos(0, 0),
-        k.sprite("Crystal_City_Gate"),
-    ]);
+    let gateSprite = null;
 
-    const lavaProtectionUnlocked = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-heart-lava-protection"] == true;
+    if (!crystalHeartGateOpen) {
+        gateSprite = k.add([
+            k.pos(0, 0),
+            k.sprite("Crystal_City_Gate"),
+        ]);
+    }
+
 
     let lavaProtectionAbilityLayer = null;
     if (!lavaProtectionUnlocked) {
@@ -132,7 +139,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     }
 
     let unlockableGate = null;
-    if (unlockableGateLayer && unlockableGateLayer.objects && unlockableGateLayer.objects[0]) {
+    if (!crystalHeartGateOpen && unlockableGateLayer && unlockableGateLayer.objects && unlockableGateLayer.objects[0]) {
         unlockableGate = k.add([
             k.pos(
                 unlockableGateLayer.objects[0].x,
@@ -150,7 +157,8 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
     }
 
     let solidGate = null;
-    if (solidGateLayer && solidGateLayer.objects && solidGateLayer.objects[0]) {
+
+    if (!crystalHeartGateOpen && solidGateLayer && solidGateLayer.objects && solidGateLayer.objects[0]) {
         solidGate = k.add([
             k.pos(
                 solidGateLayer.objects[0].x,
@@ -166,6 +174,45 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             "solid_gate",
         ]);
     }
+
+    let aktivGate = false;
+
+    player.onCollideUpdate("unlockable_gate", () => {
+        aktivGate = true;
+    });
+
+    player.onCollideEnd("unlockable_gate", () => {
+        aktivGate = false;
+    });
+
+    k.onKeyPress((key) => {
+        if (key !== settings.controls.interact) return;
+        if (!aktivGate) return;
+
+        const vanKulcs =
+            aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-city-key"] === true;
+
+        if (!vanKulcs) {
+            console.log("Nincs meg a Crystal City kapu kulcsa!");
+            return;
+        }
+
+        console.log("Crystal City kapu kinyitva!");
+
+        aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-open_lock"] = true;
+
+        if (solidGate && solidGate.exists()) {
+            solidGate.destroy();
+        }
+
+        if (gateSprite && gateSprite.exists()) {
+            gateSprite.destroy();
+        }
+
+        if (unlockableGate && unlockableGate.exists()) {
+            unlockableGate.destroy();
+        }
+    });
 
     if (
         !lavaProtectionUnlocked &&
@@ -200,7 +247,7 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
     if (damagingCrystalsLayer && damagingCrystalsLayer.objects) {
         damagingCrystalsLayer.objects.forEach((obj, index) => {
-            // Ha Tiled-ben polygon / háromszög objektum
+            //ha Tiled-ben polygon / háromszög objektum
             if (obj.polygon && obj.polygon.length > 0) {
                 const pontok = obj.polygon.map((p) => k.vec2(p.x, p.y));
 

@@ -545,6 +545,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
   k.onUpdate(() => {
     //Optimalizált mozgás (Remélem ez így jó lesz c:)
+    if (player.dead) return;
 
     if (
       player.tutorial &&

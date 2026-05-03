@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS mentes (
                 'lighthouse-on', false,
                 'lighthouse-sea-of-flowers-cutscenes', false,
                 'crystal-heart-open_lock', false,
+                'crystal-city-key', false,
                 'crystal-heart-lava-protection', false,
                 'bonus-hp-1', false,
                 'bonus-hp-2', false,

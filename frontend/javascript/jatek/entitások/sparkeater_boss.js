@@ -1,5 +1,6 @@
 import { sebzesAdas } from "./hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { unlockUzenet } from "./unlock_uzenet_UI.js";
 
 export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     const boss = k.add([
@@ -14,6 +15,15 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         "boss",
     ]);
 
+    const obstacleSensor = k.add([
+        k.pos(x, y),
+        k.rect(12, 35),
+        k.area(),
+        k.opacity(0),
+        "sparkeater_obstacle_sensor",
+    ]);
+
+
     boss.hp = 30;
     boss.speed = 75;
     boss.dead = false;
@@ -24,6 +34,8 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     boss.screamCooldown = 0;
     boss.hitCooldown = false;
     boss.fightActive = false;
+    boss.stuckTimer = 0;
+    boss.hopCooldown = 0;
 
     boss.play("idle");
 
@@ -70,9 +82,9 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     }
 
     function bossAnim(anim) {
-        if (boss.curAnim() !== anim) {
-            boss.play(anim);
-        }
+        if (!boss.exists()) return;
+        if (boss.curAnim() === anim) return;
+        boss.play(anim);
     }
 
     function normalAttack() {
@@ -131,26 +143,66 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
             if (!boss.exists() || boss.dead || !boss.fightActive) return;
 
             const irany = player.pos.x > boss.pos.x ? 1 : -1;
+            boss.flipX = irany < 0;
 
-            const grappleW = 110;
-            const grappleH = 40;
+            const startX = boss.pos.x + irany * 35;
+            const startY = boss.pos.y - 8;
 
-            const grappleX = irany === 1
-                ? boss.pos.x + 25
-                : boss.pos.x - 25 - grappleW;
+            const targetX = player.pos.x;
+            const targetY = player.pos.y - 8;
 
-            const grappleY = boss.pos.y - grappleH / 2;
+            const dx = targetX - startX;
+            const dy = targetY - startY;
+
+            const tav = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx);
+
+            const chainPieces = [];
+            const pieceDistance = 18;
+            const pieceCount = Math.max(1, Math.floor(tav / pieceDistance));
+
+            for (let i = 0; i < pieceCount; i++) {
+                const px = startX + Math.cos(angle) * pieceDistance * i;
+                const py = startY + Math.sin(angle) * pieceDistance * i;
+
+                const chain = k.add([
+                    k.pos(px, py),
+                    k.sprite("sparkeater_chain"),
+                    k.anchor("center"),
+                    k.rotate(angle * 180 / Math.PI),
+                    k.opacity(1),
+                    k.z(20),
+                ]);
+
+                chain.play("active");
+                chainPieces.push(chain);
+            }
+
+            const head = k.add([
+                k.pos(targetX, targetY),
+                k.sprite("sparkeater_chain_head"),
+                k.anchor("center"),
+                k.rotate(angle * 180 / Math.PI),
+                k.opacity(1),
+                k.z(21),
+            ]);
+
+            head.play("active");
 
             const grappleHitbox = k.add([
-                k.pos(grappleX, grappleY),
-                k.rect(grappleW, grappleH),
+                k.pos(targetX - 22, targetY - 22),
+                k.rect(44, 44),
                 k.area(),
-                k.opacity(0.4), // teszthez látható
-                k.color(0, 150, 255),
+                k.opacity(0),
                 "sparkeater_grapple_hitbox",
             ]);
 
-            k.wait(0.18, () => {
+            k.wait(0.22, () => {
+                chainPieces.forEach((piece) => {
+                    if (piece.exists()) piece.destroy();
+                });
+
+                if (head.exists()) head.destroy();
                 if (grappleHitbox.exists()) grappleHitbox.destroy();
             });
         });
@@ -243,6 +295,12 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
                 mentett.bosses.Sparkeater = true;
                 mentett.ability_unlocked.dash = true;
                 mentett.world_interactions["crystal-city-key"] = true;
+
+                unlockUzenet(
+                    k,
+                    "Új képességek megszerezve!",
+                    "Dash: SHIFT | Crystal City kulcs megszerezve"
+                );
             }
 
             k.wait(0.8, () => {
@@ -279,6 +337,12 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
                 mentett.bosses.Sparkeater = true;
                 mentett.ability_unlocked.dash = true;
                 mentett.world_interactions["crystal-city-key"] = true;
+
+                unlockUzenet(
+                    k,
+                    "Új képességek megszerezve!",
+                    "Dash: SHIFT | Crystal City kulcs megszerezve"
+                );
             }
 
             k.wait(0.8, () => {
@@ -287,8 +351,31 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         }
     });
 
-    boss.onUpdate(() => {
+    obstacleSensor.onCollideUpdate("Solid", () => {
         if (boss.dead) return;
+        if (!boss.fightActive) return;
+        if (boss.attacking) return;
+        if (boss.hopCooldown > 0) return;
+        if (!boss.isGrounded()) return;
+
+        console.log("Sparkeater akadályt érzékel, ugrik");
+
+        boss.jump(260);
+        boss.hopCooldown = 0.9;
+    });
+
+    boss.onUpdate(() => {
+        //if (boss.dead) return;
+
+        if (boss.dead) {
+            if (obstacleSensor.exists()) obstacleSensor.destroy();
+            return;
+        }
+
+        const sensorIrany = player.pos.x > boss.pos.x ? 1 : -1;
+
+        obstacleSensor.pos.x = boss.pos.x + sensorIrany * 35;
+        obstacleSensor.pos.y = boss.pos.y + 20;
 
         boss.fightActive = playerArenabanVan();
 
@@ -330,8 +417,11 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
 
             if (t.dist > 45) {
                 const iranyX = t.dx > 0 ? 1 : -1;
+
                 boss.move(iranyX * boss.speed, 0);
                 bossAnim("walk");
+
+                return;
             } else {
                 bossAnim("idle");
             }

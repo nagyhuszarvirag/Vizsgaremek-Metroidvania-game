@@ -362,6 +362,30 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
+  k.loadSprite(
+    "sparkeater_chain",
+    "../../images/other/bullet_chain_for_pull_in_for_sparkeater.png",
+    {
+      sliceX: 3,
+      sliceY: 1,
+      anims: {
+        active: { from: 0, to: 2, loop: true, speed: 10 },
+      },
+    }
+  );
+
+  k.loadSprite(
+    "sparkeater_chain_head",
+    "../../images/other/bullet_head_for_pull_in_for_sparkeater.png",
+    {
+      sliceX: 4,
+      sliceY: 1,
+      anims: {
+        active: { from: 0, to: 3, loop: true, speed: 10 },
+      },
+    }
+  );
+
   k.loadSprite("Tarn", "../../images/sprites/enemies/Tarn.png", {
     sliceX: 8,
     sliceY: 7,

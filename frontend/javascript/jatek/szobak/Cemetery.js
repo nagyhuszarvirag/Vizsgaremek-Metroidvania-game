@@ -13,6 +13,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { aktivMentesAdatok, cutscene_kezeles } from "../kaboomBetolto.js";
+import { unlockUzenet } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -239,6 +240,12 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
         }
 
         mentett.ability_unlocked.slash_attack = true;
+
+        unlockUzenet(
+          k,
+          "Slash attack feloldva!",
+          "Használat: Q"
+        );
 
         szoba_zene_beallitas("after the flower cutscene cemetery");
       });
