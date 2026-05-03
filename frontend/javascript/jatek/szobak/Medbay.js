@@ -60,13 +60,11 @@ export async function Medbay(k, szoba_belepesi_pont = null) {
   MentesCollider(k, savepointObj, savepointNev);
 
   let kellerachet = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Ratchet;
-  
-  //Itt a medbay asztalt be kell tenni
 
-   /*k.add([ 
+   k.add([ 
         k.pos(0, 0),
-        k.sprite('Kezdoszoba_table')
-    ]);*/
+        k.sprite('Medbay_bg'),
+    ]);
 
     if(kellerachet){
       NPCCollider(k, szoba_layerek[5].objects, "Ratchet");

@@ -1,6 +1,7 @@
 import { sebzesAdas } from "./hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { unlockUzenet } from "./unlock_uzenet_UI.js";
+import { soundeffectLetrehoz, soundeffectTorol} from "../szobak/Cemetery.js";
 
 export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     const boss = k.add([
@@ -14,15 +15,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         "sparkeater",
         "boss",
     ]);
-
-    const obstacleSensor = k.add([
-        k.pos(x, y),
-        k.rect(12, 35),
-        k.area(),
-        k.opacity(0),
-        "sparkeater_obstacle_sensor",
-    ]);
-
 
     boss.hp = 30;
     boss.speed = 75;
@@ -222,6 +214,12 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
 
         console.log("Sparkeater scream: következő támadás dupla sebzés");
 
+        soundeffectLetrehoz("Sparkeater_scream", false);
+
+        document.getElementById("Sparkeater_scream").addEventListener("ended", () => {
+            soundeffectTorol("Sparkeater_scream");
+        });
+
         bossAnim("scream");
 
         k.wait(0.9, () => {
@@ -351,31 +349,12 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         }
     });
 
-    obstacleSensor.onCollideUpdate("Solid", () => {
-        if (boss.dead) return;
-        if (!boss.fightActive) return;
-        if (boss.attacking) return;
-        if (boss.hopCooldown > 0) return;
-        if (!boss.isGrounded()) return;
-
-        console.log("Sparkeater akadályt érzékel, ugrik");
-
-        boss.jump(260);
-        boss.hopCooldown = 0.9;
-    });
 
     boss.onUpdate(() => {
-        //if (boss.dead) return;
 
         if (boss.dead) {
-            if (obstacleSensor.exists()) obstacleSensor.destroy();
             return;
         }
-
-        const sensorIrany = player.pos.x > boss.pos.x ? 1 : -1;
-
-        obstacleSensor.pos.x = boss.pos.x + sensorIrany * 35;
-        obstacleSensor.pos.y = boss.pos.y + 20;
 
         boss.fightActive = playerArenabanVan();
 

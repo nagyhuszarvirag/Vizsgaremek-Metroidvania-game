@@ -334,7 +334,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           player.flipX ? player.pos.x + 18 : player.pos.x - 38,
           player.pos.y - 10
         ),
-        k.rect(40, 25),
+        k.rect(40, 35),
         k.area(),
         k.opacity(0),
         "player_attack_hitbox",

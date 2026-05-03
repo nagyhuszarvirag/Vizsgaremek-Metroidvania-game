@@ -15,7 +15,6 @@ import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
-    console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
 
@@ -72,6 +71,11 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
                 break;
         }
     }
+
+    k.add([
+        k.pos(0, 0),
+        k.sprite("Crystal_City_bg"),
+    ]);
 
     const map = k.add([
         k.pos(0, 0),

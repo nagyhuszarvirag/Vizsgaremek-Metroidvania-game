@@ -67,6 +67,20 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     }
   }
 
+  k.add([
+        k.pos(0, 0),
+        k.sprite("The_cemetery_bg_lighthouse_on"),
+    ]);
+
+  const The_cemetery_bg_lighthouse_off = k.add([
+        k.pos(0, 0),
+        k.sprite("The_cemetery_bg_lighthouse_off"),
+  ]);
+
+  if(lighthouseOn) {
+    The_cemetery_bg_lighthouse_off.destroy();
+  }
+
   const map = k.add([
     k.pos(0, 0),
     k.sprite("The_cemetery"),
@@ -77,6 +91,11 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   }
 
   const player = await jatekos_betolt(k, xpos, ypos);
+
+  k.add([
+        k.pos(0, 0),
+        k.sprite("The_cemetery_bg_flowers_front_layer"),
+    ]);
 
   Kamera_kezelo(k, xpos, ypos, player, mapW, mapH);
 
@@ -210,6 +229,8 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
 
+      The_cemetery_bg_lighthouse_off.destroy();
+
       soundeffectTorol("Sound_effekt_layer_1");
       soundeffectTorol("Sound_effekt_layer_2");
 
@@ -258,13 +279,13 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   esokezelo.start();
 }
 
-function soundeffectLetrehoz(src) {
+export function soundeffectLetrehoz(src, loop = true) {
   if (document.getElementById(src)) return;
 
   const soundeffekt = document.createElement("audio");
 
   soundeffekt.src = "../audio/" + src + ".mp3";
-  soundeffekt.loop = true;
+  soundeffekt.loop = loop;
   soundeffekt.preload = "auto";
   soundeffekt.id = src;
   soundeffekt.volume = settings.volume * 0.5;
@@ -277,7 +298,7 @@ function soundeffectLetrehoz(src) {
   });
 }
 
-function soundeffectTorol(src) {
+export function soundeffectTorol(src) {
   const soundeffekt = document.getElementById(src);
 
   if (!soundeffekt) return;

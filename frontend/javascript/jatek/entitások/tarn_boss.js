@@ -147,8 +147,8 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     k.wait(0.35, () => {
       if (!boss.exists() || boss.dead || boss.resetting || !boss.fightActive) return;
 
-      const targetX = player.pos.x;
-      const targetY = player.pos.y;
+      const targetX = boss.pos.x;
+      const targetY = boss.pos.y;
 
       const zone = k.add([
         k.pos(targetX, targetY + 20),
