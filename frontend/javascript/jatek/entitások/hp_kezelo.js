@@ -117,18 +117,27 @@ export function maxHpNovelese(player, mennyiseg) {
 }
 
 export function playerHalal(k, player) {
-  if (player.dead) return; // duplahívás védelem
+  if (player.dead) return;
   player.dead = true;
 
   console.log("A játékos meghalt");
 
   localStorage.removeItem("player_current_hp");
-  
-  if (player.exists()) {
-    player.destroy();
+
+  player.tamad = false;
+
+  if (player.vel) {
+    player.vel.x = 0;
+    player.vel.y = 0;
   }
 
-  k.wait(1, () => {
+  player.play("die");
+
+  k.wait(1.2, () => {
+    if (player.exists()) {
+      player.destroy();
+    }
+
     const savepoint =
       localStorage.getItem("last_loaded_savepoint") || "kezdomap_1";
 

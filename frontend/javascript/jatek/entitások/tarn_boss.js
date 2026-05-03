@@ -1,5 +1,7 @@
 import { sebzesAdas } from "./hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { settings } from "../../options.js";
+import { unlockUzenet } from "./unlock_uzenet_UI.js";
 
 export function TarnLetrehozas(k, x, y, player, arenaObj) {
   const boss = k.add([
@@ -69,7 +71,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     boss.resetting = true;
     boss.attacking = false;
 
-    // jobb oldalra visszarakás
+    //jobb oldalra visszarakás
     boss.pos.x = arenaObj.x + arenaObj.width - 100;
     boss.pos.y = arenaObj.y + arenaObj.height - 140;
 
@@ -80,7 +82,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
       boss.vel.y = 0;
     }
 
-    // kis késleltetés után felugrás a felső rész felé
+    //kis késleltetés után felugrás a felső rész felé
     k.wait(0.2, () => {
       if (!boss.exists() || boss.dead) return;
 
@@ -111,13 +113,19 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
       if (!boss.exists() || boss.dead || boss.resetting || !boss.fightActive) return;
 
       const bullet = k.add([
-        k.pos(boss.pos.x + irany * 35, boss.pos.y - 10),
-        k.rect(18, 8),
-        k.color(255, 60, 60),
-        k.area(),
+        k.pos(boss.pos.x + irany * 45, boss.pos.y - 10),
+        k.sprite("tarn_bullet_sprite"),
+        k.anchor("center"),
+        k.area({
+          shape: new k.Rect(k.vec2(-12, -8), 24, 16),
+        }),
         k.move(k.vec2(irany, 0), 260),
         "tarn_bullet",
       ]);
+
+      bullet.flipX = irany > 0;
+
+      bullet.play("fly");
 
       k.wait(2, () => {
         if (bullet.exists()) bullet.destroy();
@@ -139,19 +147,32 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     k.wait(0.35, () => {
       if (!boss.exists() || boss.dead || boss.resetting || !boss.fightActive) return;
 
-      const zoneW = 130;
-      const zoneH = 45;
+      const targetX = player.pos.x;
+      const targetY = player.pos.y;
 
       const zone = k.add([
-        k.pos(boss.pos.x - zoneW / 2, boss.pos.y + 35),
-        k.rect(zoneW, zoneH),
-        k.color(255, 120, 0),
-        k.opacity(0.35),
-        k.area(),
+        k.pos(targetX, targetY + 20),
+        k.sprite("tarn_stomp_sprite"),
+        k.anchor("center"),
+        k.scale(2),
+
+        k.area({
+          shape: new k.Rect(
+            k.vec2(0, -5),
+            40,
+            40
+          ),
+        }),
+
+        k.opacity(1),
+        k.z(20),
         "tarn_stomp_zone",
       ]);
 
-      k.wait(0.18, () => {
+      zone.flipX = boss.flipX;
+      zone.play("active");
+
+      k.wait(0.55, () => {
         if (zone.exists()) zone.destroy();
       });
     });
@@ -169,14 +190,35 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     boss.jumpCooldown = 4.5;
 
     const irany = player.pos.x > boss.pos.x ? 1 : -1;
+    boss.flipX = irany < 0;
 
     TarnAnimation(boss, "jump");
 
-    boss.jump(430);
-    boss.move(irany * 180, 0);
+    if (boss.vel) {
+      boss.vel.x = 0;
+    }
 
-    k.wait(0.9, () => {
+    boss.jump(480);
+
+    const jumpMoveUpdate = k.onUpdate(() => {
+      if (!boss.exists() || boss.dead || boss.resetting) {
+        jumpMoveUpdate.cancel();
+        return;
+      }
+
+      boss.move(irany * 170, 0);
+      arenaClamp();
+
+      if (boss.isGrounded()) {
+        jumpMoveUpdate.cancel();
+        boss.attacking = false;
+      }
+    });
+
+    k.wait(1.2, () => {
+      if (jumpMoveUpdate) jumpMoveUpdate.cancel();
       if (!boss.exists() || boss.dead) return;
+
       boss.attacking = false;
     });
   }
@@ -197,8 +239,6 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     sebzesAdas(k, playerObj, 2);
 
-    if (zone.exists()) zone.destroy();
-
     k.wait(0.8, () => {
       boss.hitCooldown = false;
     });
@@ -216,6 +256,9 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     if (boss.hp <= 0) {
       boss.dead = true;
+      boss.attacking = false;
+
+      TarnAnimation(boss, "die");
 
       const mentett = aktivMentesAdatok?.data?.mentett_adatok;
 
@@ -225,10 +268,15 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
         mentett.bosses.Tarn = true;
         mentett.ability_unlocked.double_jump = true;
+
+        unlockUzenet(
+          k,
+          "Double jump feloldva!",
+          `${settings.controls.jump.toUpperCase()} kétszer - dupla ugrás`
+        );
       }
 
-      k.wait(0.5, () => {
-        TarnAnimation(boss, "die");
+      k.wait(0.9, () => {
         if (boss.exists()) boss.destroy();
       });
     }
@@ -251,6 +299,9 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     if (boss.hp <= 0) {
       boss.dead = true;
+      boss.attacking = false;
+
+      TarnAnimation(boss, "die");
 
       const mentett = aktivMentesAdatok?.data?.mentett_adatok;
 
@@ -260,10 +311,15 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
         mentett.bosses.Tarn = true;
         mentett.ability_unlocked.double_jump = true;
+
+        unlockUzenet(
+          k,
+          "Double jump feloldva!",
+          `${settings.controls.jump.toUpperCase()} kétszer - dupla ugrás`
+        );
       }
 
-      k.wait(0.5, () => {
-        TarnAnimation(boss, "die");
+      k.wait(0.9, () => {
         if (boss.exists()) boss.destroy();
       });
     }
@@ -295,7 +351,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
 
     boss.flipX = t.dx < 0;
 
-    if (boss.stompCooldown <= 0 && t.dist <= 110 && t.absY <= 70) {
+    if (boss.stompCooldown <= 0 && t.dist <= 280) {
       TarnAnimation(boss, "stomp");
       stompAttack();
       return;
@@ -317,6 +373,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
       TarnAnimation(boss, "walk");
       const iranyX = t.dx > 0 ? 1 : -1;
       boss.move(iranyX * boss.speed, 0);
+      return;
     }
 
     TarnAnimation(boss, "idle");
@@ -326,6 +383,9 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
   return boss;
 }
 
-async function TarnAnimation(boss, animation) {
+function TarnAnimation(boss, animation) {
+  if (!boss.exists()) return;
+  if (boss.curAnim() === animation) return;
+
   boss.play(animation);
 }

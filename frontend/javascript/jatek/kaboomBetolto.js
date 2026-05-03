@@ -122,7 +122,7 @@ export async function KaboomBetolto(mentes_id) {
     await cutscene_kezeles(k, "intro", "Kezdoszoba");
   });
 
-  k.scene("end_game",  () => {
+  k.scene("end_game", () => {
     //Ide lehet berakni credits-et ha van idő
     kilep_jatekbol(k);
   });
@@ -281,7 +281,7 @@ export async function KaboomBetolto(mentes_id) {
       walk: { from: 72, to: 83, loop: true },
       run: { from: 24, to: 31, loop: true },
       jump: { from: 36, to: 38, speed: 2.5 },
-      die: { from: 12, to: 17, loop: true }, 
+      die: { from: 12, to: 17, speed: 6 },
       attack: { from: 60, to: 67, speed: 16 },
       slash_attack: { from: 84, to: 91, speed: 16 },
       hurt: { from: 48, to: 51, speed: 6 },
@@ -289,12 +289,12 @@ export async function KaboomBetolto(mentes_id) {
   });
 
   k.loadSprite("player_slash", "../../images/other/huge_attack_player.png", {
-  sliceX: 8,
-  sliceY: 1,
-  anims: {
-    fly: { from: 0, to: 7, loop: true, speed: 14 },
-  },
-});
+    sliceX: 8,
+    sliceY: 1,
+    anims: {
+      fly: { from: 0, to: 7, loop: true, speed: 14 },
+    },
+  });
 
   k.loadSprite("Prowl", "../../images/sprites/NPC/Prowl.png", {
     sliceX: 8,
@@ -312,7 +312,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Swindle", "../../images/sprites/NPC/Swindle.png", { 
+  k.loadSprite("Swindle", "../../images/sprites/NPC/Swindle.png", {
     sliceX: 8,
     sliceY: 1,
     anims: {
@@ -320,7 +320,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Chromedome", "../../images/sprites/NPC/Chromedome.png", { 
+  k.loadSprite("Chromedome", "../../images/sprites/NPC/Chromedome.png", {
     sliceX: 8,
     sliceY: 1,
     anims: {
@@ -328,7 +328,7 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
-  k.loadSprite("Tailgate", "../../images/sprites/NPC/Tailgate.png", { 
+  k.loadSprite("Tailgate", "../../images/sprites/NPC/Tailgate.png", {
     sliceX: 8,
     sliceY: 1,
     anims: {
@@ -349,18 +349,42 @@ export async function KaboomBetolto(mentes_id) {
   });
 
   k.loadSprite("Sparkeater", "../../images/sprites/enemies/Sparkeater.png", {
-    sliceX: 12,
-    sliceY: 8,
+    sliceX: 8,
+    sliceY: 7,
     anims: {
-      idle: { from: 0, to: 3, loop: true },
-      walk: { from: 12, to: 15, loop: true },
-      attack: { from: 24, to: 27, speed: 8 },
-      grapple: { from: 36, to: 39, speed: 8 },
-      scream: { from: 48, to: 51, speed: 8 },
-      hurt: { from: 60, to: 63, speed: 8 },
-      die: { from: 72, to: 75, speed: 6 },
+      idle: { from: 0, to: 2, loop: true },
+      hurt: { from: 8, to: 10, speed: 8 },
+      die: { from: 16, to: 20, speed: 6 },
+      walk: { from: 24, to: 30, loop: true },
+      attack: { from: 32, to: 39, speed: 8 },
+      grapple: { from: 40, to: 46, speed: 7 },
+      scream: { from: 48, to: 52, speed: 5 },
     },
   });
+
+  k.loadSprite(
+    "sparkeater_chain",
+    "../../images/other/bullet_chain_for_pull_in_for_sparkeater.png",
+    {
+      sliceX: 3,
+      sliceY: 1,
+      anims: {
+        active: { from: 0, to: 2, loop: true, speed: 10 },
+      },
+    }
+  );
+
+  k.loadSprite(
+    "sparkeater_chain_head",
+    "../../images/other/bullet_head_for_pull_in_for_sparkeater.png",
+    {
+      sliceX: 4,
+      sliceY: 1,
+      anims: {
+        active: { from: 0, to: 3, loop: true, speed: 10 },
+      },
+    }
+  );
 
   k.loadSprite("Tarn", "../../images/sprites/enemies/Tarn.png", {
     sliceX: 8,
@@ -376,12 +400,28 @@ export async function KaboomBetolto(mentes_id) {
     },
   });
 
+  k.loadSprite("tarn_bullet_sprite", "../../images/other/bullet_for_tarn.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      fly: { from: 0, to: 3, loop: true, speed: 12 },
+    },
+  });
+
+  k.loadSprite("tarn_stomp_sprite", "../../images/other/stomp_for_tarn.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      active: { from: 0, to: 3, loop: true, speed: 12 },
+    },
+  });
+
   k.loadSprite("blue_hearts", "../../images/UI/Blue_hearts.png", {
     sliceX: 3,
     sliceY: 1,
   });
 
-  k.setGravity(GRAVITY); 
+  k.setGravity(GRAVITY);
 
   console.log("Aktív mentésünk: ", aktivMentesAdatok);
 
