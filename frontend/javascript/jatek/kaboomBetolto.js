@@ -349,16 +349,16 @@ export async function KaboomBetolto(mentes_id) {
   });
 
   k.loadSprite("Sparkeater", "../../images/sprites/enemies/Sparkeater.png", {
-    sliceX: 12,
-    sliceY: 8,
+    sliceX: 8,
+    sliceY: 7,
     anims: {
-      idle: { from: 0, to: 3, loop: true },
-      walk: { from: 12, to: 15, loop: true },
-      attack: { from: 24, to: 27, speed: 8 },
-      grapple: { from: 36, to: 39, speed: 8 },
-      scream: { from: 48, to: 51, speed: 8 },
-      hurt: { from: 60, to: 63, speed: 8 },
-      die: { from: 72, to: 75, speed: 6 },
+      idle: { from: 0, to: 2, loop: true },
+      hurt: { from: 8, to: 10, speed: 8 },
+      die: { from: 16, to: 20, speed: 6 },
+      walk: { from: 24, to: 30, loop: true },
+      attack: { from: 32, to: 39, speed: 8 },
+      grapple: { from: 40, to: 46, speed: 7 },
+      scream: { from: 48, to: 52, speed: 5 },
     },
   });
 
