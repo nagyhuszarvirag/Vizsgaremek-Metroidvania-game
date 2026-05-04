@@ -12,10 +12,9 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { aktivMentesAdatok, cutscene_kezeles } from "../kaboomBetolto.js";
 import { settings } from "../../options.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function End_map(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
-
   EffektTorles();
 
   szoba_zene_beallitas("End_room");
@@ -118,8 +117,8 @@ export async function End_map(k, szoba_belepesi_pont = null) {
             const achi_en_data=achi_en ? JSON.parse(achi_en) : {};
             const achi_hu_data=achi_hu ? JSON.parse(achi_hu) : {};
 
-            achi_en.data[9].unlocked=1;
-            achi_hu.data[9].unlocked=1;
+            achi_en_data.data[9].unlocked=1;
+            achi_hu_data.data[9].unlocked=1;
 
             const updated_achi_en_data = JSON.stringify(achi_en_data);
             const updated_achi_hu_data = JSON.stringify(achi_hu_data);
@@ -146,4 +145,6 @@ export async function End_map(k, szoba_belepesi_pont = null) {
     "Back_From_End_Map",
     "atjaro_mitteous"
   );
+
+  Szobanev(k,"lost_light");
 }

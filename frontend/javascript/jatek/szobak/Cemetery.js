@@ -9,14 +9,13 @@ import {
   szoba_zene_beallitas
 } from "./Szobakezelo.js";
 import { fecthData } from "../../index.js";
+import { settings } from "../../options.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
-import { settings } from "../../options.js";
 import { aktivMentesAdatok, cutscene_kezeles } from "../kaboomBetolto.js";
-import { unlockUzenet } from "../entitások/unlock_uzenet_UI.js";
+import { unlockUzenet, Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
@@ -170,7 +169,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     if (cutsceeneFut) return;
 
     aktiv_esemeny = "cemetery_cutscene_trigger";
-    console.log("Cemetery cutscene triggerben vagy");
 
     const world = aktivMentesAdatok?.world_interactions;
     const lighthouseOn = world?.["lighthouse-on"] === true;
@@ -197,7 +195,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   player.onCollideUpdate("lighthouse_trigger", () => {
     aktiv_esemeny = "lighthouse_trigger";
-    console.log("Világítótorony triggerben vagy");
   });
 
   player.onCollideEnd("lighthouse_trigger", () => {
@@ -210,11 +207,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   k.onKeyPress((key) => {
     if (key !== settings.controls.interact) return;
 
-    console.log("Interact lenyomva:", key);
-    console.log("Aktív esemény:", aktiv_esemeny);
-
-    console.log("World:", aktivMentesAdatok.data.mentett_adatok.world_interactions);
-
     if (!aktivMentesAdatok.data.mentett_adatok.world_interactions) {
       console.log("Nincs world_interactions!");
       return;
@@ -225,7 +217,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscenes"] === true;
 
     if (aktiv_esemeny === "lighthouse_trigger" && !lighthouseOn) {
-      console.log("lighthouse");
 
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
 
@@ -242,7 +233,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] === true &&
       !flowersCutsceneSeen
     ) {
-      console.log("cemetery");
 
       cutsceeneFut = true;
 
@@ -251,7 +241,7 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscene"] = true;
 
-      cutscene_kezeles(k, "Transformers_sea_of_flowers", null, () => {
+      cutscene_kezeles(k, "Transformers_sea_of_flowers", null, async () => {
         cutsceeneFut = false;
 
         const mentett = aktivMentesAdatok.data.mentett_adatok;
@@ -262,10 +252,15 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
         mentett.ability_unlocked.slash_attack = true;
 
+        const tutorial_data = await fecthData(
+        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+          settings.nyelv +
+          "/tutorial.json",);
+
         unlockUzenet(
           k,
-          "Slash attack feloldva!",
-          "Használat: Q"
+          "Slash attack "+tutorial_data.data.feloldva+"!",
+          tutorial_data.data.hasznal+": Q"
         );
 
         szoba_zene_beallitas("after the flower cutscene cemetery");
@@ -277,6 +272,8 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   const esokezelo = Eso();
   window.esokezelo = esokezelo;
   esokezelo.start();
+
+  Szobanev(k,"temeto");
 }
 
 export function soundeffectLetrehoz(src, loop = true) {
@@ -302,8 +299,6 @@ export function soundeffectTorol(src) {
   const soundeffekt = document.getElementById(src);
 
   if (!soundeffekt) return;
-
-  console.log("Soundeffekt törlése:", src);
 
   soundeffekt.pause();
   soundeffekt.currentTime = 0;

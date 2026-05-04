@@ -16,15 +16,17 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
-    console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
 
     szoba_zene_beallitas("Iacon_room");
 
     setBackgroundColor(k, "#000000");
+
+    k.add([k.pos(0, 0), k.sprite("Iacon_bg")]);
 
     const mapW = 32 * 60;
     const mapH = 32 * 50;
@@ -157,8 +159,6 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
             if (collapseTriggered1) return;
             collapseTriggered1 = true;
 
-            console.log("Beomló talaj 1 aktiválva");
-
             if (aktivMentesAdatok) {
                 aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground1"] = true;
             }
@@ -187,8 +187,6 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         k.onCollide("player", "collapsing_ground_trigger_2", () => {
             if (collapseTriggered2) return;
             collapseTriggered2 = true;
-
-            console.log("Beomló talaj 2 aktiválva");
 
             if (aktivMentesAdatok) {
                 aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground2"] = true;
@@ -353,4 +351,6 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         "Falling_down_from_Iacon",
         "atjaro_leesos_hely"
     );
+
+    Szobanev(k,"iacon");
 }

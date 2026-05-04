@@ -2,6 +2,8 @@ import { sebzesAdas } from "./hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { unlockUzenet } from "./unlock_uzenet_UI.js";
 import { soundeffectLetrehoz, soundeffectTorol} from "../szobak/Cemetery.js";
+import { fecthData } from "../../index.js";
+import { settings } from "../../options.js";
 
 export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     const boss = k.add([
@@ -212,8 +214,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         boss.screamCooldown = 6.0;
         boss.damageBoosted = true;
 
-        console.log("Sparkeater scream: következő támadás dupla sebzés");
-
         soundeffectLetrehoz("Sparkeater_scream", false);
 
         document.getElementById("Sparkeater_scream").addEventListener("ended", () => {
@@ -230,7 +230,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     }
 
     k.onCollide("player", "sparkeater_attack_hitbox", (playerObj, hitbox) => {
-        console.log("ATTACK HITBOX SEBZETT", hitbox.pos, playerObj.pos);
 
         if (boss.dead) return;
         if (!boss.fightActive) return;
@@ -248,7 +247,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     });
 
     k.onCollide("player", "sparkeater_grapple_hitbox", (playerObj, hitbox) => {
-        console.log("GRAPPLE HITBOX SEBZETT", hitbox.pos, playerObj.pos);
 
         if (boss.dead) return;
         if (!boss.fightActive) return;
@@ -268,7 +266,7 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         });
     });
 
-    k.onCollide("player_attack_hitbox", "sparkeater", (hitbox) => {
+    k.onCollide("player_attack_hitbox", "sparkeater", async (hitbox) => {
         if (boss.dead) return;
 
         boss.hp -= 1;
@@ -294,10 +292,15 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
                 mentett.ability_unlocked.dash = true;
                 mentett.world_interactions["crystal-city-key"] = true;
 
+                const tutorial_data = await fecthData(
+                        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+                          settings.nyelv +
+                          "/tutorial.json",);
+
                 unlockUzenet(
                     k,
-                    "Új képességek megszerezve!",
-                    "Dash: SHIFT | Crystal City kulcs megszerezve"
+                    tutorial_data.data.uj_kepesseg+"!",
+                    "Dash: SHIFT | Crystal City "+tutorial_data.data.kulcs
                 );
             }
 
@@ -307,7 +310,7 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         }
     });
 
-    k.onCollide("player_slash_hitbox", "sparkeater", (slash) => {
+    k.onCollide("player_slash_hitbox", "sparkeater", async (slash) => {
         if (boss.dead) return;
         if (slash.alreadyHit) return;
 
@@ -336,10 +339,15 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
                 mentett.ability_unlocked.dash = true;
                 mentett.world_interactions["crystal-city-key"] = true;
 
+                const tutorial_data = await fecthData(
+                        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+                          settings.nyelv +
+                          "/tutorial.json",);
+
                 unlockUzenet(
                     k,
-                    "Új képességek megszerezve!",
-                    "Dash: SHIFT | Crystal City kulcs megszerezve"
+                    tutorial_data.data.uj_kepesseg+"!",
+                    "Dash: SHIFT | Crystal City "+tutorial_data.data.kulcs
                 );
             }
 

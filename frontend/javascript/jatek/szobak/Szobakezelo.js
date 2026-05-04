@@ -1,6 +1,6 @@
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { fecthData } from "../../index.js";
-import { settings } from "../../options.js";
+import { mentes } from "../entitások/unlock_uzenet_UI.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -144,7 +144,6 @@ export function SzobavaltozatoKezelo(
 
   //egyedi tag
   k.onCollide("player", atjaroTag, async () => {
-    //console.log("Átjáró aktiválva:", atjaroTag);
     const container = document.querySelector("body");
     container.className = ''
     const kodkezelo = await Kod();
@@ -164,7 +163,6 @@ export function MentesCollider(k, colliderObj, savepointNev) {
   ]);
 
   mentesPont.savepointNev = savepointNev;
-  console.log("Mentéspont objektum: ", mentesPont);
 
   return mentesPont;
 }
@@ -194,12 +192,11 @@ export async function MentesLetrehozo(user_id, mentes_id, savepointNev) { //Ezt 
   }
 }
 
-export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) {
+export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok, k) {
   try {
     let mentendo_adatok = mentett_adatok.data.mentett_adatok;
 
     if (user_id != 0) {
-      console.log("Mentendő adatok: ", mentendo_adatok);
       const response = await fecthData("http://127.0.0.1:3000/api/mentes/update-teljes-mentes", "PATCH", {
         user_id: user_id,
         mentes_id: mentes_id,
@@ -321,6 +318,8 @@ export async function TeljesMentesLetrehozo(user_id, mentes_id, mentett_adatok) 
       localStorage.setItem("achivements_en",updated_achi_en_data);
       localStorage.setItem("achivements_hu",updated_achi_hu_data);
     }
+
+    await mentes(k);
 
   } catch (error) {
     console.error("Teljes mentés hiba:", error);
@@ -823,8 +822,6 @@ export function BreakableFal(k, falObj, falSprite, hp = 2, remegjen = true, tag 
 
     serulhet = false;
     currentHp--;
-
-    console.log(`${tag} megütve. Maradék HP: ${currentHp}`);
 
     if (remegjen && falSprite) {
       let razasIdo = 0.18;

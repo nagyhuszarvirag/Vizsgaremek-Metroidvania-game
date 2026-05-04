@@ -13,10 +13,9 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
-  console.log("Mitteous map betöltve");
 
   EffektTorles();
 
@@ -109,8 +108,6 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
       if (collapseTriggered) return;
       collapseTriggered = true;
 
-      console.log("Beomló talaj aktiválva");
-
       if (aktivMentesAdatok) {
         aktivMentesAdatok.data.mentett_adatok.world_interactions["mitteous-plateau_breakable-ground1"] = true;
       }
@@ -125,7 +122,7 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
 
   const savepointObj = mapData.data.layers[8].objects[0];
   const savepointNev = mapData.data.layers[8].name;
-  console.log("Savepoint objektum neve: ", savepointNev);
+  
   MentesCollider(k, savepointObj, savepointNev);
 
   let kelleChromedome_and_Ratchet_combo = !aktivMentesAdatok.data.mentett_adatok.NPC_interactions.Chromedome_and_Ratchet;
@@ -218,4 +215,6 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const kodkezelo = await Kod();
   window.kodkezelo = kodkezelo;
   kodkezelo.start();
+
+  Szobanev(k,"mitteous");
 }

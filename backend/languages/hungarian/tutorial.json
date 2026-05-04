@@ -2,5 +2,12 @@
     "mozgas":"mozgás",
     "beszel":"beszélgetés",
     "tamad":"támadás",
-    "jump":"leugrás"
+    "jump":"leugrás",
+    "feloldva":"feloldva",
+    "hasznal":"Használat",
+    "double_jump":"kétszer - dupla ugrás",
+    "uj_kepesseg":"Új képességek megszerezve",
+    "kulcs":"kulcs megszerezve",
+    "sziv":"Kristály szív megszerezve",
+    "sziv_szoveg":"Mostantól a láva nem fog sebezni"
 }

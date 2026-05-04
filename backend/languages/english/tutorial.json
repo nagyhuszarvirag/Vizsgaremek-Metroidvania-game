@@ -2,5 +2,12 @@
     "mozgas":"movement",
     "beszel":"interact",
     "tamad":"attack",
-    "jump":"jump off"
+    "jump":"jump off",
+    "feloldva":"unlocked",
+    "hasznal":"Useage",
+    "double_jump":" 2 times - double jump",
+    "uj_kepesseg":"New abilities  unlocked",
+    "kulcs":"key obtained",
+    "sziv":"Crsytal heart unlocked",
+    "sziv_szoveg":"The lava will not hurt you"
 }

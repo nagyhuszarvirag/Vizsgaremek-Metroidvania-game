@@ -48,7 +48,6 @@ export async function startGame() {
 
     let szoba_nev = data.data.uj_jatek;
     let mentes_szam;
-    //console.log(i);
 
     if(user.id!=0){
 
@@ -89,10 +88,8 @@ export async function startGame() {
     jatekFajlok.id = "jatek_fajlok_" + i;
 
     jatekFajlok.addEventListener("click", async () => {
-      //itt kell majd betölteni a mentett játék fájlokat SQL-ből vagy létrehozni új játékot
       oldalTakarito();
       KaboomBetolto(i);
-      console.log("Új játék létrehozva/betöltve Mentés_id: " + i);
     });
 
     sor.appendChild(jatekFajlok);

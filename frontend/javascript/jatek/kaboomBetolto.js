@@ -115,8 +115,9 @@ export async function KaboomBetolto(mentes_id) {
     Hidden_Room(k, adatok?.szoba_belepesi_pont ?? null);
   });
 
-  k.debug.inspect = true; //Ezt a kettőt majd ki kell kapcsolni, ha kész a játék, de most jól jön a teszteléshez
-  k.debug.drawArea = true;
+  //Kaboom belső tesztelésére használt eszközök
+  /*k.debug.inspect = true; 
+  k.debug.drawArea = true;*/
 
   k.scene("intro", async () => {
     await cutscene_kezeles(k, "intro", "Kezdoszoba");
@@ -129,6 +130,7 @@ export async function KaboomBetolto(mentes_id) {
 
   //kezdőmap sprite
   k.loadSprite("Kezdoszoba", "../../images/maps/kezdomap.png"); //Itt midnig be kell tölteni a szoba spriteját későbbi kezelésre
+  k.loadSprite("Kezdoszoba_bg", "../../images/maps/kezdomap_bg.png");
   k.loadSprite("Kezdoszoba_table", "../../images/maps/kezdomap_table.png");
   k.loadSprite("Kezdoszoba_table_flipped", "../../images/maps/kezdomap_table_flipped.png");
 
@@ -144,6 +146,7 @@ export async function KaboomBetolto(mentes_id) {
 
   //Iacon map sprite
   k.loadSprite("Iacon", "../../images/maps/Iacon_city_fo_layer.png");
+  k.loadSprite("Iacon_bg", "../../images/maps/Iacon_city_bg.png");
   k.loadSprite("Iacon_Breakable_wall_1", "../../images/maps/Iacon_city_breakable_wall1.png");
   k.loadSprite("Iacon_Breakable_wall_2", "../../images/maps/Iacon_city_breakable_wall2.png");
   k.loadSprite("Iacon_Collapsing_ground_1", "../../images/maps/Iacon_city_collapsing_ground_1.png");
@@ -271,6 +274,7 @@ export async function KaboomBetolto(mentes_id) {
 
   //Kaon map sprite
   k.loadSprite("City_of_Kaon", "../../images/maps/City_of_Kaon.png");
+  k.loadSprite("City_of_Kaon_bg", "../../images/maps/City_of_Kaon_bg.png");
   k.loadSprite("City_of_Kaon_heart", "../../images/maps/City_of_Kaon_heart.png");
 
   //Cemetery map sprite
@@ -433,8 +437,6 @@ export async function KaboomBetolto(mentes_id) {
 
   k.setGravity(GRAVITY);
 
-  console.log("Aktív mentésünk: ", aktivMentesAdatok);
-
   if (aktivMentesAdatok.data.mentett_adatok.savepoint == "kezdomap_1") {
     k.go("intro");
   } else {
@@ -549,7 +551,7 @@ export async function cutscene_kezeles(k, scene_name, nextScene = null, callback
 
       if (!elozoMuted) {
         zene.play().catch(err => {
-          console.log("Zene indítás hiba:", err);
+          //console.log("Zene indítás hiba:", err);
         });
       }
     }
