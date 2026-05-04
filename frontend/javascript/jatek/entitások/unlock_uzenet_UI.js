@@ -64,3 +64,34 @@ export async function Szobanev(k, Szoba_nev) {
     if (title.exists()) title.destroy();
   });
 }
+
+export async function mentes(k) {
+  const szoveg= await fecthData(
+        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+          settings.nyelv +
+          "/mentes.json");
+
+  let cim=await szoveg.data.mentes;
+
+  const box = k.add([
+    k.rect(520, 90),
+    k.pos(k.width() / 2, 110),
+    k.anchor("center"),
+    k.fixed(),
+    k.opacity(0.85),
+    k.z(99999),
+  ]);
+
+  const title = k.add([
+    k.text(cim, { size: 24 }),
+    k.pos(k.width() / 2, 90),
+    k.anchor("center"),
+    k.fixed(),
+    k.z(100000),
+  ]);
+
+  k.wait(3, () => {
+    if (box.exists()) box.destroy();
+    if (title.exists()) title.destroy();
+  });
+}

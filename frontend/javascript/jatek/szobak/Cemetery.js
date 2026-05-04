@@ -16,7 +16,6 @@ import { aktivMentesAdatok, cutscene_kezeles } from "../kaboomBetolto.js";
 import { unlockUzenet, Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Cemetery(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
@@ -170,7 +169,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
     if (cutsceeneFut) return;
 
     aktiv_esemeny = "cemetery_cutscene_trigger";
-    console.log("Cemetery cutscene triggerben vagy");
 
     const world = aktivMentesAdatok?.world_interactions;
     const lighthouseOn = world?.["lighthouse-on"] === true;
@@ -197,7 +195,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
 
   player.onCollideUpdate("lighthouse_trigger", () => {
     aktiv_esemeny = "lighthouse_trigger";
-    console.log("Világítótorony triggerben vagy");
   });
 
   player.onCollideEnd("lighthouse_trigger", () => {
@@ -210,11 +207,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
   k.onKeyPress((key) => {
     if (key !== settings.controls.interact) return;
 
-    console.log("Interact lenyomva:", key);
-    console.log("Aktív esemény:", aktiv_esemeny);
-
-    console.log("World:", aktivMentesAdatok.data.mentett_adatok.world_interactions);
-
     if (!aktivMentesAdatok.data.mentett_adatok.world_interactions) {
       console.log("Nincs world_interactions!");
       return;
@@ -225,7 +217,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-sea-of-flowers-cutscenes"] === true;
 
     if (aktiv_esemeny === "lighthouse_trigger" && !lighthouseOn) {
-      console.log("lighthouse");
 
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] = true;
 
@@ -242,7 +233,6 @@ export async function Cemetery(k, szoba_belepesi_pont = null) {
       aktivMentesAdatok.data.mentett_adatok.world_interactions["lighthouse-on"] === true &&
       !flowersCutsceneSeen
     ) {
-      console.log("cemetery");
 
       cutsceeneFut = true;
 
@@ -309,8 +299,6 @@ export function soundeffectTorol(src) {
   const soundeffekt = document.getElementById(src);
 
   if (!soundeffekt) return;
-
-  console.log("Soundeffekt törlése:", src);
 
   soundeffekt.pause();
   soundeffekt.currentTime = 0;

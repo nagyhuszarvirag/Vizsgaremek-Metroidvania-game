@@ -1,12 +1,13 @@
 import { cutscene_kezeles, GRAVITY, SPEED, JUMP_FORCE, mentesunk_idja, aktivMentesAdatok } from "../kaboomBetolto.js";
 import { settings } from "../../options.js";
 import { TeljesMentesLetrehozo, szoba_zene_beallitas } from "../szobak/Szobakezelo.js";
-import { hpRendszerBeallitas } from "./hp_kezelo.js";
+import { hpRendszerBeallitas, gyogyitas } from "./hp_kezelo.js";
 import { hpUI } from "./hp_ui.js";
 import { beallitasMenuLetrehoz } from "../../beallitas_menu.js";
 import { fecthData } from "../../index.js";
 import { startGame } from "../../start_game.js";
 import { TutorialHint } from "./tutorial_kezelo.js";
+import { mentes } from "./unlock_uzenet_UI.js";
 
 export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
   const player = k.add([
@@ -218,7 +219,6 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
 
     //NPC
     if (aktivNPC) {
-      console.log("NPC interakció előtt ", aktivMentesAdatok);
       switch (current_map) {
         case "Kezdoszoba":
           if (kelleprowl) {
@@ -267,7 +267,6 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           console.log("Ismeretlen szoba");
           break;
       }
-      console.log("NPC interakció után ", aktivMentesAdatok);
       return;
     }
 
@@ -292,17 +291,16 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
         aktivMentesAdatok.data.mentett_adatok.savepoint = savepointNev;
       }
 
-      const eredmeny = await TeljesMentesLetrehozo(
+      await TeljesMentesLetrehozo(
         user.id,
         mentesunk_idja,
-        aktivMentesAdatok
+        aktivMentesAdatok,
+        k
       );
 
+      mentes(k);
+
       localStorage.setItem("last_loaded_savepoint", savepointNev);
-
-      console.log("Mentés létrehozva: ", aktivMentesAdatok);
-
-      console.log("Mentés eredménye:", eredmeny);
     }
   });
 
@@ -534,7 +532,9 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
     }
   });
 
-  k.onUpdate(() => {
+  let heal_cooldown=1000;
+
+  k.onUpdate(async () => {
     //Optimalizált mozgás (Remélem ez így jó lesz c:)
     if (player.dead) return;
 
@@ -606,6 +606,11 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
       ) {
         player.tutorial.markDone("ladder_climb");
 
+         const tutorial_data = await fecthData(
+        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+          settings.nyelv +
+          "/tutorial.json",);
+
         player.tutorial.showOnce(
           "ladder_jump",
           `${settings.controls.jump.toUpperCase()} - `+tutorial_data.data.jump
@@ -655,6 +660,10 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
       return;
     }
 
+    if (player.hp < player.maxHp) {
+        heal_cooldown=gyogyitas(player,1, heal_cooldown);
+      }
+
     k.setGravity(GRAVITY);
 
     if (k.isKeyDown(settings.controls.forward)) {
@@ -699,6 +708,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
     }
 
   });
+
 
 }
 
@@ -764,7 +774,6 @@ function In_game_menu(szoveg, k, player) {
   beallitasGomb.innerText = szoveg.beallitasok || "Beállítások";
 
   beallitasGomb.addEventListener("click", async () => {
-    console.log("In-game beállítás menü megnyitva");
 
     jatek_menu_modal_body.innerHTML = "";
 
@@ -785,7 +794,6 @@ function In_game_menu(szoveg, k, player) {
 
   kilepesGomb.addEventListener("click", async () => {
     biztos_kilep(szoveg, k, player);
-    console.log("Kilép")
   });
 
   jatek_menu_modal_body.appendChild(kilepesGomb);
@@ -795,7 +803,6 @@ function In_game_menu(szoveg, k, player) {
   visszaGomb.innerText = szoveg.vissza || "Vissza";
 
   visszaGomb.addEventListener("click", async () => {
-    console.log("Vissza a játékba");
 
     player.menuNyitva = false;
     k.setGravity(GRAVITY);

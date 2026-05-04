@@ -15,7 +15,6 @@ import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Leesos_hely(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
@@ -44,7 +43,13 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
 
   const szoba_layerek = mapData.data.layers;
 
-  const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-3"] === true;
+  const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-3"] == true;
+
+
+  k.add([
+    k.pos(0, 0),
+    k.sprite("Leesos_hely_bg"),
+  ]);
 
   let bonusHeartSprite = null;
   if (!bonusHeartMegvan) {
@@ -53,11 +58,7 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
       k.sprite("Leesos_hely_heart"),
     ]);
   }
-
-  k.add([
-    k.pos(0, 0),
-    k.sprite("Leesos_hely_bg"),
-  ]);
+  
 
   const map = k.add([
     k.pos(0, 0),
@@ -93,7 +94,6 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
     ]);
 
     k.onCollide("player", "leesos_hely_bonus_heart_pickup", (playerObj, obj) => {
-      console.log("Leesős hely bonus heart felvéve");
 
       aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-3"] = true;
 

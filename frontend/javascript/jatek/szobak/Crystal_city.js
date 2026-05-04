@@ -13,7 +13,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
-import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
+import { unlockUzenet, Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
@@ -198,11 +198,8 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["crystal-city-key"] === true;
 
         if (!vanKulcs) {
-            console.log("Nincs meg a Crystal City kapu kulcsa!");
             return;
         }
-
-        console.log("Crystal City kapu kinyitva!");
 
         aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-open_lock"] = true;
 
@@ -235,11 +232,21 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             "lava_protection_ability_pickup",
         ]);
 
-        k.onCollide("player", "lava_protection_ability_pickup", (playerObj, obj) => {
-            console.log("Láva védelem képesség felvéve");
+        k.onCollide("player", "lava_protection_ability_pickup", async (playerObj, obj) => {
 
             if (aktivMentesAdatok) {
                 aktivMentesAdatok.data.mentett_adatok.world_interactions["crystal-heart-lava-protection"] = true;
+
+                const tutorial_data = await fecthData(
+                "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+                settings.nyelv +
+                "/tutorial.json",);
+
+                unlockUzenet(
+                k,
+                tutorial_data.data.sziv+"!",
+                tutorial_data.data.sziv_szoveg
+                );
             }
 
             if (lavaProtectionAbilityLayer) {
@@ -285,7 +292,6 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
         });
 
         k.onCollide("player", "damaging_crystal", (playerObj) => {
-            console.log("Sebző kristály!");
             sebzesAdas(k, playerObj, 1);
         });
     }

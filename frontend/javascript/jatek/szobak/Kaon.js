@@ -19,7 +19,6 @@ import { SparkeaterLetrehozas } from "../entitások/sparkeater_boss.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
-    console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
 
@@ -293,7 +292,6 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         ]);
 
         k.onCollide("player", "kaon_bonus_heart_pickup", (playerObj, obj) => {
-            console.log("Kaon bonus heart felvéve");
 
             aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-1"] = true;
 

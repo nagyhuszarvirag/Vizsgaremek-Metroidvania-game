@@ -19,7 +19,6 @@ import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Iacon(k, szoba_belepesi_pont = null) {
-    console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
 
@@ -160,8 +159,6 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
             if (collapseTriggered1) return;
             collapseTriggered1 = true;
 
-            console.log("Beomló talaj 1 aktiválva");
-
             if (aktivMentesAdatok) {
                 aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground1"] = true;
             }
@@ -190,8 +187,6 @@ export async function Iacon(k, szoba_belepesi_pont = null) {
         k.onCollide("player", "collapsing_ground_trigger_2", () => {
             if (collapseTriggered2) return;
             collapseTriggered2 = true;
-
-            console.log("Beomló talaj 2 aktiválva");
 
             if (aktivMentesAdatok) {
                 aktivMentesAdatok.data.mentett_adatok.world_interactions["Iacon_breakable-ground2"] = true;

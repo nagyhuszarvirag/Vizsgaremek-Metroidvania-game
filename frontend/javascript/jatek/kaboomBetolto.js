@@ -437,8 +437,6 @@ export async function KaboomBetolto(mentes_id) {
 
   k.setGravity(GRAVITY);
 
-  console.log("Aktív mentésünk: ", aktivMentesAdatok);
-
   if (aktivMentesAdatok.data.mentett_adatok.savepoint == "kezdomap_1") {
     k.go("intro");
   } else {
@@ -553,7 +551,7 @@ export async function cutscene_kezeles(k, scene_name, nextScene = null, callback
 
       if (!elozoMuted) {
         zene.play().catch(err => {
-          console.log("Zene indítás hiba:", err);
+          //console.log("Zene indítás hiba:", err);
         });
       }
     }

@@ -215,10 +215,7 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
         scraplet.hurtCooldown = true;
         scraplet.hp -= 1;
 
-        console.log("Scraplet HP:", scraplet.hp);
-
         if (scraplet.hp > 0) {
-            //scraplet.play("hurt");
             animValtas("hurt")
             scraplet.move(scraplet.flipX ? 120 : -120, 0);
 
@@ -228,10 +225,8 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
                 scraplet.hurtCooldown = false;
 
                 if (scraplet.chasing || !scraplet.pihenes) {
-                    //scraplet.play("walk");
                     animValtas("walk");
                 } else {
-                    //scraplet.play("idle");
                     animValtas("idle");
                 }
             });
@@ -264,11 +259,8 @@ export function ScrapletLetrehozas(k, x, y, player, patrolRange = 120) {
             slash.destroy();
         }
 
-        console.log("Scraplet slash sebzés:", scraplet.hp);
-
         if (scraplet.hp <= 0) {
             scraplet.dead = true;
-            //scraplet.play("die");
             animValtas("die");
 
             if (scraplet.tutorialZone && scraplet.tutorialZone.exists()) {

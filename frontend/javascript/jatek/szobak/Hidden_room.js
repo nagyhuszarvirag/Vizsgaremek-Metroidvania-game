@@ -13,7 +13,6 @@ import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Hidden_Room(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
@@ -119,9 +118,6 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     ]);
 
     k.onCollide("player", "hidden_room_heart_pickup", (playerObj, obj) => {
-      console.log("Hidden room bonus heart felvéve");
-
-
       aktivMentesAdatok.data.mentett_adatok.world_interactions["bonus-hp-2"] = true;
 
       maxHpNovelese(playerObj, 2);

@@ -295,7 +295,6 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     slash.alreadyHit = true;
 
     boss.hp -= slash.damage ?? 3;
-    console.log("Sparkeater slash sebzés:", boss.hp);
 
     TarnAnimation(boss, "hurt");
 

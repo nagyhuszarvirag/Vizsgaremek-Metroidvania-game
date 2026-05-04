@@ -18,7 +18,6 @@ import { TarnLetrehozas } from "../entitások/tarn_boss.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
-    console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
     EffektTorles();
 

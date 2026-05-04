@@ -214,8 +214,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
         boss.screamCooldown = 6.0;
         boss.damageBoosted = true;
 
-        console.log("Sparkeater scream: következő támadás dupla sebzés");
-
         soundeffectLetrehoz("Sparkeater_scream", false);
 
         document.getElementById("Sparkeater_scream").addEventListener("ended", () => {
@@ -232,7 +230,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     }
 
     k.onCollide("player", "sparkeater_attack_hitbox", (playerObj, hitbox) => {
-        console.log("ATTACK HITBOX SEBZETT", hitbox.pos, playerObj.pos);
 
         if (boss.dead) return;
         if (!boss.fightActive) return;
@@ -250,7 +247,6 @@ export function SparkeaterLetrehozas(k, x, y, player, arenaObj) {
     });
 
     k.onCollide("player", "sparkeater_grapple_hitbox", (playerObj, hitbox) => {
-        console.log("GRAPPLE HITBOX SEBZETT", hitbox.pos, playerObj.pos);
 
         if (boss.dead) return;
         if (!boss.fightActive) return;

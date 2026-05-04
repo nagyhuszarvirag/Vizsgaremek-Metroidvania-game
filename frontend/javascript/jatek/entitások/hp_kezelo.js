@@ -47,8 +47,6 @@ export function sebzesAdas(k, player, mennyiseg) {
     player.hpUI.frissit();
   }
 
-  console.log(`Player HP: ${player.hp}/${player.maxHp}`);
-
   player.invulnerable = true;
 
   player.serul = true;
@@ -77,10 +75,14 @@ export function sebzesAdas(k, player, mennyiseg) {
   if (player.hp <= 0) {
     playerHalal(k, player);
   }
+
 }
 
-export function gyogyitas(player, mennyiseg) {
-  if (!player || player.dead) return;
+export function gyogyitas(player, mennyiseg, heal_cooldown) {
+  if (!player || player.dead || heal_cooldown>0 ) {
+    heal_cooldown--;
+    return heal_cooldown;
+  }
 
   player.hp += mennyiseg;
 
@@ -94,7 +96,8 @@ export function gyogyitas(player, mennyiseg) {
     player.hpUI.frissit();
   }
 
-  console.log(`Player HP: ${player.hp}/${player.maxHp}`);
+  heal_cooldown=1000;
+  return heal_cooldown;
 }
 
 export function maxHpNovelese(player, mennyiseg) {
@@ -112,15 +115,11 @@ export function maxHpNovelese(player, mennyiseg) {
   if (player.hpUI) {
     player.hpUI.frissit();
   }
-
-  console.log(`Player max HP növelve: ${player.hp}/${player.maxHp}`);
 }
 
 export function playerHalal(k, player) {
   if (player.dead) return;
   player.dead = true;
-
-  console.log("A játékos meghalt");
 
   localStorage.removeItem("player_current_hp");
 

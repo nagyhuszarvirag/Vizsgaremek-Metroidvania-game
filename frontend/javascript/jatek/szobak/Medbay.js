@@ -15,7 +15,6 @@ import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Medbay(k, szoba_belepesi_pont = null) {
-  console.log("Kapott belépési pont:", szoba_belepesi_pont);
 
   EffektTorles();
 
