@@ -13,6 +13,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
 
@@ -21,6 +22,11 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
   szoba_zene_beallitas("Prowls_office_room");
 
   setBackgroundColor(k, "#00001b");
+
+  k.add([
+            k.pos(0, 0),
+            k.sprite('Kezdoszoba_bg')
+        ]);
 
   //map méret pixelben
   const mapW = 32 * 60;
@@ -94,4 +100,5 @@ export async function Kezdoszoba(k, szoba_belepesi_pont = null) {
   SzobakiesesKezelo(k, map, mapW, mapH);
   SzobavaltozatoKezelo(k, kezdoszoba_data.data.layers[5].objects[0].x, kezdoszoba_data.data.layers[5].objects[0].y, kezdoszoba_data.data.layers[5].objects[0].width, kezdoszoba_data.data.layers[5].objects[0].height, "Mitteous_Plateau", "Back_From_kezdomap_and_Iacon", "atjaro_mitteous");
 
+  Szobanev(k,"kezdo_szoba");
 }

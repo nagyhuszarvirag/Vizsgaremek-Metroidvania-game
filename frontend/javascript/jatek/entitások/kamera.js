@@ -141,9 +141,5 @@ export async function Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArena
     k.camPos(camX, camY);
 
 
-    /*if(true){
-      const kodkezelo = await Kod();
-      kodkezelo.update(4, camX, camY);
-    }*/
   });
 }

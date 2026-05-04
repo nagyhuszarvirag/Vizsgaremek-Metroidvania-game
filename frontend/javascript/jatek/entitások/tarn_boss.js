@@ -2,6 +2,7 @@ import { sebzesAdas } from "./hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { settings } from "../../options.js";
 import { unlockUzenet } from "./unlock_uzenet_UI.js";
+import { fecthData } from "../../index.js";
 
 export function TarnLetrehozas(k, x, y, player, arenaObj) {
   const boss = k.add([
@@ -244,7 +245,7 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
     });
   });
 
-  k.onCollide("player_attack_hitbox", "tarn", (hitbox) => {
+  k.onCollide("player_attack_hitbox", "tarn", async (hitbox) => {
     if (boss.dead || boss.resetting) return;
 
     boss.hp -= 1;
@@ -269,10 +270,15 @@ export function TarnLetrehozas(k, x, y, player, arenaObj) {
         mentett.bosses.Tarn = true;
         mentett.ability_unlocked.double_jump = true;
 
+        const tutorial_data = await fecthData(
+                "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+                  settings.nyelv +
+                  "/tutorial.json",);
+
         unlockUzenet(
           k,
-          "Double jump feloldva!",
-          `${settings.controls.jump.toUpperCase()} kétszer - dupla ugrás`
+          "Double jump "+tutorial_data.data.feloldva+"!",
+          `${settings.controls.jump.toUpperCase()} `+tutorial_data.data.double_jump
         );
       }
 

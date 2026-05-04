@@ -15,6 +15,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { TarnLetrehozas } from "../entitások/tarn_boss.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -231,5 +232,7 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
     const hamukezelo = Hamu();
     window.hamukezelo = hamukezelo;
     hamukezelo.start();
+
+    Szobanev(k,"smelting_pits");
 
 }

@@ -13,6 +13,7 @@ import { Kamera_kezelo } from "../entitások/kamera.js";
 import { settings } from "../../options.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { sebzesAdas } from "../entitások/hp_kezelo.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Crystal_City(k, szoba_belepesi_pont = null) {
 
@@ -288,4 +289,6 @@ export async function Crystal_City(k, szoba_belepesi_pont = null) {
             sebzesAdas(k, playerObj, 1);
         });
     }
+
+    Szobanev(k,"crystal_city");
 }

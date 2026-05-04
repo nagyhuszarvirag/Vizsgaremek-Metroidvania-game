@@ -94,8 +94,6 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           settings.nyelv +
           "/tutorial.json",);
 
-  console.log("Tutorial data:", tutorial_data);
-
 
   player.tutorial = TutorialHint(k, player);
 

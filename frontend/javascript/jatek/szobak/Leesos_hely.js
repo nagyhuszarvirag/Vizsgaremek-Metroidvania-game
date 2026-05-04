@@ -12,6 +12,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Leesos_hely(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -120,4 +121,6 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
     "From_leesos_hely",
     "atjaro_smelting_pits"
   );
+
+  Szobanev(k,"hidden_room_es_leesos_hely");
 }

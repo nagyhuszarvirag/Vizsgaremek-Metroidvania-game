@@ -2,5 +2,10 @@
     "mozgas":"mozgás",
     "beszel":"beszélgetés",
     "tamad":"támadás",
-    "jump":"leugrás"
+    "jump":"leugrás",
+    "feloldva":"feloldva",
+    "hasznal":"Használat",
+    "double_jump":"kétszer - dupla ugrás",
+    "uj_kepesseg":"Új képességek megszerezve",
+    "kulcs":"kulcs megszerezve"
 }

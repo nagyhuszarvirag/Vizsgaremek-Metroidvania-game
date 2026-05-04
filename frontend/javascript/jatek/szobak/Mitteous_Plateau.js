@@ -13,6 +13,7 @@ import { fecthData } from "../../index.js";
 import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Mitteous(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -218,4 +219,6 @@ export async function Mitteous(k, szoba_belepesi_pont = null) {
   const kodkezelo = await Kod();
   window.kodkezelo = kodkezelo;
   kodkezelo.start();
+
+  Szobanev(k,"mitteous");
 }

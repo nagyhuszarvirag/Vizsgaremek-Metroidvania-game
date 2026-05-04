@@ -10,6 +10,7 @@ import { jatekos_betolt } from "../entitások/jatekos.js";
 import { Kamera_kezelo } from "../entitások/kamera.js";
 import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Hidden_Room(k, szoba_belepesi_pont = null) {
   console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -90,6 +91,17 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
     );
   }
 
+  SzobavaltozatoKezelo(
+    k,
+    mapData.data.layers[6].objects[0].x,
+    mapData.data.layers[6].objects[0].y,
+    mapData.data.layers[6].objects[0].width,
+    mapData.data.layers[6].objects[0].height,
+    "Kaon",
+    "Savepoint_5",
+    "atjaro_to_kaon_from_hidden_room"
+  );
+
   if (
     !bonusHeartMegvan &&
     heartObjectLayer &&
@@ -121,4 +133,6 @@ export async function Hidden_Room(k, szoba_belepesi_pont = null) {
       obj.destroy();
     });
   }
+
+  Szobanev(k,"hidden_room_es_leesos_hely");
 }

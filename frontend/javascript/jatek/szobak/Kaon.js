@@ -16,6 +16,7 @@ import { maxHpNovelese } from "../entitások/hp_kezelo.js";
 import { ScrapletLetrehozas } from "../entitások/enemy_scraplet.js";
 import { aktivMentesAdatok } from "../kaboomBetolto.js";
 import { SparkeaterLetrehozas } from "../entitások/sparkeater_boss.js";
+import { Szobanev } from "../entitások/unlock_uzenet_UI.js";
 
 export async function Kaon(k, szoba_belepesi_pont = null) {
     console.log("Kapott belépési pont:", szoba_belepesi_pont);
@@ -25,6 +26,8 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
     szoba_zene_beallitas("Kaon_room");
 
     setBackgroundColor(k, "#000000");
+
+    k.add([k.pos(0, 0), k.sprite("City_of_Kaon_bg")]);
 
     const mapW = 32 * 60;
     const mapH = 32 * 50;
@@ -303,4 +306,6 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
             obj.destroy();
         });
     }
+
+    Szobanev(k,"kaon");
 }
