@@ -1,7 +1,6 @@
 import { createMainMenu } from "./main_menu.js";
 
 export async function fecthData(url, method = "GET", body = null) {
-  //Ezt, ha van idő átnevezzük mindenhol és optimalizálunk vele
   try {
     const res = await fetch(url, {
       method: method,

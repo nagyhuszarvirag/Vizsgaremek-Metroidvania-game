@@ -89,11 +89,6 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         ]);
     }
 
-    /*const collapsingGroundLayer = k.add([
-        k.pos(0, 0),
-        k.sprite("Smelting_Pits_Collapsing_ground"),
-    ]);*/
-
     const collapsingGroundLayer = [];
 
     for (let i = 1; i < 23; i++) {
@@ -228,7 +223,13 @@ export async function Smelting_Pits(k, szoba_belepesi_pont = null) {
         "atjaro_hidden_room",
     );
 
+    k.add([
+        k.pos(0, 0),
+        k.sprite("Smelting_pits_over_player"),
+    ]);
+
     const hamukezelo = Hamu();
     window.hamukezelo = hamukezelo;
     hamukezelo.start();
+
 }

@@ -53,6 +53,11 @@ export async function Leesos_hely(k, szoba_belepesi_pont = null) {
     ]);
   }
 
+  k.add([
+    k.pos(0, 0),
+    k.sprite("Leesos_hely_bg"),
+  ]);
+
   const map = k.add([
     k.pos(0, 0),
     k.sprite("Leesos_hely"),

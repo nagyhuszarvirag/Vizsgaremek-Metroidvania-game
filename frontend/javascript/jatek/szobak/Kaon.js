@@ -119,7 +119,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         k.sprite("City_of_Kaon"),
     ]);
 
-    const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-1"] === true;
+    const bonusHeartMegvan = aktivMentesAdatok?.data?.mentett_adatok?.world_interactions?.["bonus-hp-1"] == true;
 
     let bonusHeartSprite = null;
     if (!bonusHeartMegvan) {
@@ -134,8 +134,16 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
     }
 
     let bossArenaZone = null;
+    let bossArenalayer = null;
 
-    if (bossArenaLayer && bossArenaLayer.objects && bossArenaLayer.objects[0]) {
+    
+
+    const player = await jatekos_betolt(k, xpos, ypos);
+
+    const sparkeaterDead =
+        aktivMentesAdatok?.data?.mentett_adatok?.bosses?.Sparkeater == true;
+
+    if (bossArenaLayer && bossArenaLayer.objects && bossArenaLayer.objects[0] && !sparkeaterDead) {
         const arena = bossArenaLayer.objects[0];
 
         bossArenaZone = k.add([
@@ -145,11 +153,11 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
             k.opacity(0),
             "boss_arena_zone",
         ]);
+
+        bossArenalayer=bossArenaLayer?.objects?.[0] || null;
     }
 
-    const player = await jatekos_betolt(k, xpos, ypos);
-
-    Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenaLayer?.objects?.[0] || null);
+    Kamera_kezelo(k, xpos, ypos, player, mapW, mapH, bossArenalayer);
 
     if (scrapletsLayer && scrapletsLayer.objects) {
         scrapletsLayer.objects.forEach((obj) => {
@@ -157,8 +165,7 @@ export async function Kaon(k, szoba_belepesi_pont = null) {
         });
     }
 
-    const sparkeaterDead =
-        aktivMentesAdatok?.data?.mentett_adatok?.bosses?.Sparkeater === true;
+    
 
     if (
         !sparkeaterDead &&

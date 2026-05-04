@@ -170,7 +170,6 @@ export async function createMainMenu() {
   menu.appendChild(title);
   menu.appendChild(gombTarolo);
   menu.appendChild(zeneGomb);
-  //menu.appendChild(bejelentkezesGomb);
   menu.appendChild(authContainer);
   document.body.appendChild(menu);
 

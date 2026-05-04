@@ -103,6 +103,31 @@ export async function End_map(k, szoba_belepesi_pont = null) {
       if (key !== settings.controls.interact) return;
 
       if (Ending_helyen_van) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        let user_id=user.id;
+
+         if (user_id != 0) {
+          const updateachis = await fecthData("http://127.0.0.1:3000/api/updateachivements", "PATCH", {
+            user_id: user_id,
+            achivement_id: 10
+          });}
+          else{
+            const achi_en = localStorage.getItem('achivements_en');
+            const achi_hu = localStorage.getItem('achivements_hu');
+
+            const achi_en_data=achi_en ? JSON.parse(achi_en) : {};
+            const achi_hu_data=achi_hu ? JSON.parse(achi_hu) : {};
+
+            achi_en.data[9].unlocked=1;
+            achi_hu.data[9].unlocked=1;
+
+            const updated_achi_en_data = JSON.stringify(achi_en_data);
+            const updated_achi_hu_data = JSON.stringify(achi_hu_data);
+
+            localStorage.setItem("achivements_en",updated_achi_en_data);
+            localStorage.setItem("achivements_hu",updated_achi_hu_data);
+          }
+
         cutscene_kezeles(k, current_ending, "end_game");
       }
     });

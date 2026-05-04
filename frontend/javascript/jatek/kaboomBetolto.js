@@ -152,9 +152,11 @@ export async function KaboomBetolto(mentes_id) {
 
   //Medbay map sprite
   k.loadSprite("Medbay", "../../images/maps/Medbay.png");
+  k.loadSprite("Medbay_bg", "../../images/maps/Medbay_bg.png");
 
   //Leesos_hely map sprite
   k.loadSprite("Leesos_hely", "../../images/maps/leesos_hely_solid.png");
+  k.loadSprite("Leesos_hely_bg", "../../images/maps/leesos_hely_bg.png");
   k.loadSprite("Leesos_hely_heart", "../../images/maps/leesos_hely_heart.png");
 
   //Smelting Pits map sprite
@@ -252,6 +254,10 @@ export async function KaboomBetolto(mentes_id) {
     "Smelting_Pits_Collapsing_ground_22",
     "../../images/maps/Smelting pits_collapsing_ground_22.png",
   );
+  k.loadSprite(
+    "Smelting_pits_over_player",
+    "../../images/maps/Smelting pits_over_player.png",
+  );
 
   //End map sprite
   k.loadSprite("End_map", "../../images/maps/end_map.png");
@@ -259,6 +265,7 @@ export async function KaboomBetolto(mentes_id) {
 
   //Crystal_city map sprite
   k.loadSprite("Crystal_City", "../../images/maps/Crystal_city.png");
+  k.loadSprite("Crystal_City_bg", "../../images/maps/Crystal_city_bg.png");
   k.loadSprite("Crystal_City_Gate", "../../images/maps/Crystal_city_Locked_place.png");
   k.loadSprite("Crystal_City_heart", "../../images/maps/Crystal_city_heart.png");
 
@@ -268,6 +275,9 @@ export async function KaboomBetolto(mentes_id) {
 
   //Cemetery map sprite
   k.loadSprite("The_cemetery", "../../images/maps/The_cemetery.png");
+  k.loadSprite("The_cemetery_bg_lighthouse_off", "../../images/maps/The_cemetery_bg_lighthouse_off.png");
+  k.loadSprite("The_cemetery_bg_lighthouse_on", "../../images/maps/The_cemetery_bg_lighthouse_on.png");
+  k.loadSprite("The_cemetery_bg_flowers_front_layer", "../../images/maps/The_cemetery_bg_flowers_front_layer.png");
 
   //Hidden room map sprite
   k.loadSprite("hidden_room_solid", "../../images/maps/hidden_room_solid.png");

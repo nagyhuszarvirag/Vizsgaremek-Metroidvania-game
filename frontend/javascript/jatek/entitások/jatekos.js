@@ -1,14 +1,4 @@
 import { cutscene_kezeles, GRAVITY, SPEED, JUMP_FORCE, mentesunk_idja, aktivMentesAdatok } from "../kaboomBetolto.js";
-/*import {
-  volume,
-  nyelv,
-  playerEloreMegyGombja,
-  playerHatraMegyGombja,
-  playerUgroGombja,
-  playerAttackGombja,
-  playerInteractGombja,
-  mobileMode,
-} from "../../options.js";*/
 import { settings } from "../../options.js";
 import { TeljesMentesLetrehozo, szoba_zene_beallitas } from "../szobak/Szobakezelo.js";
 import { hpRendszerBeallitas } from "./hp_kezelo.js";
@@ -99,16 +89,19 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
 
   player.play("idle");
 
-  /*k.camPos(xpos, ypos - 30);
-  k.camScale(4);
+  const tutorial_data = await fecthData(
+        "http://127.0.0.1:3000/api/nyelv_alapjan_JSON_olvasas/" +
+          settings.nyelv +
+          "/tutorial.json",);
 
-  Kamera_kezelo(k, xpos, ypos, player);*/
+  console.log("Tutorial data:", tutorial_data);
+
 
   player.tutorial = TutorialHint(k, player);
 
   player.tutorial.showOnce(
     "movement",
-    `${settings.controls.back.toUpperCase()} / ${settings.controls.forward.toUpperCase()} - mozgás`
+    `${settings.controls.back.toUpperCase()} / ${settings.controls.forward.toUpperCase()} - `+tutorial_data.data.mozgas
   );
 
   k.wait(5, () => {
@@ -133,7 +126,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
       if (player.tutorial) {
         player.tutorial.showOnce(
           "npc_interact",
-          `${settings.controls.interact.toUpperCase()} - beszélgetés`
+          `${settings.controls.interact.toUpperCase()} - `+tutorial_data.data.beszel
         );
       }
     }
@@ -212,7 +205,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
 
     player.tutorial.showOnce(
       "attack",
-      `${settings.controls.attack.toUpperCase()} - támadás`
+      `${settings.controls.attack.toUpperCase()} - `+tutorial_data.data.tamad
     );
   });
 
@@ -334,7 +327,7 @@ export async function jatekos_betolt(k, xpos, ypos, current_map = "semelyik") {
           player.flipX ? player.pos.x + 18 : player.pos.x - 38,
           player.pos.y - 10
         ),
-        k.rect(40, 25),
+        k.rect(40, 35),
         k.area(),
         k.opacity(0),
         "player_attack_hitbox",
@@ -617,7 +610,7 @@ async function player_mozgas_es_animacio_kezeles(player, k) {
 
         player.tutorial.showOnce(
           "ladder_jump",
-          `${settings.controls.jump.toUpperCase()} - leugrás`
+          `${settings.controls.jump.toUpperCase()} - `+tutorial_data.data.jump
         );
       }
 
